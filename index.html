@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FreshersHub</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f4f8;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px;
+    }
+    h1 {
+      color: #2c3e50;
+    }
+    .container {
+      width: 100%;
+      max-width: 400px;
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      margin-top: 30px;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #4CAF50;
+      border: none;
+      color: white;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    .hidden {
+      display: none;
+    }
+    .logout {
+      margin-top: 20px;
+      background-color: #e74c3c;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>FreshersHub</h1>
+  <div class="container" id="auth-section">
+    <input type="email" id="email" placeholder="Email" />
+    <input type="password" id="password" placeholder="Password" />
+    <button onclick="signUp()">Sign Up</button>
+    <button onclick="signIn()">Sign In</button>
+  </div>
+
+  <div class="container hidden" id="user-section">
+    <h2>Welcome, <span id="user-email"></span>!</h2>
+    <p>You are now signed in.</p>
+    <button class="logout" onclick="signOut()">Log Out</button>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyD9taY-QOUPL9_SbgrUUMEMd1mnmMkFklA",
+      authDomain: "freshersultimate-ae0fd.firebaseapp.com",
+      projectId: "freshersultimate-ae0fd",
+      storageBucket: "freshersultimate-ae0fd.appspot.com",
+      messagingSenderId: "983035913425",
+      appId: "1:983035913425:web:211e4fd8c2df71677011f0"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    function signUp() {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      auth.createUserWithEmailAndPassword(email, password)
+        .then(() => alert("Signup successful!"))
+        .catch(err => alert(err.message));
+    }
+
+    function signIn() {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      auth.signInWithEmailAndPassword(email, password)
+        .then(() => alert("Signin successful!"))
+        .catch(err => alert(err.message));
+    }
+
+    function signOut() {
+      auth.signOut();
+    }
+
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        document.getElementById("auth-section").classList.add("hidden");
+        document.getElementById("user-section").classList.remove("hidden");
+        document.getElementById("user-email").textContent = user.email;
+      } else {
+        document.getElementById("auth-section").classList.remove("hidden");
+        document.getElementById("user-section").classList.add("hidden");
+      }
+    });
+  </script>
+</body>
+</html>

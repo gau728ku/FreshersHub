@@ -5,18 +5,12 @@
   <title>FreshersHub - Sign In / Sign Up</title>
   <style>
     body {
-  font-family: 'Poppins', sans-serif;
-  background:
-    linear-gradient(to bottom right, rgba(0, 114, 255, 0.6), rgba(0, 198, 255, 0.6)),
-    url('https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/PNG_transparency_demonstration_1.png/800px-PNG_transparency_demonstration_1.png') no-repeat center center;
-  background-size: cover;
-  background-attachment: fixed;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: white;
-}
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(120deg, #2c3e50, #3498db);
+      color: white;
+      text-align: center;
+    }
     .container {
       max-width: 400px;
       margin: 80px auto;
@@ -78,12 +72,13 @@
   <div id="dashboard">
     <h1 id="dashboard-heading"></h1>
     <p>Welcome, <span id="user-email"></span></p>
+    <button onclick="logOut()">Logout</button>
   </div>
 
   <!-- Firebase SDK & Logic -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
     import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -166,7 +161,7 @@
       }
     }
 
-     // Log Out
+    // Log Out
     window.logOut = async function() {
       try {
         await signOut(auth);

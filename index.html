@@ -219,11 +219,14 @@
   document.getElementById("dashboard").style.display = "block";
   document.getElementById("dashboard-title").innerText = `${role.toUpperCase()} Dashboard`;
 
+  // Hide any logout button that's not part of the admin dashboard
+  document.getElementById("loginLogoutButton").style.display = "none"; // change id accordingly
+
   if (role === "admin") {
     document.getElementById("adminDashboard").style.display = "block";
     loadAdminDashboard(); // fetch & display admin data
   } else {
-    // Show fresher or company UI (you can add more later)
+    // Show fresher or company UI
     alert("Logged in as: " + role);
   }
 }

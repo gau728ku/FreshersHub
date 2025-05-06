@@ -95,6 +95,50 @@
     <button id="logoutBtn" onclick="logout()">Logout</button>
   </div>
 
+<!-- Admin Dashboard -->
+<div id="adminDashboard" style="display: none; padding: 20px; color: white;">
+  <h2>Admin Dashboard</h2>
+
+  <!-- Overview Stats -->
+  <div>
+    <p>Total Freshers: <span id="totalFreshers">0</span></p>
+    <p>Total Companies: <span id="totalCompanies">0</span></p>
+    <p>Total Jobs: <span id="totalJobs">0</span></p>
+  </div>
+
+  <!-- Manage Users -->
+  <h3>Registered Users</h3>
+  <table border="1" style="width: 100%; background: white; color: black;">
+    <thead>
+      <tr>
+        <th>Email</th>
+        <th>Role</th>
+      </tr>
+    </thead>
+    <tbody id="usersTable">
+      <!-- Rows will be added by JS -->
+    </tbody>
+  </table>
+
+  <!-- Manage Jobs -->
+  <h3>Job Posts</h3>
+  <table border="1" style="width: 100%; background: white; color: black;">
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Company</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody id="jobsTable">
+      <!-- Rows will be added by JS -->
+    </tbody>
+  </table>
+
+  <button onclick="logout()">Logout</button>
+</div>
+
+
   <script type="module">
     // Firebase imports
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
@@ -175,7 +219,7 @@
       document.getElementById("dashboard").style.display = "block";
       document.getElementById("dashboard-title").innerText = `${role.toUpperCase()} Dashboard`;
     }
-
+  
     // Logout
     window.logout = function () {
       signOut(auth).then(() => location.reload());

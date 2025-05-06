@@ -3,111 +3,95 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>FreshersHub | Welcome</title>
+  <title>FreshersHub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <script defer src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script defer src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+
   <style>
     * {
+      margin: 0;
+      padding: 0;
       box-sizing: border-box;
     }
-   body {
-  margin: 0;
-  font-family: 'Segoe UI', sans-serif;
- background: 
-  linear-gradient(to bottom right, rgba(0, 114, 255, 0.7), rgba(0, 198, 255, 0.7)),
-  url('https://wallpapercave.com/wp/wp5503421.jpg') no-repeat center center;
-background-size: cover;
-background-attachment: fixed;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  color: #fff;
-}
 
-    .card {
-      background: #fff;
-      color: #333;
-      border-radius: 16px;
-      padding: 40px 30px;
-      width: 100%;
-      max-width: 400px;
-      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
-      text-align: center;
-      transition: all 0.3s ease-in-out;
+    body {
+      font-family: 'Poppins', sans-serif;
+      background:
+        linear-gradient(to bottom right, rgba(0, 114, 255, 0.7), rgba(0, 198, 255, 0.7)),
+        url('https://wallpapercave.com/wp/wp5503421.jpg') no-repeat center center;
+      background-size: cover;
+      background-attachment: fixed;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
     }
 
-    .card h2 {
-      margin-bottom: 24px;
+    .container {
+      background: rgba(0, 0, 0, 0.6);
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+      width: 300px;
+      text-align: center;
+    }
+
+    .container h2 {
+      margin-bottom: 1rem;
     }
 
     input {
       width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      border: 1px solid #ccc;
+      padding: 0.7rem;
+      margin: 0.5rem 0;
       border-radius: 8px;
-      font-size: 16px;
+      border: none;
     }
 
     button {
       width: 100%;
-      padding: 12px;
-      background-color: #0072ff;
+      padding: 0.7rem;
+      margin-top: 1rem;
+      background: #00c6ff;
       border: none;
       color: white;
       font-weight: bold;
-      font-size: 16px;
       border-radius: 8px;
       cursor: pointer;
-      margin-top: 10px;
-      transition: background 0.3s ease;
+      transition: background 0.3s;
     }
 
     button:hover {
-      background-color: #005fd1;
+      background: #0072ff;
     }
 
     .toggle-link {
-      margin-top: 14px;
-      font-size: 14px;
-      color: #0072ff;
+      margin-top: 1rem;
       cursor: pointer;
-      display: inline-block;
+      color: #00c6ff;
+      display: block;
     }
 
     .hidden {
       display: none;
     }
-
-    .logout-btn {
-      background: #e74c3c;
-    }
-
-    .logout-btn:hover {
-      background: #c0392b;
-    }
   </style>
 </head>
 <body>
 
-  <div class="card" id="auth-card">
-    <h2 id="form-title">Sign In to FreshersHub</h2>
+  <div class="container">
+    <h2 id="form-title">Sign Up</h2>
+    
     <input type="email" id="email" placeholder="Email" />
     <input type="password" id="password" placeholder="Password" />
-    <button onclick="handleAuth()">Sign In</button>
-    <span class="toggle-link" onclick="toggleMode()">Don't have an account? Sign Up</span>
+
+    <button onclick="handleAuth()">Submit</button>
+    <span class="toggle-link" onclick="toggleForm()">Already have an account? Sign In</span>
   </div>
 
-  <div class="card hidden" id="user-card">
-    <h2>Welcome, <span id="user-email"></span> 👋</h2>
-    <p>You are now logged in to FreshersHub.</p>
-    <button class="logout-btn" onclick="signOut()">Log Out</button>
-  </div>
-
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
   <script>
-    // Firebase Config
     const firebaseConfig = {
       apiKey: "AIzaSyD9taY-QOUPL9_SbgrUUMEMd1mnmMkFklA",
       authDomain: "freshersultimate-ae0fd.firebaseapp.com",
@@ -116,59 +100,36 @@ background-attachment: fixed;
       messagingSenderId: "983035913425",
       appId: "1:983035913425:web:211e4fd8c2df71677011f0"
     };
+
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
 
-    let mode = 'signin'; // or 'signup'
+    let isSignup = true;
 
-    function toggleMode() {
-      const formTitle = document.getElementById('form-title');
-      const button = document.querySelector('button');
-      const toggleLink = document.querySelector('.toggle-link');
-
-      if (mode === 'signin') {
-        mode = 'signup';
-        formTitle.innerText = "Create Your FreshersHub Account";
-        button.innerText = "Sign Up";
-        toggleLink.innerText = "Already have an account? Sign In";
-      } else {
-        mode = 'signin';
-        formTitle.innerText = "Sign In to FreshersHub";
-        button.innerText = "Sign In";
-        toggleLink.innerText = "Don't have an account? Sign Up";
-      }
+    function toggleForm() {
+      const title = document.getElementById("form-title");
+      const toggleText = document.querySelector(".toggle-link");
+      isSignup = !isSignup;
+      title.textContent = isSignup ? "Sign Up" : "Sign In";
+      toggleText.textContent = isSignup
+        ? "Already have an account? Sign In"
+        : "Don't have an account? Sign Up";
     }
 
     function handleAuth() {
       const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
 
-      if (mode === 'signup') {
+      if (isSignup) {
         auth.createUserWithEmailAndPassword(email, password)
-          .then(() => alert("Signup successful!"))
-          .catch(err => alert(err.message));
+          .then(user => alert("Signup Successful!"))
+          .catch(error => alert(error.message));
       } else {
         auth.signInWithEmailAndPassword(email, password)
-          .then(() => alert("Signin successful!"))
-          .catch(err => alert(err.message));
+          .then(user => alert("Signin Successful!"))
+          .catch(error => alert(error.message));
       }
     }
-
-    function signOut() {
-      auth.signOut();
-    }
-
-    auth.onAuthStateChanged(user => {
-      if (user) {
-        document.getElementById("auth-card").classList.add("hidden");
-        document.getElementById("user-card").classList.remove("hidden");
-        document.getElementById("user-email").textContent = user.email;
-      } else {
-        document.getElementById("auth-card").classList.remove("hidden");
-        document.getElementById("user-card").classList.add("hidden");
-      }
-    });
   </script>
-
 </body>
 </html>

@@ -3,133 +3,144 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>FreshersHub</title>
+  <title>FreshersHub - Sign Up / Sign In</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  <script defer src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-  <script defer src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
-
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: 'Poppins', sans-serif;
-      background:
-  linear-gradient(to bottom right, rgba(0, 114, 255, 0.6), rgba(0, 198, 255, 0.6)),
-  url('https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/PNG_transparency_demonstration_1.png/800px-PNG_transparency_demonstration_1.png') no-repeat center center;
+      background: 
+        linear-gradient(to bottom right, rgba(0,114,255,0.7), rgba(0,198,255,0.7)),
+        url('https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/PNG_transparency_demonstration_1.png/800px-PNG_transparency_demonstration_1.png') no-repeat center center;
       background-size: cover;
-      background-attachment: fixed;
-      height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
+      height: 100vh;
       color: white;
     }
-
     .container {
       background: rgba(0, 0, 0, 0.6);
       padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.3);
-      width: 300px;
+      border-radius: 10px;
+      width: 350px;
       text-align: center;
     }
-
-    .container h2 {
-      margin-bottom: 1rem;
-    }
-
-    input {
+    h2 { margin-bottom: 1rem; }
+    input, select {
       width: 100%;
-      padding: 0.7rem;
-      margin: 0.5rem 0;
-      border-radius: 8px;
+      margin-bottom: 1rem;
+      padding: 10px;
       border: none;
+      border-radius: 5px;
     }
-
     button {
       width: 100%;
-      padding: 0.7rem;
-      margin-top: 1rem;
-      background: #00c6ff;
+      padding: 10px;
+      background-color: #00c6ff;
       border: none;
       color: white;
       font-weight: bold;
-      border-radius: 8px;
+      border-radius: 5px;
       cursor: pointer;
-      transition: background 0.3s;
     }
-
-    button:hover {
-      background: #0072ff;
-    }
-
-    .toggle-link {
-      margin-top: 1rem;
-      cursor: pointer;
+    .switch-link {
       color: #00c6ff;
-      display: block;
+      cursor: pointer;
+      margin-top: 10px;
+      display: inline-block;
     }
-
-    .hidden {
-      display: none;
-    }
+    .message { margin-top: 10px; font-size: 0.9rem; }
   </style>
 </head>
 <body>
 
-  <div class="container">
-    <h2 id="form-title">Sign Up</h2>
-    
-    <input type="email" id="email" placeholder="Email" />
-    <input type="password" id="password" placeholder="Password" />
+<div class="container">
+  <h2 id="form-title">Sign Up</h2>
+  
+  <input type="email" id="email" placeholder="Email" />
+  <input type="password" id="password" placeholder="Password" />
+  
+  <select id="role">
+    <option value="fresher">Fresher</option>
+    <option value="company">Company</option>
+    <option value="admin">Admin</option>
+  </select>
 
-    <button onclick="handleAuth()">Submit</button>
-    <span class="toggle-link" onclick="toggleForm()">Already have an account? Sign In</span>
-  </div>
+  <button onclick="handleAction()">Sign Up</button>
 
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyD9taY-QOUPL9_SbgrUUMEMd1mnmMkFklA",
-      authDomain: "freshersultimate-ae0fd.firebaseapp.com",
-      projectId: "freshersultimate-ae0fd",
-      storageBucket: "freshersultimate-ae0fd.appspot.com",
-      messagingSenderId: "983035913425",
-      appId: "1:983035913425:web:211e4fd8c2df71677011f0"
-    };
+  <div class="switch-link" onclick="toggleForm()">Already have an account? Sign In</div>
+  <div class="message" id="message"></div>
+</div>
 
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
+<!-- Firebase Scripts -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
-    let isSignup = true;
+<script>
+  // ✅ Your Firebase Config
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyDrrAYywpFdd9iIzSSp2m6XcrGkGUgYY3Y",
+  authDomain: "freshershub-33de8.firebaseapp.com",
+  projectId: "freshershub-33de8",
+  storageBucket: "freshershub-33de8.firebasestorage.app",
+  messagingSenderId: "126389629687",
+  appId: "1:126389629687:web:9b9fb43e488f60ac3159f2",
+  measurementId: "G-Y66M9SP2NB"
+};
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
 
-    function toggleForm() {
-      const title = document.getElementById("form-title");
-      const toggleText = document.querySelector(".toggle-link");
-      isSignup = !isSignup;
-      title.textContent = isSignup ? "Sign Up" : "Sign In";
-      toggleText.textContent = isSignup
-        ? "Already have an account? Sign In"
-        : "Don't have an account? Sign Up";
+  let isSignup = true;
+
+  function toggleForm() {
+    isSignup = !isSignup;
+    document.getElementById("form-title").innerText = isSignup ? "Sign Up" : "Sign In";
+    document.querySelector("button").innerText = isSignup ? "Sign Up" : "Sign In";
+    document.getElementById("role").style.display = isSignup ? "block" : "none";
+    document.querySelector(".switch-link").innerText = isSignup ? "Already have an account? Sign In" : "Don't have an account? Sign Up";
+    document.getElementById("message").innerText = "";
+  }
+
+  function handleAction() {
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
+    const role = document.getElementById("role").value;
+
+    if (isSignup) {
+      auth.createUserWithEmailAndPassword(email, password)
+        .then((cred) => {
+          return db.collection("users").doc(cred.user.uid).set({ email, role });
+        })
+        .then(() => {
+          document.getElementById("message").innerText = `Signed up as ${role}!`;
+        })
+        .catch((err) => {
+          document.getElementById("message").innerText = err.message;
+        });
+    } else {
+      auth.signInWithEmailAndPassword(email, password)
+        .then((cred) => {
+          return db.collection("users").doc(cred.user.uid).get();
+        })
+        .then(doc => {
+          if (doc.exists) {
+            const userRole = doc.data().role;
+            document.getElementById("message").innerText = `Logged in as ${userRole}`;
+            // 🚀 You can redirect here based on role
+          } else {
+            document.getElementById("message").innerText = "No role found.";
+          }
+        })
+        .catch((err) => {
+          document.getElementById("message").innerText = err.message;
+        });
     }
+  }
+</script>
 
-    function handleAuth() {
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-
-      if (isSignup) {
-        auth.createUserWithEmailAndPassword(email, password)
-          .then(user => alert("Signup Successful!"))
-          .catch(error => alert(error.message));
-      } else {
-        auth.signInWithEmailAndPassword(email, password)
-          .then(user => alert("Signin Successful!"))
-          .catch(error => alert(error.message));
-      }
-    }
-  </script>
 </body>
 </html>

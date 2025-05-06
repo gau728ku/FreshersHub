@@ -215,11 +215,56 @@
 
     // Dashboard display
     function showDashboard(role) {
-      document.getElementById("auth-section").style.display = "none";
-      document.getElementById("dashboard").style.display = "block";
-      document.getElementById("dashboard-title").innerText = `${role.toUpperCase()} Dashboard`;
-    }
+  document.getElementById("auth-section").style.display = "none";
+  document.getElementById("dashboard").style.display = "block";
+  document.getElementById("dashboard-title").innerText = `${role.toUpperCase()} Dashboard`;
+
+  if (role === "admin") {
+    document.getElementById("adminDashboard").style.display = "block";
+    loadAdminDashboard(); // fetch & display admin data
+  } else {
+    // Show fresher or company UI (you can add more later)
+    alert("Logged in as: " + role);
+  }
+}
+
+async function loadAdminDashboard() {
+  const usersTable = document.getElementById("usersTable");
+  const jobsTable = document.getElementById("jobsTable");
+
+  usersTable.innerHTML = "";
+  jobsTable.innerHTML = "";
+
+  const usersSnapshot = await getDocs(collection(db, "users"));
+  const jobsSnapshot = await getDocs(collection(db, "jobs")); // change if your collection name differs
+
+  let fresherCount = 0;
+  let companyCount = 0;
+
+  usersSnapshot.forEach(doc => {
+    const user = doc.data();
+    const row = `<tr><td>${user.email}</td><td>${user.role}</td></tr>`;
+    usersTable.innerHTML += row;
+
+    if (user.role === "fresher") fresherCount++;
+    if (user.role === "company") companyCount++;
+  });
+
+  document.getElementById("totalFreshers").innerText = fresherCount;
+  document.getElementById("totalCompanies").innerText = companyCount;
+
+  let jobCount = 0;
+  jobsSnapshot.forEach(doc => {
+    const job = doc.data();
+    const row = `<tr><td>${job.title}</td><td>${job.companyName}</td><td>${job.description}</td></tr>`;
+    jobsTable.innerHTML += row;
+    jobCount++;
+  });
+
+  document.getElementById("totalJobs").innerText = jobCount;
+}
   
+
     // Logout
     window.logout = function () {
       signOut(auth).then(() => location.reload());

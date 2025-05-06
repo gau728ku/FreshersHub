@@ -1,20 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>FreshersHub</title>
   <script defer src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js"></script>
   <script defer src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js"></script>
   <script defer src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js"></script>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       margin: 0;
       padding: 0;
       color: #fff;
-      text-align: center;
-      background:
-        linear-gradient(to bottom right, rgba(0, 114, 255, 0.6), rgba(0, 198, 255, 0.6)),
+      background: linear-gradient(to bottom right, rgba(0, 114, 255, 0.6), rgba(0, 198, 255, 0.6)),
         url('https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/PNG_transparency_demonstration_1.png/800px-PNG_transparency_demonstration_1.png') no-repeat center center;
       background-size: cover;
       background-attachment: fixed;
@@ -22,48 +21,66 @@
 
     .container {
       max-width: 400px;
-      margin: 80px auto;
-      background: rgba(0, 0, 0, 0.25);
+      margin: 100px auto;
+      background: rgba(0, 0, 0, 0.75);
       padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.5);
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+      text-align: center;
     }
+
+    h2 {
+      margin-bottom: 20px;
+    }
+
     input, select, button {
       width: 90%;
       padding: 10px;
       margin: 10px 0;
-      border: none;
       border-radius: 8px;
+      border: none;
+      outline: none;
+      font-size: 14px;
     }
+
     button {
-      background-color: #27ae60;
+      background: #0072ff;
       color: white;
       font-weight: bold;
       cursor: pointer;
-      }
+      transition: background 0.3s ease;
+    }
 
-    h2 {
-      margin-bottom: 20px;
+    button:hover {
+      background: #005ecc;
+    }
+
+    .dashboard p {
+      font-size: 16px;
+      margin-top: 10px;
+    }
+
+    .logout-btn {
+      margin-top: 20px;
     }
   </style>
 </head>
 <body>
 
   <div class="container" id="main">
-    <h2>FreshersHub Login</h2>
-    <input type="email" id="email" placeholder="Email"><br>
-    <input type="password" id="password" placeholder="Password"><br>
+    <h2>Welcome to FreshersHub</h2>
+    <input type="email" id="email" placeholder="Email" required />
+    <input type="password" id="password" placeholder="Password" required />
     <select id="role">
       <option value="fresher">Fresher</option>
       <option value="company">Company</option>
       <option value="admin">Admin</option>
-    </select><br>
+    </select>
     <button onclick="signup()">Sign Up</button>
     <button onclick="login()">Log In</button>
   </div>
 
   <script>
-    // Firebase config
     const firebaseConfig = {
       apiKey: "AIzaSyDrrAYywpFdd9iIzSSp2m6XcrGkGUgYY3Y",
       authDomain: "freshershub-33de8.firebaseapp.com",
@@ -73,7 +90,6 @@
       appId: "1:126389629687:web:9b9fb43e488f60ac3159f2"
     };
 
-    // Initialize Firebase
     const app = firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
@@ -83,6 +99,11 @@
       const password = document.getElementById("password").value;
       const role = document.getElementById("role").value;
 
+      if (!email || !password) {
+        alert("Please fill in all fields.");
+        return;
+      }
+
       auth.createUserWithEmailAndPassword(email, password)
         .then((userCredential) => {
           return db.collection("users").doc(userCredential.user.uid).set({
@@ -91,16 +112,21 @@
           });
         })
         .then(() => {
-          alert("Signup successful. Now login.");
+          alert("Signup successful! Please log in.");
         })
         .catch((error) => {
-          alert("Error: " + error.message);
+          alert("Signup Error: " + error.message);
         });
     }
 
     function login() {
       const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
+
+      if (!email || !password) {
+        alert("Please fill in all fields.");
+        return;
+      }
 
       auth.signInWithEmailAndPassword(email, password)
         .then((userCredential) => {
@@ -109,13 +135,13 @@
         .then((doc) => {
           if (doc.exists) {
             const role = doc.data().role;
-            redirectToDashboard(role);
+            showDashboard(role);
           } else {
-            alert("No role assigned.");
+            alert("No user role found.");
           }
         })
         .catch((error) => {
-          alert("Error: " + error.message);
+          alert("Login Error: " + error.message);
         });
     }
 
@@ -125,19 +151,23 @@
       });
     }
 
-    function redirectToDashboard(role) {
-      let html = `<h2>Welcome ${role.charAt(0).toUpperCase() + role.slice(1)}</h2>`;
-
+    function showDashboard(role) {
+      let roleDesc = "";
       if (role === "admin") {
-        html += `<p>You can view all users and manage job postings.</p>`;
+        roleDesc = "You have access to manage job listings, users, and analytics.";
       } else if (role === "fresher") {
-        html += `<p>You can browse and apply for jobs.</p>`;
+        roleDesc = "You can browse and apply for jobs listed by companies.";
       } else if (role === "company") {
-        html += `<p>You can post jobs and see applicants.</p>`;
+        roleDesc = "You can post job openings and review applicant profiles.";
       }
 
-      html += `<button onclick="logout()">Logout</button>`;
-      document.getElementById("main").innerHTML = html;
+      document.getElementById("main").innerHTML = `
+        <h2>${role.charAt(0).toUpperCase() + role.slice(1)} Dashboard</h2>
+        <div class="dashboard">
+          <p>${roleDesc}</p>
+          <button class="logout-btn" onclick="logout()">Log Out</button>
+        </div>
+      `;
     }
   </script>
 </body>

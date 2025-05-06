@@ -1,198 +1,144 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>FreshersHub - Sign In / Sign Up</title>
+  <meta charset="UTF-8">
+  <title>FreshersHub</title>
+  <script defer src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js"></script>
+  <script defer src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js"></script>
+  <script defer src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js"></script>
   <style>
     body {
-  font-family: 'Poppins', sans-serif;
-  background:
-    linear-gradient(to bottom right, rgba(0, 114, 255, 0.6), rgba(0, 198, 255, 0.6)),
-    url('https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/PNG_transparency_demonstration_1.png/800px-PNG_transparency_demonstration_1.png') no-repeat center center;
-  background-size: cover;
-  background-attachment: fixed;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: white;
-}
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      color: #fff;
+      text-align: center;
+      background:
+        linear-gradient(to bottom right, rgba(0, 114, 255, 0.6), rgba(0, 198, 255, 0.6)),
+        url('https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/PNG_transparency_demonstration_1.png/800px-PNG_transparency_demonstration_1.png') no-repeat center center;
+      background-size: cover;
+      background-attachment: fixed;
+    }
 
     .container {
-      max-width: 400px;
-      margin: 80px auto;
-      background: rgba(0, 0, 0, 0.25);
+      margin-top: 100px;
+      background: rgba(0, 0, 0, 0.7);
       padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.5);
+      border-radius: 10px;
+      display: inline-block;
     }
+
     input, select, button {
-      width: 90%;
+      margin: 10px;
       padding: 10px;
-      margin: 10px 0;
+      width: 80%;
       border: none;
-      border-radius: 8px;
+      border-radius: 5px;
     }
+
     button {
-      background-color: #27ae60;
-      color: white;
-      font-weight: bold;
       cursor: pointer;
+      background: #00c6ff;
+      color: #fff;
     }
-    .link {
-      color: #f1c40f;
-      cursor: pointer;
-      text-decoration: underline;
-    }
-    #dashboard {
-      display: none;
+
+    h2 {
+      margin-bottom: 20px;
     }
   </style>
 </head>
 <body>
 
-  <!-- Sign In Form -->
-  <div class="container" id="login-section">
-    <h2>Sign In</h2>
-    <input type="email" id="login-email" placeholder="Email" />
-    <input type="password" id="login-password" placeholder="Password" />
-    <button onclick="signIn()">Login</button>
-    <p>Don't have an account? <span class="link" onclick="toggleForms('signup')">Sign Up</span></p>
-    <p id="login-message"></p>
-  </div>
-
-  <!-- Sign Up Form -->
-  <div class="container" id="signup-section" style="display:none;">
-    <h2>Sign Up</h2>
-    <input type="email" id="signup-email" placeholder="Email" />
-    <input type="password" id="signup-password" placeholder="Password" />
-    <select id="signup-role">
+  <div class="container" id="main">
+    <h2>FreshersHub Login</h2>
+    <input type="email" id="email" placeholder="Email"><br>
+    <input type="password" id="password" placeholder="Password"><br>
+    <select id="role">
       <option value="fresher">Fresher</option>
       <option value="company">Company</option>
-    </select>
-    <button onclick="signUp()">Register</button>
-    <p>Already have an account? <span class="link" onclick="toggleForms('login')">Sign In</span></p>
-    <p id="signup-message"></p>
+      <option value="admin">Admin</option>
+    </select><br>
+    <button onclick="signup()">Sign Up</button>
+    <button onclick="login()">Log In</button>
   </div>
 
-  <div id="main"></div>
-
-  <!-- Dashboard Section -->
-  <div id="dashboard">
-    <h1 id="dashboard-heading"></h1>
-    <p>Welcome, <span id="user-email"></span></p>
-    <button onclick="logOut()">Logout</button>
-  </div>
-
-  <!-- Firebase SDK & Logic -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
-    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
-
+  <script>
+    // Firebase config
     const firebaseConfig = {
-      apiKey: "AIzaSyDrrAYywpFdd9iIzSSp2m6XcrGkGUgYY3Y", // Updated API key
+      apiKey: "AIzaSyDrrAYywpFdd9iIzSSp2m6XcrGkGUgYY3Y",
       authDomain: "freshershub-33de8.firebaseapp.com",
       projectId: "freshershub-33de8",
-      storageBucket: "freshershub-33de8.firebasestorage.app",
+      storageBucket: "freshershub-33de8.appspot.com",
       messagingSenderId: "126389629687",
-      appId: "1:126389629687:web:9b9fb43e488f60ac3159f2",
-      measurementId: "G-Y66M9SP2NB"
+      appId: "1:126389629687:web:9b9fb43e488f60ac3159f2"
     };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+    // Initialize Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
 
-    // Toggle forms
-    window.toggleForms = function(form) {
-      document.getElementById('login-section').style.display = form === 'login' ? 'block' : 'none';
-      document.getElementById('signup-section').style.display = form === 'signup' ? 'block' : 'none';
-    }
+    function signup() {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      const role = document.getElementById("role").value;
 
-    // Sign Up
-    window.signUp = async function() {
-      const email = document.getElementById("signup-email").value;
-      const password = document.getElementById("signup-password").value;
-      const role = document.getElementById("signup-role").value;
-      const message = document.getElementById("signup-message");
-
-      try {
-        const userCred = await createUserWithEmailAndPassword(auth, email, password);
-        const uid = userCred.user.uid;
-
-        // Store user role in Firestore
-        await setDoc(doc(db, "users", uid), {
-          email: email,
-          role: role
+      auth.createUserWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+          return db.collection("users").doc(userCredential.user.uid).set({
+            email: email,
+            role: role
+          });
+        })
+        .then(() => {
+          alert("Signup successful. Now login.");
+        })
+        .catch((error) => {
+          alert("Error: " + error.message);
         });
-
-        message.textContent = "Signup successful! Please login.";
-        toggleForms('login');
-      } catch (err) {
-        message.textContent = "Error: " + err.message;
-      }
     }
 
-    // Sign In
-    window.signIn = async function () {
-      const email = document.getElementById("login-email").value;
-      const password = document.getElementById("login-password").value;
-      const message = document.getElementById("login-message");
+    function login() {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
 
-      try {
-        const userCred = await signInWithEmailAndPassword(auth, email, password);
-        const uid = userCred.user.uid;
+      auth.signInWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+          return db.collection("users").doc(userCredential.user.uid).get();
+        })
+        .then((doc) => {
+          if (doc.exists) {
+            const role = doc.data().role;
+            redirectToDashboard(role);
+          } else {
+            alert("No role assigned.");
+          }
+        })
+        .catch((error) => {
+          alert("Error: " + error.message);
+        });
+    }
 
-        const userDoc = await getDoc(doc(db, "users", uid));
-        if (userDoc.exists()) {
-          const data = userDoc.data();
-          const role = data.role;
+    function logout() {
+      auth.signOut().then(() => {
+        location.reload();
+      });
+    }
 
-          document.getElementById("login-section").style.display = "none";
-          document.getElementById("dashboard").style.display = "block";
-          document.getElementById("user-email").textContent = email;
+    function redirectToDashboard(role) {
+      let html = `<h2>Welcome ${role.charAt(0).toUpperCase() + role.slice(1)}</h2>`;
 
-          function redirectToDashboard(role) {
-  if (role === "admin") {
-    document.getElementById("main").innerHTML = `
-      <h2>Welcome Admin</h2>
-      <p>You can view all users and manage job postings.</p>
-      <button onclick="logout()">Logout</button>
-    `;
-  } else if (role === "fresher") {
-    document.getElementById("main").innerHTML = `
-      <h2>Welcome Fresher</h2>
-      <p>You can browse jobs and apply.</p>
-      <button onclick="logout()">Logout</button>
-    `;
-  } else if (role === "company") {
-    document.getElementById("main").innerHTML = `
-      <h2>Welcome Company</h2>
-      <p>You can post jobs and review applicants.</p>
-      <button onclick="logout()">Logout</button>
-    `;
-  } else {
-    document.getElementById("main").innerHTML = `
-      <h2>Unknown Role</h2>
-      <p>Please contact admin.</p>
-      <button onclick="logout()">Logout</button>
-    `;
-  }
-}
-
-    // Log Out
-    window.logOut = async function() {
-      try {
-        await signOut(auth);
-        document.getElementById("dashboard").style.display = "none";
-        document.getElementById("login-section").style.display = "block";
-        document.getElementById("signup-section").style.display = "none";
-      } catch (err) {
-        console.error("Error logging out: " + err.message);
+      if (role === "admin") {
+        html += `<p>You can view all users and manage job postings.</p>`;
+      } else if (role === "fresher") {
+        html += `<p>You can browse and apply for jobs.</p>`;
+      } else if (role === "company") {
+        html += `<p>You can post jobs and see applicants.</p>`;
       }
+
+      html += `<button onclick="logout()">Logout</button>`;
+      document.getElementById("main").innerHTML = html;
     }
   </script>
-
 </body>
 </html>

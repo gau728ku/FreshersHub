@@ -165,6 +165,18 @@
         message.textContent = "Error: " + err.message;
       }
     }
+
+     // Log Out
+    window.logOut = async function() {
+      try {
+        await signOut(auth);
+        document.getElementById("dashboard").style.display = "none";
+        document.getElementById("login-section").style.display = "block";
+        document.getElementById("signup-section").style.display = "none";
+      } catch (err) {
+        console.error("Error logging out: " + err.message);
+      }
+    }
   </script>
 
 </body>

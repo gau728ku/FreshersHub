@@ -215,18 +215,29 @@
 
     // Dashboard display
     function showDashboard(role) {
+  // Hide login/signup section
   document.getElementById("auth-section").style.display = "none";
+  
+  // Show the dashboard
   document.getElementById("dashboard").style.display = "block";
   document.getElementById("dashboard-title").innerText = `${role.toUpperCase()} Dashboard`;
 
+  // Hide the login/logout button outside the admin dashboard (adjust the ID as needed)
+  const externalLogoutButton = document.getElementById("loginLogoutButton"); 
+  if (externalLogoutButton) {
+    externalLogoutButton.style.display = "none";
+  }
+
+  // Show admin dashboard only if the user is admin
   if (role === "admin") {
     document.getElementById("adminDashboard").style.display = "block";
     loadAdminDashboard(); // fetch & display admin data
   } else {
-    // Show fresher or company UI (you can add more later)
+    // Handle fresher/company dashboard (you can add their respective UIs later)
     alert("Logged in as: " + role);
   }
 }
+
 
 async function loadAdminDashboard() {
   const usersTable = document.getElementById("usersTable");

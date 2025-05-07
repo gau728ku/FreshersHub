@@ -98,7 +98,6 @@
 <div id="adminDashboard" style="display: none; padding: 20px; color: white;">
   <h2 style="font-size: 2rem; text-transform: uppercase; margin-bottom: 20px;">Admin Dashboard</h2>
 
-
   <!-- Overview Stats -->
   <div style="display: flex; justify-content: center; gap: 20px; margin-bottom: 20px;">
     <div style="background: #007bff; padding: 20px; border-radius: 10px; width: 150px;">
@@ -147,6 +146,27 @@
   </table>
 
   <button onclick="logout()">Logout</button>
+</div>
+
+
+<!-- Fresher Dashboard -->
+<div id="fresherDashboard" style="display: none; padding: 20px; color: white;">
+  <h2>Fresher Dashboard</h2>
+  <p>Welcome, Fresher! Here are some upcoming opportunities:</p>
+
+  <!-- Placeholder for job list -->
+  <table style="width: 100%; background: white; color: black; border-collapse: collapse; border-radius: 10px; overflow: hidden;">
+    <thead style="background: #007bff; color: white;">
+      <tr>
+        <th>Title</th>
+        <th>Company</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody id="fresherJobsTable">
+      <!-- Jobs will be dynamically added here -->
+    </tbody>
+  </table>
 </div>
 
 
@@ -233,6 +253,9 @@
   if (role === "admin") {
     document.getElementById("adminDashboard").style.display = "block";
     loadAdminDashboard(); // fetch & display admin data
+  } else if (role === "fresher") {
+    document.getElementById("fresherDashboard").style.display = "block";
+    loadFresherDashboard();
   } else {
     // Show fresher or company UI (you can add more later)
     alert("Logged in as: " + role);
@@ -275,6 +298,19 @@ async function loadAdminDashboard() {
   document.getElementById("totalJobs").innerText = jobCount;
 }
   
+async function loadFresherDashboard() {
+  const fresherJobsTable = document.getElementById("fresherJobsTable");
+  fresherJobsTable.innerHTML = "";
+
+  const jobsSnapshot = await getDocs(collection(db, "jobs")); // same collection name as admin
+
+  jobsSnapshot.forEach(doc => {
+    const job = doc.data();
+    const row = `<tr><td>${job.title}</td><td>${job.companyName}</td><td>${job.description}</td></tr>`;
+    fresherJobsTable.innerHTML += row;
+  });
+}
+
 
     // Logout
     window.logout = function () {

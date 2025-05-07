@@ -304,19 +304,20 @@ async function loadFresherDashboard() {
   const fresherJobsTable = document.getElementById("fresherJobsTable");
   fresherJobsTable.innerHTML = "";
 
-  const jobsSnapshot = await getDocs(collection(db, "jobs")); // same collection name as admin
+  const jobsSnapshot = await getDocs(collection(db, "jobs")); // pulls jobs from Firestore
 
   jobsSnapshot.forEach(doc => {
     const job = doc.data();
     const row = `<tr>
-  <td>${job.title}</td>
-  <td>${job.companyName}</td>
-  <td>${job.description}</td>
-  <td><button onclick="applyJob('${doc.id}')">Apply</button></td>
-</tr>`;
+      <td>${job.title}</td>
+      <td>${job.companyName}</td>
+      <td>${job.description}</td>
+      <td><button onclick="applyJob('${doc.id}')">Apply</button></td>
+    </tr>`;
     fresherJobsTable.innerHTML += row;
   });
 }
+
 
 async function applyJob(jobId) {
   const user = auth.currentUser;

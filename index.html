@@ -181,12 +181,7 @@
       signInWithEmailAndPassword,
       signOut
     } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
-    import {
-      getFirestore,
-      doc,
-      setDoc,
-      getDoc
-    } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
+    import { getDocs, collection } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
 
     // Firebase config
     const firebaseConfig = {

@@ -207,6 +207,21 @@ button.apply-btn:hover {
     </tbody>
   </table>
 
+  <h3>My Applications</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Company</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody id="myApplicationsTable">
+      <!-- will be filled by JS -->
+    </tbody>
+  </table>
+  
+
   <button onclick="logout()">Logout</button>
 </div>
 
@@ -299,6 +314,7 @@ button.apply-btn:hover {
   } else if (role === "fresher") {
     document.getElementById("fresherDashboard").style.display = "block";
     loadFresherDashboard();
+    loadMyApplications();
   } else {
     // Show fresher or company UI (you can add more later)
     alert("Logged in as: " + role);
@@ -345,10 +361,27 @@ async function loadFresherDashboard() {
   const fresherJobsTable = document.getElementById("fresherJobsTable");
   fresherJobsTable.innerHTML = "";
 
-  const jobsSnapshot = await getDocs(collection(db, "jobs")); // pulls jobs from Firestore
+  const jobsSnapshot = await getDocs(collection(db, "jobs"));
+  const applicationsSnapshot = await getDocs(collection(db, "applications"));
+
+  // Get list of jobIds user has applied to
+  const appliedJobs = new Set();
+  const user = auth.currentUser;
+  applicationsSnapshot.forEach(doc => {
+    const app = doc.data();
+    if (app.userId === user.uid) {
+      appliedJobs.add(app.jobId);
+    }
+  });
 
   jobsSnapshot.forEach(doc => {
     const job = doc.data();
+    const applied = appliedJobs.has(doc.id);
+
+    const actionCell = applied
+      ? `<span style="color: green; font-weight: bold;">Applied</span>`
+      : `<button class="apply-btn" onclick="applyJob('${doc.id}')">Apply</button>`;
+
     const row = `<tr>
       <td>${job.Title}</td>
       <td>${job.company}</td>
@@ -357,6 +390,7 @@ async function loadFresherDashboard() {
       <td>${job.salary}</td>
        <td><button class="apply-btn" onclick="applyJob('${doc.id}')">Apply</button></td>
     </tr>`;
+
     fresherJobsTable.innerHTML += row;
   });
 }
@@ -379,6 +413,42 @@ async function applyJob(jobId) {
   } catch (error) {
     alert("Error applying: " + error.message);
   }
+}
+
+async function loadMyApplications() {
+  const myApplicationsTable = document.getElementById("myApplicationsTable");
+  myApplicationsTable.innerHTML = "";
+
+  const applicationsSnapshot = await getDocs(collection(db, "applications"));
+  const jobsSnapshot = await getDocs(collection(db, "jobs"));
+
+  const user = auth.currentUser;
+  const appliedJobIds = [];
+
+  applicationsSnapshot.forEach(doc => {
+    const app = doc.data();
+    if (app.userId === user.uid) {
+      appliedJobIds.push(app.jobId);
+    }
+  });
+
+  // Map jobId → jobData
+  const jobsMap = {};
+  jobsSnapshot.forEach(doc => {
+    jobsMap[doc.id] = doc.data();
+  });
+
+  appliedJobIds.forEach(jobId => {
+    const job = jobsMap[jobId];
+    if (job) {
+      const row = `<tr>
+        <td>${job.title}</td>
+        <td>${job.companyName}</td>
+        <td>${job.description}</td>
+      </tr>`;
+      myApplicationsTable.innerHTML += row;
+    }
+  });
 }
 
 

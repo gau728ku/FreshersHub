@@ -96,28 +96,40 @@
 
 <!-- Admin Dashboard -->
 <div id="adminDashboard" style="display: none; padding: 20px; color: white;">
-  <h2>Admin Dashboard</h2>
+  <h2 style="font-size: 2rem; text-transform: uppercase; margin-bottom: 20px;">Admin Dashboard</h2>
+
 
   <!-- Overview Stats -->
-  <div>
-    <p>Total Freshers: <span id="totalFreshers">0</span></p>
-    <p>Total Companies: <span id="totalCompanies">0</span></p>
-    <p>Total Jobs: <span id="totalJobs">0</span></p>
+  <div style="display: flex; justify-content: center; gap: 20px; margin-bottom: 20px;">
+    <div style="background: #007bff; padding: 20px; border-radius: 10px; width: 150px;">
+      <p>Total Freshers:</p>
+      <h3 id="totalFreshers">0</h3>
+    </div>
+    <div style="background: #28a745; padding: 20px; border-radius: 10px; width: 150px;">
+      <p>Total Companies:</p>
+      <h3 id="totalCompanies">0</h3>
+    </div>
+    <div style="background: #ffc107; padding: 20px; border-radius: 10px; width: 150px;">
+      <p>Total Jobs:</p>
+      <h3 id="totalJobs">0</h3>
+    </div>
   </div>
+  
 
   <!-- Manage Users -->
   <h3>Registered Users</h3>
-  <table border="1" style="width: 100%; background: white; color: black;">
-    <thead>
+  <table style="width: 100%; background: white; color: black; border-collapse: collapse; border-radius: 10px; overflow: hidden;">
+    <thead style="background: #343a40; color: white;">
       <tr>
         <th>Email</th>
         <th>Role</th>
       </tr>
     </thead>
     <tbody id="usersTable">
-      <!-- Rows will be added by JS -->
+      <!-- Rows will be added -->
     </tbody>
   </table>
+  
 
   <!-- Manage Jobs -->
   <h3>Job Posts</h3>

@@ -138,8 +138,11 @@
         <th>Title</th>
         <th>Company</th>
         <th>Description</th>
+        <th>Location</th>
+        <th>Salary</th>
+        <th>Action</th>
       </tr>
-    </thead>
+    </thead>    
     <tbody id="jobsTable">
       <!-- Rows will be added by JS -->
     </tbody>
@@ -313,9 +316,11 @@ async function loadFresherDashboard() {
   jobsSnapshot.forEach(doc => {
     const job = doc.data();
     const row = `<tr>
-      <td>${job.title}</td>
-      <td>${job.companyName}</td>
+      <td>${job.Title}</td>
+      <td>${job.company}</td>
       <td>${job.description}</td>
+      <td>${job.location}</td>
+      <td>${job.salary}</td>
       <td><button onclick="applyJob('${doc.id}')">Apply</button></td>
     </tr>`;
     fresherJobsTable.innerHTML += row;

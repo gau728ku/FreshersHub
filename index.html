@@ -67,6 +67,40 @@
     text-decoration: underline;
     font-weight: bold;
   }
+
+  table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 10px;
+  overflow: hidden;
+  table-layout: fixed;
+}
+
+thead {
+  background-color: #007bff;
+  color: white;
+}
+
+th, td {
+  padding: 12px;
+  text-align: center;
+  border: 1px solid #ddd;
+  word-wrap: break-word;
+}
+
+button.apply-btn {
+  background-color: #00c6ff;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button.apply-btn:hover {
+  background-color: #1c78e9;
+}
+
   </style>
 </head>
 <body>
@@ -321,7 +355,7 @@ async function loadFresherDashboard() {
       <td>${job.description}</td>
       <td>${job.location}</td>
       <td>${job.salary}</td>
-      <td><button onclick="applyJob('${doc.id}')">Apply</button></td>
+       <td><button class="apply-btn" onclick="applyJob('${doc.id}')">Apply</button></td>
     </tr>`;
     fresherJobsTable.innerHTML += row;
   });

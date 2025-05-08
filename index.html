@@ -101,6 +101,47 @@ button.apply-btn:hover {
   background-color: #1c78e9;
 }
 
+/* Hamburger menu icon */
+#menuBtn {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  font-size: 28px;
+  cursor: pointer;
+  z-index: 1001;
+}
+
+/* Side Menu */
+#sideMenu {
+  position: fixed;
+  right: -250px; /* hidden off-screen */
+  top: 0;
+  width: 250px;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.95);
+  color: white;
+  padding: 30px 20px;
+  transition: right 0.3s ease;
+  z-index: 1000;
+}
+
+#sideMenu.open {
+  right: 0;
+}
+
+#sideMenu a {
+  display: block;
+  color: white;
+  padding: 12px 0;
+  text-decoration: none;
+  font-size: 18px;
+}
+
+#sideMenu a:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+
   </style>
 </head>
 <body>
@@ -189,7 +230,15 @@ button.apply-btn:hover {
 <!-- Fresher Dashboard -->
 <div id="fresherDashboard" style="display: none; padding: 20px; color: white;">
   <h2>Fresher Dashboard</h2>
+  <div id="menuBtn" onclick="toggleMenu()">☰</div>
   <p>Welcome, Fresher! Here are some upcoming opportunities:</p>
+
+  <div id="sideMenu">
+    <a href="#" onclick="showMyApplications()">My Applications</a>
+    <a href="#">Profile</a>
+    <a href="javascript:logout()">Logout</a>
+  </div>
+  
 
   <!-- Placeholder for job list -->
   <table style="width: 100%; background: white; color: black; border-collapse: collapse; border-radius: 10px; overflow: hidden;">
@@ -483,6 +532,11 @@ window.toggleForm = function () {
 
   document.getElementById("role").style.display = isSignup ? "block" : "none";
 };
+
+function toggleMenu() {
+  document.getElementById("sideMenu").classList.toggle("open");
+}
+
 
   </script>
 </body>

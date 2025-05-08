@@ -114,13 +114,14 @@
     /* Side Menu */
     #sideMenu {
       position: fixed;
-      left: -250px; /* Initially hidden off-screen */
+      
       top: 0;
       width: 250px;
       height: 100%;
       background: rgba(0, 0, 0, 0.95);
       color: white;
       padding: 30px 20px;
+      transform: translateX(-250px); /* stays hidden left */
       transition: transform 0.3s ease;
       z-index: 1000;
     }

@@ -344,7 +344,7 @@ function login() {
     let role = 'fresher';
     if (email.includes('admin')) role = 'admin';
     
-    alert(`Login successful! Welcome back, ${role}`);
+    alert(`successful! Welcome back, ${role}`);
     document.getElementById('auth-section').style.display = 'none';
     showDashboard(role);
   } else {
@@ -431,7 +431,7 @@ const firebaseConfig = {
   // ========================
   // LOGIN FUNCTION
   // ========================
-  import { query, collection, where, getDocs } from "firebase/firestore";
+  import { getFirestore } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
 async function login() {
   const email = document.getElementById('loginEmail').value;

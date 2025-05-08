@@ -118,16 +118,25 @@
       top: 0;
       width: 250px;
       height: 100%;
-      background: rgba(0, 0, 0, 0.95);
+      background: rgba(0, 0, 0, 0.7);
       color: white;
-      padding: 30px 20px;
       transition: transform 0.3s ease;
       z-index: 1000;
     }
 
-    #sideMenu.open {
-      transform: translateX(250px); /* Slide in when open */
-    }
+    #side-menu.open {
+    left: 0;
+}
+
+.main-content {
+    margin-left: 0;  /* no margin when sidebar closed */
+    transition: margin-left 0.3s ease;
+    padding: 20px;
+}
+
+.side-menu.open ~ .main-content {
+    margin-left: 250px;  /* push content when sidebar open */
+}
 
     /* Dashboard shifts to the right when the side menu is open */
     #fresherDashboard.shifted {

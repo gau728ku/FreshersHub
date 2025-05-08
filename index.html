@@ -1,4 +1,7 @@
+here is our full code till now read it carefully
+
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -16,151 +19,153 @@
       color: white;
     }
 
-    .container {
-      max-width: 400px;
-      margin: 5% auto;
-      padding: 2rem;
-      background: rgba(0, 0, 0, 0.7);
-      border-radius: 12px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.3);
-    }
+```
+.container {
+  max-width: 400px;
+  margin: 5% auto;
+  padding: 2rem;
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.3);
+}
 
-    h2 {
-      text-align: center;
-      margin-bottom: 1.5rem;
-    }
+h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
 
-    input, select, button {
-      width: 100%;
-      padding: 12px;
-      margin: 8px 0;
-      border: none;
-      border-radius: 8px;
-      font-size: 1rem;
-    }
+input, select, button {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+}
 
-    button {
-      background-color: #00c6ff;
-      color: white;
-      cursor: pointer;
-    }
+button {
+  background-color: #00c6ff;
+  color: white;
+  cursor: pointer;
+}
 
-    button:hover {
-      background-color: #1c78e9;
-    }
+button:hover {
+  background-color: #1c78e9;
+}
 
-    #dashboard {
-      display: none;
-      text-align: center;
-      margin-top: 5%;
-    }
+#dashboard {
+  display: none;
+  text-align: center;
+  margin-top: 5%;
+}
 
-    #logoutBtn {
-      margin-top: 20px;
-      padding: 10px 20px;
-      font-size: 1rem;
-      background-color: crimson;
-    }
+#logoutBtn {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  background-color: crimson;
+}
 
-    #toggle-text a {
-      color: #00bfff; /* Sky blue – change this to any color you prefer */
-      text-decoration: underline;
-      font-weight: bold;
-    }
+#toggle-text a {
+  color: #00bfff; /* Sky blue – change this to any color you prefer */
+  text-decoration: underline;
+  font-weight: bold;
+}
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      border-radius: 10px;
-      overflow: hidden;
-      table-layout: fixed;
-    }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 10px;
+  overflow: hidden;
+  table-layout: fixed;
+}
 
-    thead {
-      background-color: #007bff;
-      color: white;
-    }
+thead {
+  background-color: #007bff;
+  color: white;
+}
 
-    th, td {
-      padding: 12px;
-      text-align: center;
-      border: 1px solid #ddd;
-      word-wrap: break-word;
-    }
+th, td {
+  padding: 12px;
+  text-align: center;
+  border: 1px solid #ddd;
+  word-wrap: break-word;
+}
 
-    button.apply-btn {
-      background-color: #00c6ff;
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 6px;
-      cursor: pointer;
-    }
+button.apply-btn {
+  background-color: #00c6ff;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+}
 
-    button.apply-btn:hover {
-      background-color: #1c78e9;
-    }
+button.apply-btn:hover {
+  background-color: #1c78e9;
+}
 
-    /* Hamburger menu icon */
-    #menuBtn {
-      position: fixed;
-      top: 20px;
-      left: 20px;
-      font-size: 28px;
-      cursor: pointer;
-      z-index: 1001;
-    }
+/* Hamburger menu icon */
+#menuBtn {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  font-size: 28px;
+  cursor: pointer;
+  z-index: 1001;
+}
 
-    /* Side Menu */
-    #sideMenu {
-      position: fixed;
-      left: -250px; /* Initially hidden off-screen */
-      top: 0;
-      width: 250px;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.8);
-      color: white;
-      transition: transform 0.3s ease;
-      z-index: 1000;
-      padding-top: 60px;
-    }
+/* Side Menu */
+#sideMenu {
+  position: fixed;
+  left: -250px; /* Initially hidden off-screen */
+  top: 0;
+  width: 250px;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  transition: transform 0.3s ease;
+  z-index: 1000;
+  padding-top: 60px;
+}
 
-    #sideMenu.open {
-      transform: translateX(250px); /* Slide in when open */
-    }
+#sideMenu.open {
+  transform: translateX(250px); /* Slide in when open */
+}
 
-    /* Dashboard shifts to the right when the side menu is open */
-    #fresherDashboard.shifted {
-      margin-left: 250px;
-      transition: margin-left 0.3s ease;
-    }
+/* Dashboard shifts to the right when the side menu is open */
+#fresherDashboard.shifted {
+  margin-left: 250px;
+  transition: margin-left 0.3s ease;
+}
 
-    /* Side menu links */
-    #sideMenu a {
-      display: block;
-      color: white;
-      padding: 12px 0;
-      text-decoration: none;
-      font-size: 18px;
-    }
+/* Side menu links */
+#sideMenu a {
+  display: block;
+  color: white;
+  padding: 12px 0;
+  text-decoration: none;
+  font-size: 18px;
+}
 
-    #sideMenu a:hover {
-      background: rgba(255, 255, 255, 0.1);
-    }
+#sideMenu a:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
 
-    /* Overlay (background dimming when menu is open) */
-    #overlay {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.4);
-      z-index: 999;
-      display: none;
-    }
+/* Overlay (background dimming when menu is open) */
+#overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 999;
+  display: none;
+}
 
-    #overlay.show {
-      display: block;
-    }
+#overlay.show {
+  display: block;
+}
+```
 
   </style>
 </head>
@@ -170,202 +175,125 @@
   <div class="container" id="auth-section">
     <h2 id="form-title">FreshersHub - Signup</h2>
 
-  <!-- Signup Form -->
+```
+<input type="email" id="email" placeholder="Email" required />
+<input type="password" id="password" placeholder="Password" required />
+<select id="role">
+  <option value="fresher">Fresher</option>
+  <option value="company">Company</option>
+  <option value="admin">Admin</option>
+</select>
 
-    <input type="email" id="email" placeholder="Email" required />
-    <input type="password" id="password" placeholder="Password" required />
-    <select id="role">
-      <option value="fresher">Fresher</option>
-      <option value="company">Company</option>
-      <option value="admin">Admin</option>
-    </select>
-  
-    <button id="actionBtn" onclick="signup()">Signup</button>
-  
-    <p id="toggle-text">
-      Already have an account?
-      <a href="#" onclick="toggleForm()">Login here</a>
-    </p>
+<button id="actionBtn" onclick="signup()">Signup</button>
+
+<p id="toggle-text">
+  Already have an account?
+  <a href="#" onclick="toggleForm()">Login here</a>
+</p>
+```
+
   </div>
-  
+
   <div id="dashboard">
     <h2 id="dashboard-title"></h2>
     <p>Welcome to your dashboard. More features coming soon!</p>
   </div>
 
   <!-- Admin Dashboard -->
+
   <div id="adminDashboard" style="display: none; padding: 20px; color: white;">
     <h2 style="font-size: 2rem; text-transform: uppercase; margin-bottom: 20px;">Admin Dashboard</h2>
 
-    <!-- Overview Stats -->
-    <div style="display: flex; justify-content: center; gap: 20px; margin-bottom: 20px;">
-      <div style="background: #007bff; padding: 20px; border-radius: 10px; width: 150px;">
-        <p>Total Freshers:</p>
-        <h3 id="totalFreshers">0</h3>
-      </div>
-      <div style="background: #28a745; padding: 20px; border-radius: 10px; width: 150px;">
-        <p>Total Companies:</p>
-        <h3 id="totalCompanies">0</h3>
-      </div>
-      <div style="background: #ffc107; padding: 20px; border-radius: 10px; width: 150px;">
-        <p>Total Jobs:</p>
-        <h3 id="totalJobs">0</h3>
-      </div>
-    </div>
+```
+<!-- Overview Stats -->
+<div style="display: flex; justify-content: center; gap: 20px; margin-bottom: 20px;">
+  <div style="background: #007bff; padding: 20px; border-radius: 10px; width: 150px;">
+    <p>Total Freshers:</p>
+    <h3 id="totalFreshers">0</h3>
+  </div>
+  <div style="background: #28a745; padding: 20px; border-radius: 10px; width: 150px;">
+    <p>Total Companies:</p>
+    <h3 id="totalCompanies">0</h3>
+  </div>
+  <div style="background: #ffc107; padding: 20px; border-radius: 10px; width: 150px;">
+    <p>Total Jobs:</p>
+    <h3 id="totalJobs">0</h3>
+  </div>
+</div>
 
-    <!-- Manage Users -->
-    <h3>Registered Users</h3>
-    <table style="width: 100%; background: white; color: black; border-collapse: collapse; border-radius: 10px; overflow: hidden;">
-      <thead style="background: #343a40; color: white;">
-        <tr>
-          <th>Email</th>
-          <th>Role</th>
-        </tr>
-      </thead>
-      <tbody id="usersTable">
-        <!-- Rows will be added -->
-      </tbody>
-    </table>
+<!-- Manage Users -->
+<h3>Registered Users</h3>
+<table style="width: 100%; background: white; color: black; border-collapse: collapse; border-radius: 10px; overflow: hidden;">
+  <thead style="background: #343a40; color: white;">
+    <tr>
+      <th>Email</th>
+      <th>Role</th>
+    </tr>
+  </thead>
+  <tbody id="usersTable">
+    <!-- Rows will be added -->
+  </tbody>
+</table>
 
-    <!-- Manage Jobs -->
-    <h3>Job Posts</h3>
-    <table border="1" style="width: 100%; background: white; color: black;">
-      <thead>
-        <tr>
-          <th>Title</th>
-          <th>Company</th>
-          <th>Description</th>
-          <th>Location</th>
-          <th>Salary</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody id="jobsTable">
-        <!-- Rows will be added by JS -->
-      </tbody>
-    </table>
+<!-- Manage Jobs -->
+<h3>Job Posts</h3>
+<table border="1" style="width: 100%; background: white; color: black;">
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Company</th>
+      <th>Description</th>
+      <th>Location</th>
+      <th>Salary</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody id="jobsTable">
+    <!-- Rows will be added by JS -->
+  </tbody>
+</table>
 
-    <button onclick="logout()">Logout</button>
+<button onclick="logout()">Logout</button>
+```
+
   </div>
 
   <!-- Fresher Dashboard -->
+
   <div id="fresherDashboard" style="display: none; padding: 20px; color: white;">
     <h2>Fresher Dashboard</h2>
     <p>Welcome, Fresher! Here are some upcoming opportunities:</p>
 
-    <div id="sideMenu">
-      <a href="#" onclick="showMyApplications()">My Applications</a>
-      <a href="#">Profile</a>
-      <a href="javascript:logout()">Logout</a>
-    </div>
+```
+<div id="sideMenu">
+  <a href="#" onclick="showMyApplications()">My Applications</a>
+  <a href="#">Profile</a>
+  <a href="javascript:logout()">Logout</a>
+</div>
 
-    <div id="overlay" onclick="toggleMenu()"></div>
+<div id="overlay" onclick="toggleMenu()"></div>
 
-    <!-- Placeholder for job list -->
-    <table style="width: 100%; background: white; color: black; border-collapse: collapse; border-radius: 10px; overflow: hidden;">
-      <thead style="background: #007bff; color: white;">
-        <tr>
-          <th>Title</th>
-          <th>Company</th>
-          <th>Description</th>
-          <th>location</th>
-          <th>Salary</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody id="jobList">
-        <!-- Rows will be dynamically added for job posts -->
-      </tbody>
-    </table>
+<!-- Placeholder for job list -->
+<table style="width: 100%; background: white; color: black; border-collapse: collapse; border-radius: 10px; overflow: hidden;">
+  <thead style="background: #007bff; color: white;">
+    <tr>
+      <th>Title</th>
+      <th>Company</th>
+      <th>Description</th>
+      <th>location</th>
+      <th>Salary</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody id="jobList">
+    <!-- Rows will be dynamically added for job posts -->
+  </tbody>
+</table>
+```
+
   </div>
 
-
-<script type="module">
-  // Import Firebase
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
-  import { getFirestore, setDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
-
-  // Your Firebase config
-  const firebaseConfig = {
-    apiKey: "AIzaSyD9taY-QOUPL9_SbgrUUMEMd1mnmMkFklA",
-    authDomain: "freshersultimate-ae0fd.firebaseapp.com",
-    projectId: "freshersultimate-ae0fd",
-    storageBucket: "freshersultimate-ae0fd.appspot.com",
-    messagingSenderId: "983035913425",
-    appId: "1:983035913425:web:211e4fd8c2df71677011f0"
-  };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
-
-  // ========================
-  // SIGNUP FUNCTION
-  // ========================
-  async function signup() {
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-    const role = document.getElementById('role').value;
-
-    try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-      
-      // Store role in Firestore
-      await setDoc(doc(db, "users", user.uid), {
-        email: email,
-        role: role
-      });
-
-      alert("Signup successful! Redirecting...");
-      redirectToDashboard(role);
-    } catch (error) {
-      alert(error.message);
-    }
-  }
-
-  // ========================
-  // LOGIN FUNCTION
-  // ========================
-  async function login() {
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-
-    try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-      
-      // Get role from Firestore
-      const docSnap = await getDoc(doc(db, "users", user.uid));
-      if (docSnap.exists()) {
-        const role = docSnap.data().role;
-        alert("Login successful! Redirecting...");
-        redirectToDashboard(role);
-      } else {
-        alert("No user data found!");
-      }
-    } catch (error) {
-      alert(error.message);
-    }
-  }
-
-  // ========================
-  // REDIRECT FUNCTION
-  // ========================
-  function redirectToDashboard(role) {
-    if (role === 'admin') {
-      window.location.href = 'admin-dashboard.html';
-    } else if (role === 'fresher') {
-      window.location.href = 'fresher-dashboard.html';
-    } else if (role === 'company') {
-      window.location.href = 'company-dashboard.html';
-    } else {
-      alert("Unknown role");
-    }
-  }
-
+  <script>
     // Toggle the sliding menu for Fresher Dashboard
     function toggleMenu() {
       var menu = document.getElementById('sideMenu');
@@ -437,5 +365,6 @@
       document.getElementById('adminDashboard').style.display = 'none';
     }
   </script>
+
 </body>
 </html>

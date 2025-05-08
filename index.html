@@ -358,6 +358,25 @@
       document.getElementById('fresherDashboard').style.display = 'none';
       document.getElementById('adminDashboard').style.display = 'none';
     }
+
+    const menuBtn = document.getElementById('menuBtn');
+  const sideMenu = document.getElementById('sideMenu');
+  const overlay = document.getElementById('overlay');
+  const fresherDashboard = document.getElementById('fresherDashboard');
+
+  menuBtn.addEventListener('click', () => {
+    // Toggle the side menu and dashboard
+    sideMenu.classList.toggle('open');
+    fresherDashboard.classList.toggle('shifted');
+    overlay.classList.toggle('show');
+  });
+
+  // Close the side menu if overlay is clicked
+  overlay.addEventListener('click', () => {
+    sideMenu.classList.remove('open');
+    fresherDashboard.classList.remove('shifted');
+    overlay.classList.remove('show');
+  });
   </script>
 </body>
 </html>

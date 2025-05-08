@@ -4,9 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>FreshersHub</title>
-
   <style>
-   body {
+body {
       margin: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background:
@@ -174,9 +173,6 @@
   </style>
 </head>
 <body>
-  <!-- Keep your existing HTML structure -->
-  
-  <div id="menuBtn" onclick="toggleMenu()">☰</div>
 
   <!-- AUTH SECTION -->
   <div class="container" id="auth-section">
@@ -203,13 +199,11 @@
 
   <div id="adminDashboard" style="display:none; padding:20px; color:white;">
     <h2>Admin Dashboard</h2>
-    <!-- You can keep your admin content here -->
     <button onclick="logout()">Logout</button>
   </div>
 
   <div class="main-content" id="fresherDashboard" style="display:none; padding:20px; color:white;">
     <h2>Fresher Dashboard</h2>
-    <!-- Fresher content -->
     <div class="side-menu" id="sideMenu">
       <a href="#" onclick="showMyApplications()">My Applications</a>
       <a href="#">Profile</a>
@@ -219,13 +213,13 @@
     <div id="overlay" onclick="toggleMenu()"></div>
   </div>
 
-  <!-- FIREBASE SDK -->
-  <script src="https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js"></script>
+  <!-- Firebase SDKs -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
 
-  <script>
-    // 🔥 Your Firebase config
+    // ✅ Your Firebase config
     const firebaseConfig = {
       apiKey: "AIzaSyD9taY-QOUPL9_SbgrUUMEMd1mnmMkFklA",
       authDomain: "freshersultimate-ae0fd.firebaseapp.com",
@@ -235,13 +229,13 @@
       appId: "1:983035913425:web:211e4fd8c2df71677011f0"
     };
 
-    // Initialize Firebase
-    const app = firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
+    // ✅ Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
     // 🔄 Toggle between signup and login
-    function toggleForm() {
+    window.toggleForm = function () {
       const formTitle = document.getElementById('form-title');
       const actionBtn = document.getElementById('actionBtn');
       const toggleText = document.getElementById('toggle-text');
@@ -258,34 +252,34 @@
         document.getElementById('role').style.display = 'block';
         toggleText.innerHTML = `Already have an account? <a href="#" onclick="toggleForm()">Login here</a>`;
       }
-    }
+    };
 
     // ✅ Signup function
-    async function signup() {
+    window.signup = async function () {
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
       const role = document.getElementById('role').value;
       if (!email || !password || !role) return alert('Please fill all fields!');
       try {
-        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-        await db.collection('users').doc(userCredential.user.uid).set({ email, role });
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        await setDoc(doc(db, 'users', userCredential.user.uid), { email, role });
         alert('Signup successful!');
         showDashboard(role);
       } catch (error) {
         alert(error.message);
       }
-    }
+    };
 
     // ✅ Login function
-    async function login() {
+    window.login = async function () {
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
       if (!email || !password) return alert('Please enter email and password!');
       try {
-        const userCredential = await auth.signInWithEmailAndPassword(email, password);
-        const doc = await db.collection('users').doc(userCredential.user.uid).get();
-        if (doc.exists) {
-          const userData = doc.data();
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const docSnap = await getDoc(doc(db, 'users', userCredential.user.uid));
+        if (docSnap.exists()) {
+          const userData = docSnap.data();
           showDashboard(userData.role);
         } else {
           alert('No user data found!');
@@ -293,9 +287,9 @@
       } catch (error) {
         alert(error.message);
       }
-    }
+    };
 
-    // ✅ Show dashboard based on role
+    // ✅ Show dashboard
     function showDashboard(role) {
       document.getElementById('auth-section').style.display = 'none';
       if (role === 'admin') {
@@ -309,38 +303,38 @@
     }
 
     // ✅ Logout function
-    function logout() {
-      auth.signOut().then(() => {
+    window.logout = function () {
+      signOut(auth).then(() => {
         alert('Logged out');
         location.reload();
       });
-    }
+    };
 
-    // ✅ Auto-check if logged in
-    auth.onAuthStateChanged(async user => {
+    // ✅ Check logged in user
+    onAuthStateChanged(auth, async user => {
       if (user) {
-        const doc = await db.collection('users').doc(user.uid).get();
-        if (doc.exists) {
-          const userData = doc.data();
+        const docSnap = await getDoc(doc(db, 'users', user.uid));
+        if (docSnap.exists()) {
+          const userData = docSnap.data();
           showDashboard(userData.role);
         }
       }
     });
 
-    // ✅ Toggle menu function
-    function toggleMenu() {
+    // ✅ Toggle menu
+    window.toggleMenu = function () {
       var menu = document.getElementById('sideMenu');
       var overlay = document.getElementById('overlay');
       var dashboard = document.getElementById('fresherDashboard');
       menu.classList.toggle('open');
       dashboard.classList.toggle('shifted');
       overlay.classList.toggle('show');
-    }
+    };
 
-    // Demo function
-    function showMyApplications() {
+    window.showMyApplications = function () {
       alert("Showing my applications (feature coming soon).");
-    }
+    };
   </script>
+
 </body>
 </html>

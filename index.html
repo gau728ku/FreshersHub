@@ -294,25 +294,6 @@
       alert("Showing my applications (this feature will be added later).");
     }
 
-    // Handle user authentication (Signup/Login)
-    let isLoggedIn = false; // Assume not logged in initially
-
-    function signup() {
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-      const role = document.getElementById('role').value;
-
-      if (email && password && role) {
-        // For demo purposes, we're not using real Firebase Auth here
-        // In a real app, you'd integrate Firebase signup here
-        alert(`Signup successful! Welcome ${role}`);
-        isLoggedIn = true;
-        document.getElementById('auth-section').style.display = 'none';
-        showDashboard(role);
-      } else {
-        alert('Please fill out all fields.');
-      }
-    }
 
     function toggleForm() {
   const formTitle = document.getElementById('form-title');
@@ -335,41 +316,6 @@
   }
 }
 
-function login() {
-  const email = document.getElementById('email').value;
-  const password = document.getElementById('password').value;
-  
-  if (email && password) {
-    // For demo: assume if email contains 'admin' it's admin, else fresher
-    let role = 'fresher';
-    if (email.includes('admin')) role = 'admin';
-    
-    alert(`successful! Welcome back, ${role}`);
-    document.getElementById('auth-section').style.display = 'none';
-    showDashboard(role);
-  } else {
-    alert('Please enter email and password.');
-  }
-}
-
-
-    // Show different dashboards for users based on their roles
-    function showDashboard(role) {
-    document.getElementById('auth-section').style.display = 'none';
-
-    if (role === 'admin') {
-      document.getElementById('adminDashboard').style.display = 'block';
-    } else if (role === 'fresher') {
-      document.getElementById('fresherDashboard').style.display = 'block';
-    } else if (role === 'company') {
-      document.getElementById('companyDashboard').style.display = 'block';
-    } else {
-      alert("Unknown role: " + role);
-    }
-  }
-
-
-
     // Logout functionality
     function logout() {
       isLoggedIn = false;
@@ -381,7 +327,8 @@ function login() {
   </script>
 
 <script type="module">
-  // Import Firebase
+
+// Import Firebase
   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
   import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
   import { getFirestore, setDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
@@ -406,7 +353,7 @@ const firebaseConfig = {
   // ========================
   // SIGNUP FUNCTION
   // ========================
-  async function signup() {
+  window.signup = async function() {
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
     const role = document.getElementById('role').value;
@@ -432,9 +379,9 @@ const firebaseConfig = {
   // LOGIN FUNCTION
   // ========================
   
-async function login() {
-  const email = document.getElementById('loginEmail').value;
-  const password = document.getElementById('loginPassword').value;
+  window.login = async function() {
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('Password').value;
 
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
@@ -457,6 +404,21 @@ async function login() {
   }
 }
 
+
+// Show different dashboards for users based on their roles
+function showDashboard(role) {
+    document.getElementById('auth-section').style.display = 'none';
+
+    if (role === 'admin') {
+      document.getElementById('adminDashboard').style.display = 'block';
+    } else if (role === 'fresher') {
+      document.getElementById('fresherDashboard').style.display = 'block';
+    } else if (role === 'company') {
+      document.getElementById('companyDashboard').style.display = 'block';
+    } else {
+      alert("Unknown role: " + role);
+    }
+  }
 
   // ========================
   // REDIRECT FUNCTION

@@ -102,66 +102,65 @@
     }
 
     /* Hamburger menu icon */
-#menuBtn {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  font-size: 28px;
-  cursor: pointer;
-  z-index: 1001; /* Keep it on top */
-}
+    #menuBtn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      font-size: 28px;
+      cursor: pointer;
+      z-index: 1001;
+    }
 
-/* Side Menu */
-#sideMenu {
-  position: fixed;
-  left: -250px; /* Initially hidden off-screen */
-  top: 0;
-  width: 250px;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.95);
-  color: white;
-  padding: 30px 20px;
-  transition: transform 0.3s ease;
-  z-index: 1000; /* Ensure it's above other content */
-}
+    /* Side Menu */
+    #sideMenu {
+      position: fixed;
+      left: -250px; /* Initially hidden off-screen */
+      top: 0;
+      width: 250px;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.95);
+      color: white;
+      padding: 30px 20px;
+      transition: transform 0.3s ease;
+      z-index: 1000;
+    }
 
-#sideMenu.open {
-  transform: translateX(250px); /* Slide in when open */
-}
+    #sideMenu.open {
+      transform: translateX(250px); /* Slide in when open */
+    }
 
-/* Dashboard shifts to the right when the side menu is open */
-#fresherDashboard.shifted {
-  margin-left: 250px;
-  transition: margin-left 0.3s ease;
-}
+    /* Dashboard shifts to the right when the side menu is open */
+    #fresherDashboard.shifted {
+      margin-left: 250px;
+      transition: margin-left 0.3s ease;
+    }
 
-/* Side menu links */
-#sideMenu a {
-  display: block;
-  color: white;
-  padding: 12px 0;
-  text-decoration: none;
-  font-size: 18px;
-}
+    /* Side menu links */
+    #sideMenu a {
+      display: block;
+      color: white;
+      padding: 12px 0;
+      text-decoration: none;
+      font-size: 18px;
+    }
 
-#sideMenu a:hover {
-  background: rgba(255, 255, 255, 0.1);
-}
+    #sideMenu a:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
 
-/* Overlay (background dimming when menu is open) */
-#overlay {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0, 0, 0, 0.4);
-  z-index: 999;
-  display: none;
-}
+    /* Overlay (background dimming when menu is open) */
+    #overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 999;
+      display: none;
+    }
 
-#overlay.show {
-  display: block;
-}
-
+    #overlay.show {
+      display: block;
+    }
 
   </style>
 </head>
@@ -248,16 +247,15 @@
   </div>
 
   <!-- Fresher Dashboard -->
-
-  <div class="side-menu"  id="sideMenu">
-    <a href="#" onclick="showMyApplications()">My Applications</a>
-    <a href="#">Profile</a>
-    <a href="javascript:logout()">Logout</a>
-  </div>
-
-  <div class="main-content" id="fresherDashboard" style="display: none; padding: 20px; color: white;">
+  <div id="fresherDashboard" style="display: none; padding: 20px; color: white;">
     <h2>Fresher Dashboard</h2>
     <p>Welcome, Fresher! Here are some upcoming opportunities:</p>
+
+    <div id="sideMenu">
+      <a href="#" onclick="showMyApplications()">My Applications</a>
+      <a href="#">Profile</a>
+      <a href="javascript:logout()">Logout</a>
+    </div>
 
     <div id="overlay" onclick="toggleMenu()"></div>
 
@@ -269,7 +267,7 @@
           <th>Company</th>
           <th>Description</th>
           <th>location</th>
-                   <th>Salary</th>
+          <th>Salary</th>
           <th>Action</th>
         </tr>
       </thead>
@@ -350,25 +348,6 @@
       document.getElementById('fresherDashboard').style.display = 'none';
       document.getElementById('adminDashboard').style.display = 'none';
     }
-
-    const menuBtn = document.getElementById('menuBtn');
-  const sideMenu = document.getElementById('sideMenu');
-  const overlay = document.getElementById('overlay');
-  const fresherDashboard = document.getElementById('fresherDashboard');
-
-  menuBtn.addEventListener('click', () => {
-    // Toggle the side menu and dashboard
-    sideMenu.classList.toggle('open');
-    fresherDashboard.classList.toggle('shifted');
-    overlay.classList.toggle('show');
-  });
-
-  // Close the side menu if overlay is clicked
-  overlay.addEventListener('click', () => {
-    sideMenu.classList.remove('open');
-    fresherDashboard.classList.remove('shifted');
-    overlay.classList.remove('show');
-  });
   </script>
 </body>
 </html>

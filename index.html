@@ -431,27 +431,33 @@ const firebaseConfig = {
   // ========================
   // LOGIN FUNCTION
   // ========================
-  async function login() {
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
+  import { query, collection, where, getDocs } from "firebase/firestore";
 
-    try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-      
-      // Get role from Firestore
-      const docSnap = await getDoc(doc(db, "users", user.uid));
-      if (docSnap.exists()) {
-        const role = docSnap.data().role;
-        alert("Login successful! Redirecting...");
-        redirectToDashboard(role);
-      } else {
-        alert("No user data found!");
-      }
-    } catch (error) {
-      alert(error.message);
+async function login() {
+  const email = document.getElementById('loginEmail').value;
+  const password = document.getElementById('loginPassword').value;
+
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+
+    // Fetch user document by email
+    const q = query(collection(db, "users"), where("email", "==", email));
+    const querySnapshot = await getDocs(q);
+
+    if (!querySnapshot.empty) {
+      const userData = querySnapshot.docs[0].data();
+      console.log("Fetched role from Firestore:", userData.role);
+      const role = userData.role;
+      showDashboard(role);
+    } else {
+      alert("No user data found in Firestore!");
     }
+  } catch (error) {
+    alert(error.message);
   }
+}
+
 
   // ========================
   // REDIRECT FUNCTION

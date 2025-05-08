@@ -114,35 +114,28 @@ button.apply-btn:hover {
 /* Side Menu */
 #sideMenu {
   position: fixed;
-  right: -250px; /* hidden off-screen */
+  left: -250px; /* Initially hidden off-screen */
   top: 0;
   width: 250px;
   height: 100%;
   background: rgba(0, 0, 0, 0.95);
   color: white;
   padding: 30px 20px;
-  transition: right 0.3s ease;
+  transition: transform 0.3s ease;
   z-index: 1000;
 }
 
-#sideMenu {
-  left: 0;
-  right: auto;
-  transform: translateX(-250px);
-  transition: transform 0.3s ease;
-}
-
 #sideMenu.open {
-  right: -250px;  /* slides menu into view */
+  transform: translateX(250px); /* Slide in when open */
 }
 
-
+/* Dashboard shifts to the right when the side menu is open */
 #fresherDashboard.shifted {
   margin-left: 250px;
   transition: margin-left 0.3s ease;
 }
 
-
+/* Side menu links */
 #sideMenu a {
   display: block;
   color: white;
@@ -155,11 +148,12 @@ button.apply-btn:hover {
   background: rgba(255, 255, 255, 0.1);
 }
 
+/* Overlay (background dimming when menu is open) */
 #overlay {
   position: fixed;
   top: 0; left: 0;
   width: 100%; height: 100%;
-  background: rgba(0,0,0,0.4);
+  background: rgba(0, 0, 0, 0.4);
   z-index: 999;
   display: none;
 }
@@ -167,6 +161,7 @@ button.apply-btn:hover {
 #overlay.show {
   display: block;
 }
+
 
 
   </style>
@@ -571,7 +566,24 @@ function toggleMenu() {
   document.getElementById("fresherDashboard").classList.toggle("shifted");
 }
 
+const menuBtn = document.getElementById('menuBtn');
+  const sideMenu = document.getElementById('sideMenu');
+  const overlay = document.getElementById('overlay');
+  const fresherDashboard = document.getElementById('fresherDashboard');
 
+  menuBtn.addEventListener('click', () => {
+    // Toggle the side menu and dashboard
+    sideMenu.classList.toggle('open');
+    fresherDashboard.classList.toggle('shifted');
+    overlay.classList.toggle('show');
+  });
+
+  // Close the side menu if overlay is clicked
+  overlay.addEventListener('click', () => {
+    sideMenu.classList.remove('open');
+    fresherDashboard.classList.remove('shifted');
+    overlay.classList.remove('show');
+  });
 
   </script>
   <div id="overlay" onclick="toggleMenu()"></div>

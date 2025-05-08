@@ -178,7 +178,7 @@
       <option value="admin">Admin</option>
     </select>
   
-    <button id="actionBtn" onclick="signup()">Signup</button>
+    <button id="actionBtn">Signup</button>
   
     <p id="toggle-text">
       Already have an account?
@@ -315,20 +315,27 @@
     }
 
     function toggleForm() {
-      const formTitle = document.getElementById('form-title');
-      const actionBtn = document.getElementById('actionBtn');
-      const toggleText = document.getElementById('toggle-text');
+  const formTitle = document.getElementById('form-title');
+  const actionBtn = document.getElementById('actionBtn');
+  actionBtn.onclick = signup; // ✅ THIS connects button click to function
+  const toggleText = document.getElementById('toggle-text');
+  const roleSelect = document.getElementById('role');
 
-      if (formTitle.innerText === 'FreshersHub - Signup') {
-        formTitle.innerText = 'FreshersHub - Login';
-        actionBtn.innerText = 'Login';
-        toggleText.innerHTML = 'Don\'t have an account? <a href="#" onclick="toggleForm()">Sign up here</a>';
-      } else {
-        formTitle.innerText = 'FreshersHub - Signup';
-        actionBtn.innerText = 'Signup';
-        toggleText.innerHTML = 'Already have an account? <a href="#" onclick="toggleForm()">Login here</a>';
-      }
-    }
+  if (formTitle.textContent.includes('Signup')) {
+    formTitle.textContent = 'FreshersHub - Login';
+    actionBtn.textContent = 'Login';
+    actionBtn.onclick = login;
+    toggleText.innerHTML = `Don't have an account? <a href="#" onclick="toggleForm()">Signup here</a>`;
+    roleSelect.style.display = 'none';
+  } else {
+    formTitle.textContent = 'FreshersHub - Signup';
+    actionBtn.textContent = 'Signup';
+    actionBtn.onclick = signup;
+    toggleText.innerHTML = `Already have an account? <a href="#" onclick="toggleForm()">Login here</a>`;
+    roleSelect.style.display = 'block';
+  }
+}
+
 
     // Show different dashboards for users based on their roles
     function showDashboard(role) {

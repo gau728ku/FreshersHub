@@ -5,170 +5,54 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>FreshersHub</title>
   <style>
-body {
+    body {
       margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background:
-        linear-gradient(to bottom right, rgba(0, 114, 255, 0.6), rgba(0, 198, 255, 0.6)),
-        url('https://images.unsplash.com/photo-1519389950473-47ba0277781c?fit=crop&w=1650&q=80') no-repeat center center;
-      background-size: cover;
-      background-attachment: fixed;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
       color: white;
     }
-
     .container {
       max-width: 400px;
-      margin: 5% auto;
-      padding: 2rem;
-      background: rgba(0, 0, 0, 0.7);
-      border-radius: 12px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.3);
-    }
-
-    h2 {
-      text-align: center;
-      margin-bottom: 1.5rem;
-    }
-
-    input, select, button {
-      width: 100%;
-      padding: 12px;
-      margin: 8px 0;
-      border: none;
-      border-radius: 8px;
-      font-size: 1rem;
-    }
-
-    button {
-      background-color: #00c6ff;
-      color: white;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background-color: #1c78e9;
-    }
-
-    #dashboard {
-      display: none;
-      text-align: center;
-      margin-top: 5%;
-    }
-
-    #logoutBtn {
-      margin-top: 20px;
-      padding: 10px 20px;
-      font-size: 1rem;
-      background-color: crimson;
-    }
-
-    #toggle-text a {
-      color: #00bfff; /* Sky blue – change this to any color you prefer */
-      text-decoration: underline;
-      font-weight: bold;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
+      margin: 100px auto;
+      background: rgba(255,255,255,0.1);
+      padding: 20px;
       border-radius: 10px;
-      overflow: hidden;
-      table-layout: fixed;
-    }
-
-    thead {
-      background-color: #007bff;
-      color: white;
-    }
-
-    th, td {
-      padding: 12px;
       text-align: center;
-      border: 1px solid #ddd;
-      word-wrap: break-word;
     }
-
-    button.apply-btn {
-      background-color: #00c6ff;
-      color: white;
+    input, select, button {
+      width: 90%;
+      padding: 10px;
+      margin: 10px 0;
       border: none;
-      padding: 8px 16px;
-      border-radius: 6px;
-      cursor: pointer;
+      border-radius: 5px;
     }
-
-    button.apply-btn:hover {
-      background-color: #1c78e9;
-    }
-
-    /* Hamburger menu icon */
-    #menuBtn {
-      position: fixed;
-      top: 20px;
-      left: 20px;
-      font-size: 28px;
-      cursor: pointer;
-      z-index: 1002;
-    }
-
-    .side-menu {
-    width: 250px;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.8);
-    color: white;
-    position: fixed;
-    top: 0;
-    left: -250px;  /* hide fully to the left */
-    transition: left 0.3s ease;
-    z-index: 1000;  /* stay above content */
-}
-
-.side-menu.open {
-    left: 0;
-}
-
-.main-content {
-    margin-left: 0;  /* no margin when sidebar closed */
-    transition: margin-left 0.3s ease;
-    padding: 20px;
-}
-
-.side-menu.open ~ .main-content {
-    margin-left: 250px;  /* push content when sidebar open */
-}
-
-
-    /* Dashboard shifts to the right when the side menu is open */
-    #fresherDashboard.shifted {
-      margin-left: 250px;
-      transition: margin-left 0.3s ease;
-    }
-
-    /* Side menu links */
-    #sideMenu a {
-      display: block;
+    button {
+      background: #ff9800;
       color: white;
-      padding: 12px 0;
+      cursor: pointer;
+    }
+    .main-content {
+      padding: 20px;
+    }
+    .side-menu {
+      background: rgba(0,0,0,0.3);
+      padding: 10px;
+      border-radius: 10px;
+    }
+    .side-menu a {
+      color: white;
+      display: block;
       text-decoration: none;
-      font-size: 18px;
+      margin: 5px 0;
     }
-
-    #sideMenu a:hover {
-      background: rgba(255, 255, 255, 0.1);
-    }
-
-    /* Overlay (background dimming when menu is open) */
     #overlay {
       position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.4);
-      z-index: 999;
       display: none;
-    }
-
-    #overlay.show {
-      display: block;
+      width: 100%;
+      height: 100%;
+      top: 0; left: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 100;
     }
   </style>
 </head>
@@ -191,18 +75,15 @@ body {
     </p>
   </div>
 
-  <!-- DASHBOARDS -->
-  <div id="dashboard" style="display:none;">
-    <h2 id="dashboard-title"></h2>
-    <p>Welcome to your dashboard. More features coming soon!</p>
-  </div>
-
-  <div id="adminDashboard" style="display:none; padding:20px; color:white;">
+  <!-- Admin Dashboard -->
+  <div id="adminDashboard" style="display:none; padding:20px;">
     <h2>Admin Dashboard</h2>
+    <p>Welcome, admin! Manage your platform here.</p>
     <button onclick="logout()">Logout</button>
   </div>
 
-  <div class="main-content" id="fresherDashboard" style="display:none; padding:20px; color:white;">
+  <!-- Fresher Dashboard -->
+  <div class="main-content" id="fresherDashboard" style="display:none;">
     <h2>Fresher Dashboard</h2>
     <div class="side-menu" id="sideMenu">
       <a href="#" onclick="showMyApplications()">My Applications</a>
@@ -213,30 +94,31 @@ body {
     <div id="overlay" onclick="toggleMenu()"></div>
   </div>
 
-  <!-- Firebase SDKs -->
+  <!-- Company Dashboard -->
+  <div id="companyDashboard" style="display:none; padding:20px;">
+    <h2>Company Dashboard</h2>
+    <p>Welcome, company! Post and manage job listings here.</p>
+    <button onclick="logout()">Logout</button>
+  </div>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
     import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
     import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
 
-    // ✅ Your Firebase config
-    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyDrrAYywpFdd9iIzSSp2m6XcrGkGUgYY3Y",
-  authDomain: "freshershub-33de8.firebaseapp.com",
-  projectId: "freshershub-33de8",
-  storageBucket: "freshershub-33de8.firebasestorage.app",
-  messagingSenderId: "126389629687",
-  appId: "1:126389629687:web:9b9fb43e488f60ac3159f2",
-  measurementId: "G-Y66M9SP2NB"
-};
+    const firebaseConfig = {
+      apiKey: "AIzaSyD9taY-QOUPL9_SbgrUUMEMd1mnmMkFklA",
+      authDomain: "freshersultimate-ae0fd.firebaseapp.com",
+      projectId: "freshersultimate-ae0fd",
+      storageBucket: "freshersultimate-ae0fd.appspot.com",
+      messagingSenderId: "983035913425",
+      appId: "1:983035913425:web:211e4fd8c2df71677011f0"
+    };
 
-    // ✅ Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // 🔄 Toggle between signup and login
     window.toggleForm = function () {
       const formTitle = document.getElementById('form-title');
       const actionBtn = document.getElementById('actionBtn');
@@ -256,7 +138,6 @@ const firebaseConfig = {
       }
     };
 
-    // ✅ Signup function
     window.signup = async function () {
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
@@ -272,7 +153,6 @@ const firebaseConfig = {
       }
     };
 
-    // ✅ Login function
     window.login = async function () {
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
@@ -291,20 +171,19 @@ const firebaseConfig = {
       }
     };
 
-    // ✅ Show dashboard
     function showDashboard(role) {
       document.getElementById('auth-section').style.display = 'none';
       if (role === 'admin') {
         document.getElementById('adminDashboard').style.display = 'block';
       } else if (role === 'fresher') {
         document.getElementById('fresherDashboard').style.display = 'block';
+      } else if (role === 'company') {
+        document.getElementById('companyDashboard').style.display = 'block';
       } else {
-        document.getElementById('dashboard').style.display = 'block';
-        document.getElementById('dashboard-title').innerText = role.charAt(0).toUpperCase() + role.slice(1) + ' Dashboard';
+        alert('Unknown role: ' + role);
       }
     }
 
-    // ✅ Logout function
     window.logout = function () {
       signOut(auth).then(() => {
         alert('Logged out');
@@ -312,7 +191,6 @@ const firebaseConfig = {
       });
     };
 
-    // ✅ Check logged in user
     onAuthStateChanged(auth, async user => {
       if (user) {
         const docSnap = await getDoc(doc(db, 'users', user.uid));
@@ -323,7 +201,6 @@ const firebaseConfig = {
       }
     });
 
-    // ✅ Toggle menu
     window.toggleMenu = function () {
       var menu = document.getElementById('sideMenu');
       var overlay = document.getElementById('overlay');

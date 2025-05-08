@@ -349,5 +349,94 @@
       document.getElementById('adminDashboard').style.display = 'none';
     }
   </script>
+
+<script type="module">
+  // Import Firebase
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+  import { getFirestore, setDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+
+  // Your Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyD9taY-QOUPL9_SbgrUUMEMd1mnmMkFklA",
+    authDomain: "freshersultimate-ae0fd.firebaseapp.com",
+    projectId: "freshersultimate-ae0fd",
+    storageBucket: "freshersultimate-ae0fd.appspot.com",
+    messagingSenderId: "983035913425",
+    appId: "1:983035913425:web:211e4fd8c2df71677011f0"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  // ========================
+  // SIGNUP FUNCTION
+  // ========================
+  async function signup() {
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const role = document.getElementById('role').value;
+
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      
+      // Store role in Firestore
+      await setDoc(doc(db, "users", user.uid), {
+        email: email,
+        role: role
+      });
+
+      alert("Signup successful! Redirecting...");
+      redirectToDashboard(role);
+    } catch (error) {
+      alert(error.message);
+    }
+  }
+
+  // ========================
+  // LOGIN FUNCTION
+  // ========================
+  async function login() {
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      
+      // Get role from Firestore
+      const docSnap = await getDoc(doc(db, "users", user.uid));
+      if (docSnap.exists()) {
+        const role = docSnap.data().role;
+        alert("Login successful! Redirecting...");
+        redirectToDashboard(role);
+      } else {
+        alert("No user data found!");
+      }
+    } catch (error) {
+      alert(error.message);
+    }
+  }
+
+  // ========================
+  // REDIRECT FUNCTION
+  // ========================
+  function redirectToDashboard(role) {
+    if (role === 'admin') {
+      window.location.href = 'admin-dashboard.html';
+    } else if (role === 'fresher') {
+      window.location.href = 'fresher-dashboard.html';
+    } else if (role === 'company') {
+      window.location.href = 'company-dashboard.html';
+    } else {
+      alert("Unknown role");
+    }
+  }
+</script>
+
+
 </body>
 </html>

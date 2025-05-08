@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -7,213 +8,596 @@
   <style>
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background:
+        linear-gradient(to bottom right, rgba(0, 114, 255, 0.6), rgba(0, 198, 255, 0.6)),
+        url('https://images.unsplash.com/photo-1519389950473-47ba0277781c?fit=crop&w=1650&q=80') no-repeat center center;
+      background-size: cover;
+      background-attachment: fixed;
       color: white;
     }
-    .container {
-      max-width: 400px;
-      margin: 100px auto;
-      background: rgba(255,255,255,0.1);
-      padding: 20px;
-      border-radius: 10px;
-      text-align: center;
-    }
-    input, select, button {
-      width: 90%;
-      padding: 10px;
-      margin: 10px 0;
-      border: none;
-      border-radius: 5px;
-    }
-    button {
-      background: #ff9800;
-      color: white;
-      cursor: pointer;
-    }
-    .main-content {
-      padding: 20px;
-    }
-    .side-menu {
-      background: rgba(0,0,0,0.3);
-      padding: 10px;
-      border-radius: 10px;
-    }
-    .side-menu a {
-      color: white;
-      display: block;
-      text-decoration: none;
-      margin: 5px 0;
-    }
-    #overlay {
-      position: fixed;
-      display: none;
-      width: 100%;
-      height: 100%;
-      top: 0; left: 0;
-      background: rgba(0,0,0,0.5);
-      z-index: 100;
-    }
+
+```
+.container {
+  max-width: 400px;
+  margin: 5% auto;
+  padding: 2rem;
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.3);
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+input, select, button {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+button {
+  background-color: #00c6ff;
+  color: white;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #1c78e9;
+}
+
+#dashboard {
+  display: none;
+  text-align: center;
+  margin-top: 5%;
+}
+
+#logoutBtn {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  background-color: crimson;
+}
+
+#toggle-text a {
+color: #00bfff; /* Sky blue – change this to any color you prefer */
+text-decoration: underline;
+font-weight: bold;
+```
+
+}
+
+table {
+width: 100%;
+border-collapse: collapse;
+border-radius: 10px;
+overflow: hidden;
+table-layout: fixed;
+}
+
+thead {
+background-color: #007bff;
+color: white;
+}
+
+th, td {
+padding: 12px;
+text-align: center;
+border: 1px solid #ddd;
+word-wrap: break-word;
+}
+
+button.apply-btn {
+background-color: #00c6ff;
+color: white;
+border: none;
+padding: 8px 16px;
+border-radius: 6px;
+cursor: pointer;
+}
+
+button.apply-btn\:hover {
+background-color: #1c78e9;
+}
+
+/\* Hamburger menu icon \*/
+\#menuBtn {
+position: fixed;
+top: 20px;
+right: 20px;
+font-size: 28px;
+cursor: pointer;
+z-index: 1001;
+}
+
+/\* Side Menu */
+\#sideMenu {
+position: fixed;
+left: -250px; /* Initially hidden off-screen \*/
+top: 0;
+width: 250px;
+height: 100%;
+background: rgba(0, 0, 0, 0.95);
+color: white;
+padding: 30px 20px;
+transition: transform 0.3s ease;
+z-index: 1000;
+}
+
+\#sideMenu.open {
+transform: translateX(250px); /\* Slide in when open \*/
+}
+
+/\* Dashboard shifts to the right when the side menu is open \*/
+\#fresherDashboard.shifted {
+margin-left: 250px;
+transition: margin-left 0.3s ease;
+}
+
+/\* Side menu links \*/
+\#sideMenu a {
+display: block;
+color: white;
+padding: 12px 0;
+text-decoration: none;
+font-size: 18px;
+}
+
+\#sideMenu a\:hover {
+background: rgba(255, 255, 255, 0.1);
+}
+
+/\* Overlay (background dimming when menu is open) \*/
+\#overlay {
+position: fixed;
+top: 0; left: 0;
+width: 100%; height: 100%;
+background: rgba(0, 0, 0, 0.4);
+z-index: 999;
+display: none;
+}
+
+\#overlay.show {
+display: block;
+}
+
   </style>
 </head>
 <body>
+  <div id="menuBtn" onclick="toggleMenu()">☰</div>
 
-  <!-- AUTH SECTION -->
   <div class="container" id="auth-section">
     <h2 id="form-title">FreshersHub - Signup</h2>
-    <input type="email" id="email" placeholder="Email" required />
-    <input type="password" id="password" placeholder="Password" required />
-    <select id="role">
-      <option value="fresher">Fresher</option>
-      <option value="company">Company</option>
-      <option value="admin">Admin</option>
-    </select>
-    <button id="actionBtn" onclick="signup()">Signup</button>
-    <p id="toggle-text">
-      Already have an account?
-      <a href="#" onclick="toggleForm()">Login here</a>
-    </p>
+
+```
+<input type="email" id="email" placeholder="Email" required />
+<input type="password" id="password" placeholder="Password" required />
+<select id="role">
+  <option value="fresher">Fresher</option>
+  <option value="company">Company</option>
+  <option value="admin">Admin</option>
+</select>
+
+<button id="actionBtn" onclick="signup()">Signup</button>
+
+<p id="toggle-text">
+  Already have an account?
+  <a href="#" onclick="toggleForm()">Login here</a>
+</p>
+```
+
   </div>
 
-  <!-- Admin Dashboard -->
-  <div id="adminDashboard" style="display:none; padding:20px;">
-    <h2>Admin Dashboard</h2>
-    <p>Welcome, admin! Manage your platform here.</p>
-    <button onclick="logout()">Logout</button>
+  <div id="dashboard">
+    <h2 id="dashboard-title"></h2>
+    <p>Welcome to your dashboard. More features coming soon!</p>
   </div>
 
-  <!-- Fresher Dashboard -->
-  <div class="main-content" id="fresherDashboard" style="display:none;">
-    <h2>Fresher Dashboard</h2>
-    <div class="side-menu" id="sideMenu">
-      <a href="#" onclick="showMyApplications()">My Applications</a>
-      <a href="#">Profile</a>
-      <a href="#">Jobs</a>
-      <a href="javascript:logout()">Logout</a>
+<!-- Admin Dashboard -->
+
+<div id="adminDashboard" style="display: none; padding: 20px; color: white;">
+  <h2 style="font-size: 2rem; text-transform: uppercase; margin-bottom: 20px;">Admin Dashboard</h2>
+
+  <!-- Overview Stats -->
+
+  <div style="display: flex; justify-content: center; gap: 20px; margin-bottom: 20px;">
+    <div style="background: #007bff; padding: 20px; border-radius: 10px; width: 150px;">
+      <p>Total Freshers:</p>
+      <h3 id="totalFreshers">0</h3>
     </div>
-    <div id="overlay" onclick="toggleMenu()"></div>
+    <div style="background: #28a745; padding: 20px; border-radius: 10px; width: 150px;">
+      <p>Total Companies:</p>
+      <h3 id="totalCompanies">0</h3>
+    </div>
+    <div style="background: #ffc107; padding: 20px; border-radius: 10px; width: 150px;">
+      <p>Total Jobs:</p>
+      <h3 id="totalJobs">0</h3>
+    </div>
   </div>
 
-  <!-- Company Dashboard -->
-  <div id="companyDashboard" style="display:none; padding:20px;">
-    <h2>Company Dashboard</h2>
-    <p>Welcome, company! Post and manage job listings here.</p>
-    <button onclick="logout()">Logout</button>
+  <!-- Manage Users -->
+
+  <h3>Registered Users</h3>
+  <table style="width: 100%; background: white; color: black; border-collapse: collapse; border-radius: 10px; overflow: hidden;">
+    <thead style="background: #343a40; color: white;">
+      <tr>
+        <th>Email</th>
+        <th>Role</th>
+      </tr>
+    </thead>
+    <tbody id="usersTable">
+      <!-- Rows will be added -->
+    </tbody>
+  </table>
+
+  <!-- Manage Jobs -->
+
+  <h3>Job Posts</h3>
+  <table border="1" style="width: 100%; background: white; color: black;">
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Company</th>
+        <th>Description</th>
+        <th>Location</th>
+        <th>Salary</th>
+        <th>Action</th>
+      </tr>
+    </thead>    
+    <tbody id="jobsTable">
+      <!-- Rows will be added by JS -->
+    </tbody>
+  </table>
+
+<button onclick="logout()">Logout</button>
+
+</div>
+
+<!-- Fresher Dashboard -->
+
+<div id="fresherDashboard" style="display: none; padding: 20px; color: white;">
+  <h2>Fresher Dashboard</h2>
+  <p>Welcome, Fresher! Here are some upcoming opportunities:</p>
+
+  <div id="sideMenu">
+    <a href="#" onclick="showMyApplications()">My Applications</a>
+    <a href="#">Profile</a>
+    <a href="javascript:logout()">Logout</a>
+
+```
+<h3>My Applications</h3>
+<table>
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Company</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody id="myApplicationsTable">
+    <!-- will be filled by JS -->
+  </tbody>
+</table>
+```
+
   </div>
+
+  <!-- Placeholder for job list -->
+
+  <table style="width: 100%; background: white; color: black; border-collapse: collapse; border-radius: 10px; overflow: hidden;">
+    <thead style="background: #007bff; color: white;">
+      <tr>
+        <th>Title</th>
+        <th>Company</th>
+        <th>Description</th>
+        <th>location</th>
+        <th>salary</th>
+      </tr>
+    </thead>
+    <tbody id="fresherJobsTable">
+      <!-- Jobs will be dynamically added here -->
+    </tbody>
+  </table>
+
+<button onclick="logout()">Logout</button>
+
+</div>
 
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
-    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
 
+window.toggleMenu = function () {
+  document.getElementById("sideMenu").classList.toggle("open");
+}
+
+
+    // Firebase imports
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
+    import {
+      getAuth,
+      createUserWithEmailAndPassword,
+      signInWithEmailAndPassword,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
+    import {
+  getFirestore,
+  doc,
+  setDoc,
+  getDoc,
+  getDocs,
+  collection
+} from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
+
+    // Firebase config
     const firebaseConfig = {
-      apiKey: "AIzaSyD9taY-QOUPL9_SbgrUUMEMd1mnmMkFklA",
-      authDomain: "freshersultimate-ae0fd.firebaseapp.com",
-      projectId: "freshersultimate-ae0fd",
-      storageBucket: "freshersultimate-ae0fd.appspot.com",
-      messagingSenderId: "983035913425",
-      appId: "1:983035913425:web:211e4fd8c2df71677011f0"
+      apiKey: "AIzaSyDrrAYywpFdd9iIzSSp2m6XcrGkGUgYY3Y",
+      authDomain: "freshershub-33de8.firebaseapp.com",
+      projectId: "freshershub-33de8",
+      storageBucket: "freshershub-33de8.appspot.com",
+      messagingSenderId: "126389629687",
+      appId: "1:126389629687:web:9b9fb43e488f60ac3159f2",
+      measurementId: "G-Y66M9SP2NB"
     };
 
+    // Initialize
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    window.toggleForm = function () {
-      const formTitle = document.getElementById('form-title');
-      const actionBtn = document.getElementById('actionBtn');
-      const toggleText = document.getElementById('toggle-text');
-      if (formTitle.innerText.includes('Signup')) {
-        formTitle.innerText = 'FreshersHub - Login';
-        actionBtn.innerText = 'Login';
-        actionBtn.onclick = login;
-        document.getElementById('role').style.display = 'none';
-        toggleText.innerHTML = `Don't have an account? <a href="#" onclick="toggleForm()">Signup here</a>`;
-      } else {
-        formTitle.innerText = 'FreshersHub - Signup';
-        actionBtn.innerText = 'Signup';
-        actionBtn.onclick = signup;
-        document.getElementById('role').style.display = 'block';
-        toggleText.innerHTML = `Already have an account? <a href="#" onclick="toggleForm()">Login here</a>`;
-      }
+    // Signup
+    window.signup = function () {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      const role = document.getElementById("role").value;
+
+      createUserWithEmailAndPassword(auth, email, password)
+        .then(async (userCredential) => {
+          const user = userCredential.user;
+          await setDoc(doc(db, "users", user.uid), {
+            email: email,
+            role: role
+          });
+          alert("Signup successful. Please login.");
+        })
+        .catch((error) => {
+          alert("Signup error: " + error.message);
+        });
     };
 
-    window.signup = async function () {
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-      const role = document.getElementById('role').value;
-      if (!email || !password || !role) return alert('Please fill all fields!');
-      try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        await setDoc(doc(db, 'users', userCredential.user.uid), { email, role });
-        alert('Signup successful!');
-        showDashboard(role);
-      } catch (error) {
-        alert(error.message);
-      }
+    // Login
+    window.login = function () {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      signInWithEmailAndPassword(auth, email, password)
+        .then(async (userCredential) => {
+          const user = userCredential.user;
+          const userDoc = await getDoc(doc(db, "users", user.uid));
+
+          if (userDoc.exists()) {
+            const role = userDoc.data().role;
+            showDashboard(role);
+          } else {
+            alert("Role not found for user.");
+          }
+        })
+        .catch((error) => {
+          alert("Login error: " + error.message);
+        });
     };
 
-    window.login = async function () {
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-      if (!email || !password) return alert('Please enter email and password!');
-      try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        const docSnap = await getDoc(doc(db, 'users', userCredential.user.uid));
-        if (docSnap.exists()) {
-          const userData = docSnap.data();
-          showDashboard(userData.role);
-        } else {
-          alert('No user data found!');
-        }
-      } catch (error) {
-        alert(error.message);
-      }
-    };
-
+    // Dashboard display
     function showDashboard(role) {
-      document.getElementById('auth-section').style.display = 'none';
-      if (role === 'admin') {
-        document.getElementById('adminDashboard').style.display = 'block';
-      } else if (role === 'fresher') {
-        document.getElementById('fresherDashboard').style.display = 'block';
-      } else if (role === 'company') {
-        document.getElementById('companyDashboard').style.display = 'block';
-      } else {
-        alert('Unknown role: ' + role);
-      }
+  document.getElementById("auth-section").style.display = "none";
+  document.getElementById("dashboard").style.display = "block";
+  document.getElementById("dashboard-title").innerText = `${role.toUpperCase()} Dashboard`;
+
+  if (role === "admin") {
+    document.getElementById("adminDashboard").style.display = "block";
+    loadAdminDashboard(); // fetch & display admin data
+  } else if (role === "fresher") {
+    document.getElementById("fresherDashboard").style.display = "block";
+    loadFresherDashboard();
+    loadMyApplications();
+  } else {
+    // Show fresher or company UI (you can add more later)
+    alert("Logged in as: " + role);
+  }
+}
+
+async function loadAdminDashboard() {
+  const usersTable = document.getElementById("usersTable");
+  const jobsTable = document.getElementById("jobsTable");
+
+  usersTable.innerHTML = "";
+  jobsTable.innerHTML = "";
+
+  const usersSnapshot = await getDocs(collection(db, "users"));
+  const jobsSnapshot = await getDocs(collection(db, "jobs")); // change if your collection name differs
+
+  let fresherCount = 0;
+  let companyCount = 0;
+
+  usersSnapshot.forEach(doc => {
+    const user = doc.data();
+    const row = `<tr><td>${user.email}</td><td>${user.role}</td></tr>`;
+    usersTable.innerHTML += row;
+
+    if (user.role === "fresher") fresherCount++;
+    if (user.role === "company") companyCount++;
+  });
+
+  document.getElementById("totalFreshers").innerText = fresherCount;
+  document.getElementById("totalCompanies").innerText = companyCount;
+
+  let jobCount = 0;
+  jobsSnapshot.forEach(doc => {
+    const job = doc.data();
+    const row = `<tr><td>${job.title}</td><td>${job.companyName}</td><td>${job.description}</td></tr>`;
+    jobsTable.innerHTML += row;
+    jobCount++;
+  });
+
+  document.getElementById("totalJobs").innerText = jobCount;
+}
+  
+async function loadFresherDashboard() {
+  const fresherJobsTable = document.getElementById("fresherJobsTable");
+  fresherJobsTable.innerHTML = "";
+
+  const jobsSnapshot = await getDocs(collection(db, "jobs"));
+  const applicationsSnapshot = await getDocs(collection(db, "applications"));
+
+  // Get list of jobIds user has applied to
+  const appliedJobs = new Set();
+  const user = auth.currentUser;
+  applicationsSnapshot.forEach(doc => {
+    const app = doc.data();
+    if (app.userId === user.uid) {
+      appliedJobs.add(app.jobId);
     }
+  });
 
-    window.logout = function () {
-      signOut(auth).then(() => {
-        alert('Logged out');
-        location.reload();
-      });
-    };
+  jobsSnapshot.forEach(doc => {
+    const job = doc.data();
+    const applied = appliedJobs.has(doc.id);
 
-    onAuthStateChanged(auth, async user => {
-      if (user) {
-        const docSnap = await getDoc(doc(db, 'users', user.uid));
-        if (docSnap.exists()) {
-          const userData = docSnap.data();
-          showDashboard(userData.role);
-        }
-      }
+    const actionCell = applied
+      ? `<span style="color: green; font-weight: bold;">Applied</span>`
+      : `<button class="apply-btn" onclick="applyJob('${doc.id}')">Apply</button>`;
+
+    const row = `<tr>
+      <td>${job.Title}</td>
+      <td>${job.company}</td>
+      <td>${job.description}</td>
+      <td>${job.location}</td>
+      <td>${job.salary}</td>
+       <td><button class="apply-btn" onclick="applyJob('${doc.id}')">Apply</button></td>
+    </tr>`;
+
+    fresherJobsTable.innerHTML += row;
+  });
+}
+
+
+async function applyJob(jobId) {
+  const user = auth.currentUser;
+  if (!user) {
+    alert("You must be logged in to apply.");
+    return;
+  }
+
+  try {
+    await setDoc(doc(db, "applications", `${user.uid}_${jobId}`), {
+      userId: user.uid,
+      jobId: jobId,
+      appliedAt: new Date()
     });
+    alert("Application submitted successfully!");
+  } catch (error) {
+    alert("Error applying: " + error.message);
+  }
+}
 
-    window.toggleMenu = function () {
-      var menu = document.getElementById('sideMenu');
-      var overlay = document.getElementById('overlay');
-      var dashboard = document.getElementById('fresherDashboard');
-      menu.classList.toggle('open');
-      dashboard.classList.toggle('shifted');
-      overlay.classList.toggle('show');
-    };
+async function loadMyApplications() {
+  const myApplicationsTable = document.getElementById("myApplicationsTable");
+  myApplicationsTable.innerHTML = "";
 
-    window.showMyApplications = function () {
-      alert("Showing my applications (feature coming soon).");
-    };
+  const applicationsSnapshot = await getDocs(collection(db, "applications"));
+  const jobsSnapshot = await getDocs(collection(db, "jobs"));
+
+  const user = auth.currentUser;
+  const appliedJobIds = [];
+
+  applicationsSnapshot.forEach(doc => {
+    const app = doc.data();
+    if (app.userId === user.uid) {
+      appliedJobIds.push(app.jobId);
+    }
+  });
+
+  // Map jobId → jobData
+  const jobsMap = {};
+  jobsSnapshot.forEach(doc => {
+    jobsMap[doc.id] = doc.data();
+  });
+
+  appliedJobIds.forEach(jobId => {
+    const job = jobsMap[jobId];
+    if (job) {
+      const row = `<tr>
+        <td>${job.title}</td>
+        <td>${job.companyName}</td>
+        <td>${job.description}</td>
+      </tr>`;
+      myApplicationsTable.innerHTML += row;
+    }
+  });
+}
+
+
+    // Logout
+    window.logout = function () {
+  signOut(auth).then(() => {
+    document.getElementById("dashboard").style.display = "none";
+    document.getElementById("adminDashboard").style.display = "none";
+    document.getElementById("fresherDashboard").style.display = "none";
+    document.getElementById("auth-section").style.display = "block";
+    document.getElementById("logoutBtn").style.display = "none";
+  });
+};
+
+
+    // Toggle between login and signup
+let isSignup = true;
+
+window.toggleForm = function () {
+  isSignup = !isSignup;
+
+  document.getElementById("form-title").innerText = isSignup
+    ? "FreshersHub - Signup"
+    : "FreshersHub - Login";
+
+  document.getElementById("actionBtn").innerText = isSignup ? "Signup" : "Login";
+  document.getElementById("actionBtn").setAttribute("onclick", isSignup ? "signup()" : "login()");
+
+  document.getElementById("toggle-text").innerHTML = isSignup
+    ? 'Already have an account? <a href="#" onclick="toggleForm()">Login here</a>'
+    : 'New here? <a href="#" onclick="toggleForm()">Create an account</a>';
+
+  document.getElementById("role").style.display = isSignup ? "block" : "none";
+};
+
+function toggleMenu() {
+  document.getElementById("sideMenu").classList.toggle("open");
+  document.getElementById("fresherDashboard").classList.toggle("shifted");
+}
+
+const menuBtn = document.getElementById('menuBtn');
+  const sideMenu = document.getElementById('sideMenu');
+  const overlay = document.getElementById('overlay');
+  const fresherDashboard = document.getElementById('fresherDashboard');
+
+  menuBtn.addEventListener('click', () => {
+    // Toggle the side menu and dashboard
+    sideMenu.classList.toggle('open');
+    fresherDashboard.classList.toggle('shifted');
+    overlay.classList.toggle('show');
+  });
+
+  // Close the side menu if overlay is clicked
+  overlay.addEventListener('click', () => {
+    sideMenu.classList.remove('open');
+    fresherDashboard.classList.remove('shifted');
+    overlay.classList.remove('show');
+  });
+
   </script>
 
+  <div id="overlay" onclick="toggleMenu()"></div>
 </body>
 </html>

@@ -133,8 +133,9 @@ button.apply-btn:hover {
 }
 
 #sideMenu.open {
-  transform: translateX(0);
+  right: 0;  /* slides menu into view */
 }
+
 
 #fresherDashboard.shifted {
   margin-left: 250px;
@@ -263,6 +264,20 @@ button.apply-btn:hover {
     <a href="#" onclick="showMyApplications()">My Applications</a>
     <a href="#">Profile</a>
     <a href="javascript:logout()">Logout</a>
+
+    <h3>My Applications</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Company</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody id="myApplicationsTable">
+        <!-- will be filled by JS -->
+      </tbody>
+    </table>
   </div>
   
 
@@ -281,27 +296,18 @@ button.apply-btn:hover {
       <!-- Jobs will be dynamically added here -->
     </tbody>
   </table>
-
-  <h3>My Applications</h3>
-  <table>
-    <thead>
-      <tr>
-        <th>Title</th>
-        <th>Company</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody id="myApplicationsTable">
-      <!-- will be filled by JS -->
-    </tbody>
-  </table>
-  
-
+ 
   <button onclick="logout()">Logout</button>
 </div>
 
 
   <script type="module">
+
+window.toggleMenu = function () {
+  document.getElementById("sideMenu").classList.toggle("open");
+}
+
+
     // Firebase imports
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
     import {

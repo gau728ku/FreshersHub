@@ -126,8 +126,8 @@
     }
 
     #sideMenu.open {
-      transform: translateX(250px); /* Slide in when open */
-    }
+  left: 0; /* ✅ slide in when open */
+}
 
     /* Dashboard shifts to the right when the side menu is open */
     #fresherDashboard.shifted {
@@ -260,7 +260,7 @@
     <div id="overlay" onclick="toggleMenu()"></div>
 
     <!-- Placeholder for job list -->
-    <table style="width: 95%; background: white; color: black; border-collapse: collapse; border-radius: 10px; overflow: hidden;">
+    <table style="width: 100%; background: white; color: black; border-collapse: collapse; border-radius: 10px; overflow: hidden;">
       <thead style="background: #007bff; color: white;">
         <tr>
           <th>Title</th>

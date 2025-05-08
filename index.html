@@ -355,17 +355,20 @@ function login() {
 
     // Show different dashboards for users based on their roles
     function showDashboard(role) {
-      document.getElementById('adminDashboard').style.display = 'none';
-      document.getElementById('fresherDashboard').style.display = 'none';
-      document.getElementById('dashboard').style.display = 'none';
+    document.getElementById('auth-section').style.display = 'none';
 
-      if (role === 'admin') {
-        document.getElementById('adminDashboard').style.display = 'block';
-      } else if (role === 'fresher') {
-        document.getElementById('fresherDashboard').style.display = 'block';
-      }
-      document.getElementById('dashboard').style.display = 'block';
+    if (role === 'admin') {
+      document.getElementById('adminDashboard').style.display = 'block';
+    } else if (role === 'fresher') {
+      document.getElementById('fresherDashboard').style.display = 'block';
+    } else if (role === 'company') {
+      document.getElementById('companyDashboard').style.display = 'block';
+    } else {
+      alert("Unknown role: " + role);
     }
+  }
+
+
 
     // Logout functionality
     function logout() {
@@ -384,14 +387,16 @@ function login() {
   import { getFirestore, setDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
   // Your Firebase config
-  const firebaseConfig = {
-    apiKey: "AIzaSyD9taY-QOUPL9_SbgrUUMEMd1mnmMkFklA",
-    authDomain: "freshersultimate-ae0fd.firebaseapp.com",
-    projectId: "freshersultimate-ae0fd",
-    storageBucket: "freshersultimate-ae0fd.appspot.com",
-    messagingSenderId: "983035913425",
-    appId: "1:983035913425:web:211e4fd8c2df71677011f0"
-  };
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyDrrAYywpFdd9iIzSSp2m6XcrGkGUgYY3Y",
+  authDomain: "freshershub-33de8.firebaseapp.com",
+  projectId: "freshershub-33de8",
+  storageBucket: "freshershub-33de8.firebasestorage.app",
+  messagingSenderId: "126389629687",
+  appId: "1:126389629687:web:9b9fb43e488f60ac3159f2",
+  measurementId: "G-Y66M9SP2NB"
+};
 
   // Initialize Firebase
   const app = initializeApp(firebaseConfig);
@@ -462,8 +467,20 @@ function login() {
       alert("Unknown role");
     }
   }
-</script>
 
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      const docRef = doc(db, "users", user.uid);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        const userData = docSnap.data();
+        const role = userData.role;
+        showDashboard(role);
+      }
+    }
+  });
+</script>
 
 </body>
 </html>

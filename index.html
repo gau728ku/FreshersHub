@@ -125,9 +125,22 @@ button.apply-btn:hover {
   z-index: 1000;
 }
 
-#sideMenu.open {
-  right: 0;
+#sideMenu {
+  left: 0;
+  right: auto;
+  transform: translateX(-250px);
+  transition: transform 0.3s ease;
 }
+
+#sideMenu.open {
+  transform: translateX(0);
+}
+
+#fresherDashboard.shifted {
+  margin-left: 250px;
+  transition: margin-left 0.3s ease;
+}
+
 
 #sideMenu a {
   display: block;
@@ -548,7 +561,7 @@ window.toggleForm = function () {
 
 function toggleMenu() {
   document.getElementById("sideMenu").classList.toggle("open");
-  document.getElementById("overlay").classList.toggle("show");
+  document.getElementById("fresherDashboard").classList.toggle("shifted");
 }
 
 

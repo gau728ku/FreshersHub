@@ -317,28 +317,48 @@
     function toggleForm() {
   const formTitle = document.getElementById('form-title');
   const actionBtn = document.getElementById('actionBtn');
-  actionBtn.onclick = signup; // ✅ THIS connects button click to function
   const toggleText = document.getElementById('toggle-text');
   const roleSelect = document.getElementById('role');
 
   if (formTitle.textContent.includes('Signup')) {
     formTitle.textContent = 'FreshersHub - Login';
     actionBtn.textContent = 'Login';
-    actionBtn.onclick = login;
+    actionBtn.onclick = login; // 👈 switch to login function
     toggleText.innerHTML = `Don't have an account? <a href="#" onclick="toggleForm()">Signup here</a>`;
-    roleSelect.style.display = 'none';
+    roleSelect.style.display = 'none'; // hide role select for login
   } else {
     formTitle.textContent = 'FreshersHub - Signup';
     actionBtn.textContent = 'Signup';
     actionBtn.onclick = signup;
     toggleText.innerHTML = `Already have an account? <a href="#" onclick="toggleForm()">Login here</a>`;
-    roleSelect.style.display = 'block';
+    roleSelect.style.display = 'block'; // show role select for signup
+  }
+}
+
+function login() {
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+  
+  if (email && password) {
+    // For demo: assume if email contains 'admin' it's admin, else fresher
+    let role = 'fresher';
+    if (email.includes('admin')) role = 'admin';
+    
+    alert(`Login successful! Welcome back, ${role}`);
+    document.getElementById('auth-section').style.display = 'none';
+    showDashboard(role);
+  } else {
+    alert('Please enter email and password.');
   }
 }
 
 
     // Show different dashboards for users based on their roles
     function showDashboard(role) {
+      document.getElementById('adminDashboard').style.display = 'none';
+      document.getElementById('fresherDashboard').style.display = 'none';
+      document.getElementById('dashboard').style.display = 'none';
+
       if (role === 'admin') {
         document.getElementById('adminDashboard').style.display = 'block';
       } else if (role === 'fresher') {

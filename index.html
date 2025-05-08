@@ -256,15 +256,20 @@
   </div>
 
   <!-- Fresher Dashboard -->
-  <div id="fresherDashboard" style="display: none; padding: 20px; color: white;">
+  <div class="main-content" id="fresherDashboard" style="display: none; padding: 20px; color: white;">
     <h2>Fresher Dashboard</h2>
     <p>Welcome, Fresher! Here are some upcoming opportunities:</p>
 
-    <div class="sideMenu" id="sideMenu">
+    <!-- SIDE MENU -->
+<div class="side-menu" id="sideMenu">
       <a href="#" onclick="showMyApplications()">My Applications</a>
       <a href="#">Profile</a>
+      <a href="#">Jobs</a>
       <a href="javascript:logout()">Logout</a>
     </div>
+
+<!-- MENU BUTTON -->
+<div id="menuBtn">&#9776;</div>
 
     <div id="overlay" onclick="toggleMenu()"></div>
 

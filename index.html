@@ -289,13 +289,20 @@ window.toggleForm = function() {
 };
 
 window.showDashboard = function(role) {
+  // hide all dashboards first
+  document.getElementById('adminDashboard').style.display = 'none';
+  document.getElementById('fresherDashboard').style.display = 'none';
   document.getElementById('auth-section').style.display = 'none';
+
   if (role === 'admin') {
     document.getElementById('adminDashboard').style.display = 'block';
-  } else {
+  } else if (role === 'fresher') {
     document.getElementById('fresherDashboard').style.display = 'block';
+  } else {
+    alert("Unknown role: " + role);
   }
 };
+
 
 window.logout = function() {
   auth.signOut().then(() => {

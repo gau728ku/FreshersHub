@@ -311,7 +311,7 @@ window.toggleForm = function() {
   if (formTitle.textContent.includes('Signup')) {
     formTitle.textContent = 'FreshersHub - Login';
     actionBtn.textContent = 'Login';
-    actionBtn.onclick = login;
+    actionBtn.onclick = login; // 👈 switch to login function
     toggleText.innerHTML = `Don't have an account? <a href="#" onclick="toggleForm()">Signup here</a>`;
     roleSelect.style.display = 'none';
   } else {
@@ -321,7 +321,8 @@ window.toggleForm = function() {
     toggleText.innerHTML = `Already have an account? <a href="#" onclick="toggleForm()">Login here</a>`;
     roleSelect.style.display = 'block';
   }
-};
+}
+
 
 
 window.showDashboard = function(role) {

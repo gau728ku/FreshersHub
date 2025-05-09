@@ -185,12 +185,24 @@
     <p>Welcome to your dashboard. More features coming soon!</p>
   </div>
 
+//Admin Dashboard//
+  
   <div id="adminDashboard" style="display: none; padding: 20px; color: white;">
     <h2>Admin Dashboard</h2>
     <p>Admin content here.</p>
-    <button onclick="logout()">Logout</button>
+    
+    <div id="sideMenu">
+      <a href="#" onclick="showApplications()">Applications</a>
+      <a href="#">Total users</a>
+      <a href="#">Total companies</a>a>
+      <a href="javascript:logout()">Logout</a>
+    </div>
+
+    <div id="overlay" onclick="toggleMenu()"></div>
   </div>
 
+//Fresher Dashboard//
+  
   <div id="fresherDashboard" style="display: none; padding: 20px; color: white;">
     <h2>Fresher Dashboard</h2>
     <p>Welcome, Fresher!</p>
@@ -209,6 +221,14 @@
     </table>
   </div>
 
+//Company Dashboard//
+ <div id="companyDashboard" style="display: none; padding: 20px; color: white;">
+    <h2>Company Dashboard</h2>
+    <p>Company content here.</p>
+    <button onclick="logout()">Logout</button>
+  </div>
+  
+  
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
@@ -298,7 +318,8 @@ window.showDashboard = function(role) {
     document.getElementById('adminDashboard').style.display = 'block';
   } else if (role === 'fresher') {
     document.getElementById('fresherDashboard').style.display = 'block';
-  } else {
+  } else if {role ==='company') {
+    document.getElementById('companyDashboard').style.display = 'block';
     alert("Unknown role: " + role);
   }
 };

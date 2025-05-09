@@ -323,9 +323,12 @@ window.toggleForm = function() {
   }
 }
 
-document.getElementById('toggleLink').addEventListener('click', (e) => {
-  e.preventDefault();
-  toggleForm();
+document.addEventListener('DOMContentLoaded', () => {
+  const toggleLink = document.getElementById('toggleLink');
+  toggleLink.addEventListener('click', (e) => {
+    e.preventDefault();
+    toggleForm();
+  });
 });
 
 
@@ -427,6 +430,7 @@ onAuthStateChanged(auth, async (user) => {
     }
   }
 });
+
 </script>
 </body>
 </html>

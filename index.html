@@ -87,7 +87,7 @@
       <option value="admin">Admin</option>
     </select>
     <button id="actionBtn" onclick="signup()">Signup</button>
-    <p id="toggle-text">Already have an account? <a href="#" id="toggleForm()">Login here</a></p>
+    <p id="toggle-text">Already have an account? <a href="#" id="toggleLink">Login here</a></p>
   </div>
 
   <!-- ADMIN DASHBOARD -->
@@ -229,10 +229,8 @@ window.toggleForm = toggleForm;
 
 // ✅ attach event after DOM loads
 const toggleLink = document.getElementById('toggleLink');
-toggleLink.addEventListener('click', (e) => {
   e.preventDefault();
   toggleForm();
-});
 
 document.addEventListener('DOMContentLoaded', () => {
   const toggleLink = document.getElementById('toggleLink');

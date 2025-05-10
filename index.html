@@ -8,8 +8,7 @@
     body {
       margin: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background:
-        linear-gradient(to bottom right, rgba(0, 114, 255, 0.6), rgba(0, 198, 255, 0.6)),
+      background: linear-gradient(to bottom right, rgba(0, 114, 255, 0.6), rgba(0, 198, 255, 0.6)),
         url('https://images.unsplash.com/photo-1519389950473-47ba0277781c?fit=crop&w=1650&q=80') no-repeat center center;
       background-size: cover;
       background-attachment: fixed;
@@ -25,177 +24,61 @@
       box-shadow: 0 0 15px rgba(0,0,0,0.3);
     }
 
-    h2 {
-      text-align: center;
-      margin-bottom: 1.5rem;
-    }
+    h2 { text-align: center; margin-bottom: 1.5rem; }
 
     input, select, button {
-      width: 100%;
-      padding: 12px;
-      margin: 8px 0;
-      border: none;
-      border-radius: 8px;
-      font-size: 1rem;
+      width: 100%; padding: 12px; margin: 8px 0;
+      border: none; border-radius: 8px; font-size: 1rem;
     }
 
-    button {
-      background-color: #00c6ff;
-      color: white;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background-color: #1c78e9;
-    }
-
-    #dashboard {
-      display: none;
-      text-align: center;
-      margin-top: 5%;
-    }
-
-    #logoutBtn {
-      margin-top: 20px;
-      padding: 10px 20px;
-      font-size: 1rem;
-      background-color: crimson;
-    }
-
-    #toggle-text a {
-      color: #00bfff;
-      text-decoration: underline;
-      font-weight: bold;
-    }
+    button { background-color: #00c6ff; color: white; cursor: pointer; }
+    button:hover { background-color: #1c78e9; }
 
     table {
-      width: 100%;
-      border-collapse: collapse;
-      border-radius: 10px;
-      overflow: hidden;
-      table-layout: fixed;
+      width: 100%; border-collapse: collapse; border-radius: 10px; overflow: hidden;
+      table-layout: fixed; background: white; color: black;
     }
 
-    thead {
-      background-color: #007bff;
-      color: white;
+    thead { background-color: #007bff; color: white; }
+    th, td { padding: 12px; text-align: center; border: 1px solid #ddd; word-wrap: break-word; }
+
+    /* Menu buttons per dashboard */
+    #adminMenuBtn, #fresherMenuBtn, #companyMenuBtn {
+      position: fixed; top: 20px; left: 20px;
+      font-size: 28px; cursor: pointer; z-index: 1001;
+      display: none; /* Hidden by default */
     }
 
-    th, td {
-      padding: 12px;
-      text-align: center;
-      border: 1px solid #ddd;
-      word-wrap: break-word;
+    /* Side Menus */
+    .sideMenu {
+      position: fixed; top: 0; left: -250px;
+      width: 250px; height: 100%;
+      background: rgba(0,0,0,0.8);
+      color: white; padding-top: 60px;
+      transition: transform 0.3s ease; z-index: 1000;
     }
+    .sideMenu.open { transform: translateX(250px); }
 
-    button.apply-btn {
-      background-color: #00c6ff;
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 6px;
-      cursor: pointer;
+    .sideMenu a {
+      display: block; color: white; padding: 12px;
+      text-decoration: none; font-size: 18px;
     }
+    .sideMenu a:hover { background: rgba(255,255,255,0.1); }
 
-    button.apply-btn:hover {
-      background-color: #1c78e9;
-    }
-
-    #menuBtn {
-      position: fixed;
-      top: 20px;
-      left: 20px;
-      font-size: 28px;
-      cursor: pointer;
-      z-index: 1001;
-    }
-
-    #sideMenu {
-      position: fixed;
-      left: -250px;
-      top: 0;
-      width: 250px;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.8);
-      color: white;
-      transition: transform 0.3s ease;
-      z-index: 1000;
-      padding-top: 60px;
-    }
-
-    #sideMenu.open {
-      transform: translateX(250px);
-    }
-
-    #fresherDashboard.shifted {
-      margin-left: 250px;
-      transition: margin-left 0.3s ease;
-    }
-
-    #sideMenu a {
-      display: block;
-      color: white;
-      padding: 12px 0;
-      text-decoration: none;
-      font-size: 18px;
-    }
-
-    #sideMenu a:hover {
-      background: rgba(255, 255, 255, 0.1);
-    }
-
-    #overlay {
-      position: fixed;
-      top: 0; left: 0;
+    .overlay {
+      position: fixed; top: 0; left: 0;
       width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.4);
-      z-index: 999;
-      display: none;
+      background: rgba(0,0,0,0.4);
+      z-index: 999; display: none;
     }
-
-    #overlay.show {
-      display: block;
-    }
-
-#adminMenuBtn, #companyMenuBtn, #fresherMenuBtn {
-  position: fixed;
-  top: 20px;
-  left: 20px;
-  font-size: 28px;
-  cursor: pointer;
-  z-index: 1001;
-}
-
-
-#adminSideMenu.open,
-#companySideMenu.open {
-  transform: translateX(250px);
-}
-
-#adminOverlay,
-#companyOverlay {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0,0,0,0.4);
-  z-index: 999;
-  display: none;
-}
-
-#adminOverlay.show,
-#companyOverlay.show {
-  display: block;
-}
-
-
+    .overlay.show { display: block; }
   </style>
 </head>
 <body>
- 
 
+  <!-- LOGIN/SIGNUP -->
   <div class="container" id="auth-section">
     <h2 id="form-title">FreshersHub - Signup</h2>
-
     <input type="email" id="email" placeholder="Email" required />
     <input type="password" id="password" placeholder="Password" required />
     <select id="role">
@@ -203,112 +86,58 @@
       <option value="company">Company</option>
       <option value="admin">Admin</option>
     </select>
-
     <button id="actionBtn" onclick="signup()">Signup</button>
-
-    <p id="toggle-text">
-      Already have an account?
-      <a href="#" id="toggleLink">Login here</a>
-    </p>
+    <p id="toggle-text">Already have an account? <a href="#" onclick="toggleForm()">Login here</a></p>
   </div>
 
-  <!-- Admin Dashboard -->
-  <div id="dashboard">
-    <h2 id="dashboard-title"></h2>
-    <p>Welcome to your dashboard. More features coming soon!</p>
-  </div>
+  <!-- ADMIN DASHBOARD -->
+  <div id="adminDashboard" style="display:none; padding:20px;">
+    <div id="adminMenuBtn" onclick="toggleAdminMenu()">☰</div>
+    <div class="sideMenu" id="adminSideMenu">
+      <a href="#">Manage Users</a>
+      <a href="#">Manage Jobs</a>
+      <a href="#" onclick="logout()">Logout</a>
+    </div>
+    <div class="overlay" id="adminOverlay" onclick="toggleAdminMenu()"></div>
 
-  <div id="adminDashboard" style="display: none; padding: 20px; color: white;">
     <h2>Admin Dashboard</h2>
     <p>Admin content here.</p>
-    <button onclick="logout()">Logout</button>
   </div>
 
-<div id="adminMenuBtn" onclick="toggleAdminMenu()">☰</div>
-
-
-<div id="adminSideMenu">
-  <a href="#">Manage Users</a>
-  <a href="#">Manage Jobs</a>
-  <a href="javascript:logout()">Logout</a>
-</div>
-
-<div id="adminOverlay" onclick="toggleAdminMenu()"></div>
-
-
-<!-- Company Dashboard -->
-<div id="companyDashboard" style="display: none; padding: 20px; color: white;">
-  <h2>Company Dashboard</h2>
-  <p>Welcome, Company!</p>
-
-  <!-- Example: Post a Job -->
-  <h3>Post a New Job</h3>
-  <input type="text" id="jobTitle" placeholder="Job Title">
-  <input type="text" id="companyName" placeholder="Company Name">
-  <textarea id="jobDescription" placeholder="Job Description"></textarea>
-  <input type="text" id="jobLocation" placeholder="Location">
-  <input type="text" id="jobSalary" placeholder="Salary">
-  <button onclick="postJob()">Post Job</button>
-
-  <h3>My Posted Jobs</h3>
-  <table style="width: 100%; background: white; color: black; border-collapse: collapse; border-radius: 10px; overflow: hidden;">
-    <thead style="background: #007bff; color: white;">
-      <tr>
-        <th>Title</th>
-        <th>Description</th>
-        <th>Location</th>
-        <th>Salary</th>
-      </tr>
-    </thead>
-    <tbody id="companyJobsTable">
-      <!-- Rows will be added by JS -->
-    </tbody>
-  </table>
-
-  <button onclick="logout()">Logout</button>
-</div>
-
-<div id="companyMenuBtn" onclick="toggleCompanyMenu()">☰</div>
-
-<div id="companySideMenu">
-  <a href="#">Post Job</a>
-  <a href="#">My Jobs</a>
-  <a href="javascript:logout()">Logout</a>
-</div>
-
-<div id="companyOverlay" onclick="toggleCompanyMenu()"></div>
-
-
-<!-- fresher Dashboard -->
-
-  <div id="fresherDashboard" style="display: none; padding: 20px; color: white;">
-    <h2>Fresher Dashboard</h2>
-    <p>Welcome, Fresher!</p>
-
-    <div id="sideMenu">
-      <a href="#" onclick="showMyApplications()">My Applications</a>
-      <a href="#">Profile</a>
-      <a href="javascript:logout()">Logout</a>
+  <!-- COMPANY DASHBOARD -->
+  <div id="companyDashboard" style="display:none; padding:20px;">
+    <div id="companyMenuBtn" onclick="toggleCompanyMenu()">☰</div>
+    <div class="sideMenu" id="companySideMenu">
+      <a href="#">Post Job</a>
+      <a href="#">My Jobs</a>
+      <a href="#" onclick="logout()">Logout</a>
     </div>
+    <div class="overlay" id="companyOverlay" onclick="toggleCompanyMenu()"></div>
 
-    <div id="overlay" onclick="toggleMenu()"></div>
+    <h2>Company Dashboard</h2>
+    <p>Welcome Company!</p>
+  </div>
 
-    <div id="fresherMenuBtn" onclick="toggleMenu()">☰</div>
+  <!-- FRESHER DASHBOARD -->
+  <div id="fresherDashboard" style="display:none; padding:20px;">
+    <div id="fresherMenuBtn" onclick="toggleFresherMenu()">☰</div>
+    <div class="sideMenu" id="fresherSideMenu">
+      <a href="#">My Applications</a>
+      <a href="#">Profile</a>
+      <a href="#" onclick="logout()">Logout</a>
+    </div>
+    <div class="overlay" id="fresherOverlay" onclick="toggleFresherMenu()"></div>
 
-
-    <table style="width: 100%; background: white; color: black;">
-      <thead><tr><th>Title</th><th>Company</th><th>Description</th><th>Location</th><th>Salary</th><th>Action</th></tr></thead>
-      <tbody id="jobList"></tbody>
-    </table>
+    <h2>Fresher Dashboard</h2>
+    <p>Welcome Fresher!</p>
   </div>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
-import { getFirestore, setDoc, doc, getDoc, query, collection, where, getDocs } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+  import { getFirestore, setDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
-
-const firebaseConfig = {
+  const firebaseConfig = {
   apiKey: "AIzaSyDrrAYywpFdd9iIzSSp2m6XcrGkGUgYY3Y",
   authDomain: "freshershub-33de8.firebaseapp.com",
   projectId: "freshershub-33de8",
@@ -316,13 +145,11 @@ const firebaseConfig = {
   messagingSenderId: "126389629687",
   appId: "1:126389629687:web:9b9fb43e488f60ac3159f2"
 };
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-
-window.signup = async function() {
-  const email = document.getElementById('email').value;
+  window.signup = async function() {const email = document.getElementById('email').value;
   const password = document.getElementById('password').value;
   const role = document.getElementById('role').value;
 
@@ -339,8 +166,7 @@ window.signup = async function() {
   }
 };
 
-window.login = async function() {
-  const email = document.getElementById('email').value;
+  window.login = async function() { const email = document.getElementById('email').value;
   const password = document.getElementById('password').value;
 
   try {
@@ -361,8 +187,7 @@ window.login = async function() {
   }
 };
 
-window.toggleForm = function() {
-  const formTitle = document.getElementById('form-title');
+  window.toggleForm = function() { const formTitle = document.getElementById('form-title');
   const actionBtn = document.getElementById('actionBtn');
   const toggleText = document.getElementById('toggle-text');
   const roleSelect = document.getElementById('role');
@@ -390,10 +215,8 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-
-
-window.showDashboard = function(role) {
- // Hide all dashboards
+  window.showDashboard = function(role) {
+     // Hide all dashboards
 document.getElementById('adminDashboard').style.display = 'none';
 document.getElementById('fresherDashboard').style.display = 'none';
 document.getElementById('companyDashboard').style.display = 'none';
@@ -419,104 +242,35 @@ if (role === 'admin') {
 }
 }
 
-window.postJob = async function() {
-  const title = document.getElementById('jobTitle').value;
-  const company = document.getElementById('companyName').value;
-  const description = document.getElementById('jobDescription').value;
-  const location = document.getElementById('jobLocation').value;
-  const salary = document.getElementById('jobSalary').value;
 
-  if (title && company && description && location && salary) {
-    try {
-      const docRef = await addDoc(collection(db, "jobs"), {
-        title,
-        company,
-        description,
-        location,
-        salary
-      });
-      alert("Job posted successfully!");
-      loadCompanyJobs();
-    } catch (error) {
-      alert("Error posting job: " + error.message);
-    }
-  } else {
-    alert("Please fill out all fields.");
-  }
-};
+  window.toggleAdminMenu = function() {
+    document.getElementById('adminSideMenu').classList.toggle('open');
+    document.getElementById('adminOverlay').classList.toggle('show');
+  };
+  window.toggleCompanyMenu = function() {
+    document.getElementById('companySideMenu').classList.toggle('open');
+    document.getElementById('companyOverlay').classList.toggle('show');
+  };
+  window.toggleFresherMenu = function() {
+    document.getElementById('fresherSideMenu').classList.toggle('open');
+    document.getElementById('fresherOverlay').classList.toggle('show');
+  };
 
-window.loadCompanyJobs = async function() {
-  const table = document.getElementById('companyJobsTable');
-  table.innerHTML = "";
+  window.logout = function() {
+    auth.signOut().then(() => {
+      document.getElementById('auth-section').style.display = 'block';
+      ['adminDashboard','companyDashboard','fresherDashboard'].forEach(id => document.getElementById(id).style.display = 'none');
+      ['adminMenuBtn','companyMenuBtn','fresherMenuBtn'].forEach(id => document.getElementById(id).style.display = 'none');
+    });
+  };
 
-  const querySnapshot = await getDocs(collection(db, "jobs"));
-  querySnapshot.forEach((doc) => {
-    const job = doc.data();
-    if (job.company === document.getElementById('companyName').value) { // filter by current company
-      const row = `<tr>
-        <td>${job.title}</td>
-        <td>${job.description}</td>
-        <td>${job.location}</td>
-        <td>${job.salary}</td>
-      </tr>`;
-      table.innerHTML += row;
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      const snap = await getDoc(doc(db, "users", user.uid));
+      if (snap.exists()) showDashboard(snap.data().role);
     }
   });
-};
-
-
-
-window.logout = function() {
-  auth.signOut().then(() => {
-    document.getElementById('auth-section').style.display = 'block';
-    document.getElementById('dashboard').style.display = 'none';
-    document.getElementById('fresherDashboard').style.display = 'none';
-    document.getElementById('adminDashboard').style.display = 'none';
-    document.getElementById('companyDashboard').style.display = 'none'; // ✅ FIX ADDED
-    toggleForm(true); // optional: reset to signup
-  });
-};
-
-
-window.toggleMenu = function() {
-  const menu = document.getElementById('sideMenu');
-  const overlay = document.getElementById('overlay');
-  const dashboard = document.getElementById('fresherDashboard');
-
-  menu.classList.toggle('open');
-  dashboard.classList.toggle('shifted');
-  overlay.classList.toggle('show');
-};
-
-window.showMyApplications = function() {
-  alert("My applications feature coming soon!");
-};
-
-onAuthStateChanged(auth, async (user) => {
-  if (user) {
-    const docSnap = await getDoc(doc(db, "users", user.uid));
-    if (docSnap.exists()) {
-      const role = docSnap.data().role;
-      showDashboard(role);
-    }
-  }
-});
-
-window.toggleAdminMenu = function() {
-  const menu = document.getElementById('adminSideMenu');
-  const overlay = document.getElementById('adminOverlay');
-  menu.classList.toggle('open');
-  overlay.classList.toggle('show');
-};
-
-window.toggleCompanyMenu = function() {
-  const menu = document.getElementById('companySideMenu');
-  const overlay = document.getElementById('companyOverlay');
-  menu.classList.toggle('open');
-  overlay.classList.toggle('show');
-};
-
-
 </script>
+
 </body>
 </html>

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>FreshersHub</title>
   <style>
-    /* ===== GLOBAL STYLES ===== */
+    /* === GLOBAL STYLES === */
     body {
       margin: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -15,42 +15,34 @@
       background-attachment: fixed;
       color: white;
     }
-
     .container {
       max-width: 400px;
       margin: 5% auto;
       padding: 2rem;
-      background: rgba(0, 0, 0, 0.7);
+      background: rgba(0,0,0,0.7);
       border-radius: 12px;
       box-shadow: 0 0 15px rgba(0,0,0,0.3);
     }
-
     h2 { text-align: center; margin-bottom: 1.5rem; }
-
     input, select, button {
       width: 100%; padding: 12px; margin: 8px 0;
       border: none; border-radius: 8px; font-size: 1rem;
     }
-
     button { background-color: #00c6ff; color: white; cursor: pointer; }
     button:hover { background-color: #1c78e9; }
-
     table {
       width: 100%; border-collapse: collapse; border-radius: 10px; overflow: hidden;
       table-layout: fixed; background: white; color: black;
     }
-
     thead { background-color: #007bff; color: white; }
     th, td { padding: 12px; text-align: center; border: 1px solid #ddd; word-wrap: break-word; }
 
-    /* ===== MENU BUTTONS ===== */
-    #adminMenuBtn, #fresherMenuBtn, #companyMenuBtn {
+    /* === MENU BUTTONS === */
+    #adminMenuBtn, #companyMenuBtn, #fresherMenuBtn {
       position: fixed; top: 20px; left: 20px;
       font-size: 28px; cursor: pointer; z-index: 1001;
       display: none;
     }
-
-    /* ===== SIDE MENUS ===== */
     .sideMenu {
       position: fixed; top: 0; left: -250px;
       width: 250px; height: 100%;
@@ -59,28 +51,19 @@
       transition: transform 0.3s ease; z-index: 1000;
     }
     .sideMenu.open { transform: translateX(250px); }
-
-    .sideMenu a {
-      display: block; color: white; padding: 12px;
-      text-decoration: none; font-size: 18px;
-    }
+    .sideMenu a { display: block; color: white; padding: 12px; text-decoration: none; font-size: 18px; }
     .sideMenu a:hover { background: rgba(255,255,255,0.1); }
-
     .overlay {
-      position: fixed; top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.4);
-      z-index: 999; display: none;
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.4); z-index: 999; display: none;
     }
     .overlay.show { display: block; }
-
-    /* ===== DASHBOARD SECTIONS ===== */
     .dashboard-section { display: none; padding: 20px; }
   </style>
 </head>
 <body>
 
-  <!-- ===== AUTH SECTION ===== -->
+  <!-- === AUTH SECTION === -->
   <div class="container" id="auth-section">
     <h2 id="form-title">FreshersHub - Signup</h2>
     <input type="email" id="email" placeholder="Email" required />
@@ -94,50 +77,33 @@
     <p id="toggle-text">Already have an account? <a href="#" onclick="toggleForm()">Login here</a></p>
   </div>
 
-  <!-- ===== ADMIN DASHBOARD ===== -->
+  <!-- === ADMIN DASHBOARD === -->
   <div id="adminDashboard" class="dashboard-section">
     <div id="adminMenuBtn" onclick="toggleAdminMenu()">☰</div>
     <div class="sideMenu" id="adminSideMenu">
-      <a href="#" onclick="showAdminSection('dashboard');">Dashboard</a>
-      <a href="#" onclick="showAdminSection('users');">Manage Users</a>
-      <a href="#" onclick="showAdminSection('jobs');">Manage Jobs</a>
-      <a href="#" onclick="showAdminSection('settings');">Settings</a>
+      <a href="#" onclick="switchAdminSection('home')">Dashboard</a>
+      <a href="#" onclick="switchAdminSection('users')">Manage Users</a>
+      <a href="#" onclick="switchAdminSection('jobs')">Manage Jobs</a>
+      <a href="#" onclick="switchAdminSection('settings')">Settings</a>
       <a href="#" onclick="logout()">Logout</a>
     </div>
     <div class="overlay" id="adminOverlay" onclick="toggleAdminMenu()"></div>
 
+    <!-- Admin Sections -->
     <div id="adminHome">
       <h2>Admin Dashboard</h2>
       <div style="display: flex; gap: 20px; justify-content: center;">
-        <div style="background:#007bff; padding:20px; border-radius:10px; width:150px;">
-          <p>Total Freshers:</p><h3 id="totalFreshers">0</h3>
-        </div>
-        <div style="background:#28a745; padding:20px; border-radius:10px; width:150px;">
-          <p>Total Companies:</p><h3 id="totalCompanies">0</h3>
-        </div>
-        <div style="background:#ffc107; padding:20px; border-radius:10px; width:150px;">
-          <p>Total Jobs:</p><h3 id="totalJobs">0</h3>
-        </div>
+        <div style="background:#007bff; padding:20px; border-radius:10px; width:150px;"><p>Total Freshers:</p><h3 id="totalFreshers">0</h3></div>
+        <div style="background:#28a745; padding:20px; border-radius:10px; width:150px;"><p>Total Companies:</p><h3 id="totalCompanies">0</h3></div>
+        <div style="background:#ffc107; padding:20px; border-radius:10px; width:150px;"><p>Total Jobs:</p><h3 id="totalJobs">0</h3></div>
       </div>
     </div>
-
-    <div id="adminUsers" style="display:none;">
-      <h3>Manage Users Section</h3>
-      <p>(User management table here)</p>
-    </div>
-
-    <div id="adminJobs" style="display:none;">
-      <h3>Manage Jobs Section</h3>
-      <p>(Job management table here)</p>
-    </div>
-
-    <div id="adminSettings" style="display:none;">
-      <h3>Settings Section</h3>
-      <p>(Settings content here)</p>
-    </div>
+    <div id="adminUsers" style="display:none;"><h3>Manage Users</h3><p>Users table here</p></div>
+    <div id="adminJobs" style="display:none;"><h3>Manage Jobs</h3><p>Jobs table here</p></div>
+    <div id="adminSettings" style="display:none;"><h3>Settings</h3><p>Settings content here</p></div>
   </div>
 
-  <!-- ===== COMPANY DASHBOARD ===== -->
+  <!-- === COMPANY DASHBOARD === -->
   <div id="companyDashboard" class="dashboard-section">
     <div id="companyMenuBtn" onclick="toggleCompanyMenu()">☰</div>
     <div class="sideMenu" id="companySideMenu">
@@ -149,7 +115,7 @@
     <h2>Company Dashboard</h2><p>Welcome Company!</p>
   </div>
 
-  <!-- ===== FRESHER DASHBOARD ===== -->
+  <!-- === FRESHER DASHBOARD === -->
   <div id="fresherDashboard" class="dashboard-section">
     <div id="fresherMenuBtn" onclick="toggleFresherMenu()">☰</div>
     <div class="sideMenu" id="fresherSideMenu">
@@ -178,6 +144,7 @@
   const auth = getAuth(app);
   const db = getFirestore(app);
 
+  // === AUTH FUNCTIONS ===
   window.signup = async function() {
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
@@ -219,36 +186,20 @@
     }
   };
 
-  function toggleAdminMenu() {
-    document.getElementById('adminSideMenu').classList.toggle('open');
-    document.getElementById('adminOverlay').classList.toggle('show');
-  }
-  function toggleCompanyMenu() {
-    document.getElementById('companySideMenu').classList.toggle('open');
-    document.getElementById('companyOverlay').classList.toggle('show');
-  }
-  function toggleFresherMenu() {
-    document.getElementById('fresherSideMenu').classList.toggle('open');
-    document.getElementById('fresherOverlay').classList.toggle('show');
-  }
+  // === MENU TOGGLE FUNCTIONS ===
+  function toggleAdminMenu() { document.getElementById('adminSideMenu').classList.toggle('open'); document.getElementById('adminOverlay').classList.toggle('show'); }
+  function toggleCompanyMenu() { document.getElementById('companySideMenu').classList.toggle('open'); document.getElementById('companyOverlay').classList.toggle('show'); }
+  function toggleFresherMenu() { document.getElementById('fresherSideMenu').classList.toggle('open'); document.getElementById('fresherOverlay').classList.toggle('show'); }
 
-  window.logout = function() {
-    auth.signOut().then(() => {
-      document.getElementById('auth-section').style.display = 'block';
-      ['adminDashboard','companyDashboard','fresherDashboard'].forEach(id => document.getElementById(id).style.display = 'none');
-      ['adminMenuBtn','companyMenuBtn','fresherMenuBtn'].forEach(id => document.getElementById(id).style.display = 'none');
-    });
-  };
-
+  // === DASHBOARD SHOW ===
   window.showDashboard = function(role) {
     document.getElementById('auth-section').style.display = 'none';
     document.querySelectorAll('.dashboard-section').forEach(el => el.style.display = 'none');
     ['adminMenuBtn','companyMenuBtn','fresherMenuBtn'].forEach(id => document.getElementById(id).style.display = 'none');
-
     if (role === 'admin') {
       document.getElementById('adminDashboard').style.display = 'block';
       document.getElementById('adminMenuBtn').style.display = 'block';
-      showAdminSection('dashboard');
+      switchAdminSection('home');
       loadAdminStats();
     } else if (role === 'company') {
       document.getElementById('companyDashboard').style.display = 'block';
@@ -259,17 +210,26 @@
     }
   };
 
-  window.showAdminSection = function(section) {
+  // === ADMIN SECTION SWITCH ===
+  window.switchAdminSection = function(section) {
     ['adminHome','adminUsers','adminJobs','adminSettings'].forEach(id => document.getElementById(id).style.display = 'none');
-    const menu = document.getElementById('adminSideMenu');
-    const overlay = document.getElementById('adminOverlay');
-    menu.classList.remove('open'); overlay.classList.remove('show');
-    if (section === 'dashboard') document.getElementById('adminHome').style.display = 'block';
+    toggleAdminMenu(); // auto-close menu after click
+    if (section === 'home') document.getElementById('adminHome').style.display = 'block';
     if (section === 'users') document.getElementById('adminUsers').style.display = 'block';
     if (section === 'jobs') document.getElementById('adminJobs').style.display = 'block';
     if (section === 'settings') document.getElementById('adminSettings').style.display = 'block';
   };
 
+  // === LOGOUT ===
+  window.logout = function() {
+    auth.signOut().then(() => {
+      document.getElementById('auth-section').style.display = 'block';
+      document.querySelectorAll('.dashboard-section').forEach(el => el.style.display = 'none');
+      ['adminMenuBtn','companyMenuBtn','fresherMenuBtn'].forEach(id => document.getElementById(id).style.display = 'none');
+    });
+  };
+
+  // === LOAD STATS ===
   async function loadAdminStats() {
     const freshers = await getDocs(query(collection(db, "users"), where("role", "==", "fresher")));
     document.getElementById('totalFreshers').innerText = freshers.size;

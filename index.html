@@ -149,6 +149,11 @@
   import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
   import { getFirestore, setDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
+  window.query = query;
+  window.collection = collection;
+  window.where = where;
+  window.getDocs = getDocs;
+
   const firebaseConfig = {
   apiKey: "AIzaSyDrrAYywpFdd9iIzSSp2m6XcrGkGUgYY3Y",
   authDomain: "freshershub-33de8.firebaseapp.com",

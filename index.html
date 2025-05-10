@@ -294,6 +294,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
   window.showDashboard = function(role) {
+     console.log("Dashboard role:", role);  // 👈 ADD THIS LINE
      // Hide all dashboards
 document.getElementById('adminDashboard').style.display = 'none';
 document.getElementById('fresherDashboard').style.display = 'none';

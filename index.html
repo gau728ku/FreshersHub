@@ -404,8 +404,11 @@ window.logout = function() {
     document.getElementById('dashboard').style.display = 'none';
     document.getElementById('fresherDashboard').style.display = 'none';
     document.getElementById('adminDashboard').style.display = 'none';
+    document.getElementById('companyDashboard').style.display = 'none'; // ✅ FIX ADDED
+    toggleForm(true); // optional: reset to signup
   });
 };
+
 
 window.toggleMenu = function() {
   const menu = document.getElementById('sideMenu');

@@ -156,6 +156,42 @@
     #overlay.show {
       display: block;
     }
+
+#adminSideMenu,
+#companySideMenu {
+  position: fixed;
+  left: -250px;
+  top: 0;
+  width: 250px;
+  height: 100%;
+  background: rgba(0,0,0,0.8);
+  color: white;
+  transition: transform 0.3s ease;
+  z-index: 1000;
+  padding-top: 60px;
+}
+
+#adminSideMenu.open,
+#companySideMenu.open {
+  transform: translateX(250px);
+}
+
+#adminOverlay,
+#companyOverlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.4);
+  z-index: 999;
+  display: none;
+}
+
+#adminOverlay.show,
+#companyOverlay.show {
+  display: block;
+}
+
+
   </style>
 </head>
 <body>
@@ -192,6 +228,17 @@
     <button onclick="logout()">Logout</button>
   </div>
 
+<div id="menuBtn" onclick="toggleAdminMenu()">☰</div>
+
+<div id="adminSideMenu">
+  <a href="#">Manage Users</a>
+  <a href="#">Manage Jobs</a>
+  <a href="javascript:logout()">Logout</a>
+</div>
+
+<div id="adminOverlay" onclick="toggleAdminMenu()"></div>
+
+
 <!-- Company Dashboard -->
 <div id="companyDashboard" style="display: none; padding: 20px; color: white;">
   <h2>Company Dashboard</h2>
@@ -223,6 +270,17 @@
 
   <button onclick="logout()">Logout</button>
 </div>
+
+<div id="menuBtn" onclick="toggleCompanyMenu()">☰</div>
+
+<div id="companySideMenu">
+  <a href="#">Post Job</a>
+  <a href="#">My Jobs</a>
+  <a href="javascript:logout()">Logout</a>
+</div>
+
+<div id="companyOverlay" onclick="toggleCompanyMenu()"></div>
+
 
 <!-- fresher Dashboard -->
   <div id="fresherDashboard" style="display: none; padding: 20px; color: white;">
@@ -433,6 +491,21 @@ onAuthStateChanged(auth, async (user) => {
     }
   }
 });
+
+window.toggleAdminMenu = function() {
+  const menu = document.getElementById('adminSideMenu');
+  const overlay = document.getElementById('adminOverlay');
+  menu.classList.toggle('open');
+  overlay.classList.toggle('show');
+};
+
+window.toggleCompanyMenu = function() {
+  const menu = document.getElementById('companySideMenu');
+  const overlay = document.getElementById('companyOverlay');
+  menu.classList.toggle('open');
+  overlay.classList.toggle('show');
+};
+
 
 </script>
 </body>

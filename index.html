@@ -126,12 +126,13 @@ th, td {
   <div id="adminDashboard" style="display:none; padding:20px;">
     <div id="adminMenuBtn" onclick="toggleAdminMenu()">☰</div>
     <div class="sideMenu" id="adminSideMenu">
-  <a href="#" onclick="showAdminSection('home')">Dashboard</a>
-  <a href="#" onclick="showAdminSection('users')">Manage Users</a>
-  <a href="#" onclick="showAdminSection('jobs')">Manage Jobs</a>
-  <a href="#" onclick="showAdminSection('settings')">Settings</a>
+  <a href="#" id="adminMenuHome">Dashboard</a>
+  <a href="#" id="adminMenuUsers">Manage Users</a>
+  <a href="#" id="adminMenuJobs">Manage Jobs</a>
+  <a href="#" id="adminMenuSettings">Settings</a>
   <a href="#" onclick="logout()">Logout</a>
 </div>
+
 
     <div class="overlay" id="adminOverlay" onclick="toggleAdminMenu()"></div>
 
@@ -444,6 +445,28 @@ window.showAdminSection = function(section) {
   document.getElementById('adminSideMenu').classList.remove('open');
   document.getElementById('adminOverlay').classList.remove('show');
 };
+
+// Attach click events for admin side menu
+document.getElementById('adminMenuHome').addEventListener('click', function(e) {
+  e.preventDefault();
+  showAdminSection('home');
+});
+
+document.getElementById('adminMenuUsers').addEventListener('click', function(e) {
+  e.preventDefault();
+  showAdminSection('users');
+});
+
+document.getElementById('adminMenuJobs').addEventListener('click', function(e) {
+  e.preventDefault();
+  showAdminSection('jobs');
+});
+
+document.getElementById('adminMenuSettings').addEventListener('click', function(e) {
+  e.preventDefault();
+  showAdminSection('settings');
+});
+
 
 
 // ✅ Function to load stats

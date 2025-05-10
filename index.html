@@ -113,17 +113,22 @@ th, td {
   <div id="adminDashboard" style="display:none; padding:20px;">
     <div id="adminMenuBtn" onclick="toggleAdminMenu()">☰</div>
     <div class="sideMenu" id="adminSideMenu">
-      <a href="#">Dashboard</a>
-      <a href="#">Manage Users</a>
-      <a href="#">Manage Jobs</a>
-      <a href="#">Settings</a>
-      <a href="#" onclick="logout()">Logout</a>
-    </div>
+  <a href="#" onclick="showAdminSection('home')">Dashboard</a>
+  <a href="#" onclick="showAdminSection('users')">Manage Users</a>
+  <a href="#" onclick="showAdminSection('jobs')">Manage Jobs</a>
+  <a href="#" onclick="showAdminSection('settings')">Settings</a>
+  <a href="#" onclick="logout()">Logout</a>
+</div>
+
     <div class="overlay" id="adminOverlay" onclick="toggleAdminMenu()"></div>
 
+
+<!-- Admin Dashboard Sections -->
+<div id="adminHomeSection">
     <h2>Admin Dashboard</h2>
     <div style="display: flex; gap: 20px; justify-content: center; margin-bottom: 20px;">
-  <div style="background: #007bff; padding: 20px; border-radius: 10px; width: 150px;">
+       <!-- stats blocks -->
+      <div style="background: #007bff; padding: 20px; border-radius: 10px; width: 150px;">
     <p>Total Freshers:</p>
     <h3 id="totalFreshers">0</h3>
   </div>
@@ -136,9 +141,7 @@ th, td {
     <h3 id="totalJobs">0</h3>
   </div>
 </div>
-
-    <h3 style="text-align: center; margin-top: 30px;">🔔 Recent Activity</h3>
-
+<h3 style="text-align: center; margin-top: 30px;">🔔 Recent Activity</h3>
 <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
 
   <!-- Recent Users Table -->
@@ -167,10 +170,24 @@ th, td {
       </thead>
       <tbody id="recentJobsTable"></tbody>
     </table>
-  </div>
-
+   </div>
+ </div>
 </div>
 
+<div id="adminUsersSection" style="display:none;">
+  <h2>Manage Users</h2>
+  <p>Table of all users will go here!</p>
+</div>
+
+<div id="adminJobsSection" style="display:none;">
+  <h2>Manage Jobs</h2>
+  <p>Table of all jobs will go here!</p>
+</div>
+
+<div id="adminSettingsSection" style="display:none;">
+  <h2>Settings</h2>
+  <p>Settings form here.</p>
+</div>
 
   <!-- COMPANY DASHBOARD -->
   <div id="companyDashboard" style="display:none; padding:20px;">
@@ -391,6 +408,26 @@ async function loadRecentActivity() {
       if (snap.exists()) showDashboard(snap.data().role);
     }
   });
+
+window.showAdminSection = function(section) {
+  // Hide all admin sections
+  document.getElementById('adminHomeSection').style.display = 'none';
+  document.getElementById('adminUsersSection').style.display = 'none';
+  document.getElementById('adminJobsSection').style.display = 'none';
+  document.getElementById('adminSettingsSection').style.display = 'none';
+
+  // Show selected
+  if (section === 'home') {
+    document.getElementById('adminHomeSection').style.display = 'block';
+  } else if (section === 'users') {
+    document.getElementById('adminUsersSection').style.display = 'block';
+  } else if (section === 'jobs') {
+    document.getElementById('adminJobsSection').style.display = 'block';
+  } else if (section === 'settings') {
+    document.getElementById('adminSettingsSection').style.display = 'block';
+  }
+};
+
 
 // ✅ Function to load stats
 async function loadAdminStats() {

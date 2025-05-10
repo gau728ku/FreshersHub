@@ -79,6 +79,17 @@ th, td { padding: 12px; text-align: center; border: 1px solid #ddd; word-wrap: b
   text-decoration: underline;
 }
 
+table {
+  table-layout: auto; /* allow auto width */
+}
+
+th, td {
+  white-space: nowrap; /* prevent breaking in middle */
+  overflow: hidden;
+  text-overflow: ellipsis; /* show ... if too long */
+  max-width: 120px; /* limit width of each column */
+}
+
 
   </style>
 </head>
@@ -105,8 +116,10 @@ th, td { padding: 12px; text-align: center; border: 1px solid #ddd; word-wrap: b
     <div id="adminMenuBtn" onclick="toggleAdminMenu()">☰</div>
     
     <div class="sideMenu" id="adminSideMenu">
+      <a href="#">Dashboard</a>
       <a href="#">Manage Users</a>
       <a href="#">Manage Jobs</a>
+      <a href="#">Settings</a>
       <a href="#" onclick="logout()">Logout</a>
     </div>
     <div class="overlay" id="adminOverlay" onclick="toggleAdminMenu()"></div>
@@ -125,6 +138,40 @@ th, td { padding: 12px; text-align: center; border: 1px solid #ddd; word-wrap: b
   <div style="background: #ffc107; padding: 20px; border-radius: 10px; width: 150px;">
     <p>Total Jobs:</p>
     <h3 id="totalJobs">0</h3>
+  </div>
+</div>
+
+
+<h3 style="text-align: center; margin-top: 30px;">🔔 Recent Activity</h3>
+
+<div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+
+  <!-- Recent Users Table -->
+  <div style="background: white; color: black; border-radius: 10px; padding: 10px; overflow-x: auto;">
+    <h4>Last 5 Users</h4>
+    <table style="width: 300px;">
+      <thead style="background: #343a40; color: white;">
+        <tr><th>Email</th><th>Role</th></tr>
+      </thead>
+      <tbody id="recentUsersTable"></tbody>
+    </table>
+  </div>
+
+  <!-- Recent Jobs Table -->
+  <div style="background: white; color: black; border-radius: 10px; padding: 10px; overflow-x: auto;">
+    <h4>Last 5 Jobs</h4>
+    <table style="width: 300px;">
+      <thead style="background: #343a40; color: white;">
+        <tr>
+        <th>Title</th>
+        <th>Company</th>
+        <th>description</th>
+        <th>location</th>
+        <th>salary</th>
+      </tr>
+      </thead>
+      <tbody id="recentJobsTable"></tbody>
+    </table>
   </div>
 </div>
 
@@ -274,7 +321,8 @@ document.getElementById('auth-section').style.display = 'none';
 // Show relevant dashboard + menu
 if (role === 'admin') {
   document.getElementById('adminDashboard').style.display = 'block';
-   loadAdminStats(); // ✅ call to load stats
+  loadAdminStats(); // ✅ call to load stats
+  loadRecentActivity();  // call to recent activities
   document.getElementById('adminMenuBtn').style.display = 'block';
 } else if (role === 'fresher') {
   document.getElementById('fresherDashboard').style.display = 'block';
@@ -331,6 +379,48 @@ async function loadAdminStats() {
   // Count Jobs
   const jobsSnapshot = await getDocs(collection(db, "jobs"));
   document.getElementById('totalJobs').innerText = jobsSnapshot.size;
+}
+
+async function loadRecentActivity() {
+  // 1️⃣ Recent Users
+  const usersQuery = query(
+    collection(db, "users"),
+    where("role", "in", ["fresher", "company"])
+  );
+  const usersSnapshot = await getDocs(usersQuery);
+
+  const usersData = [];
+  usersSnapshot.forEach(doc => usersData.push({ id: doc.id, ...doc.data() }));
+  
+  // sort by Firestore document ID or use a timestamp field if available
+  const last5Users = usersData.slice(-5).reverse(); // take last 5
+  
+  const usersTable = document.getElementById('recentUsersTable');
+  usersTable.innerHTML = "";
+  last5Users.forEach(user => {
+    usersTable.innerHTML += `<tr><td>${user.email}</td><td>${user.role}</td></tr>`;
+  });
+
+  // 2️⃣ Recent Jobs
+  const jobsSnapshot = await getDocs(collection(db, "jobs"));
+  const jobsData = [];
+  jobsSnapshot.forEach(doc => jobsData.push({ id: doc.id, ...doc.data() }));
+  
+  const last5Jobs = jobsData.slice(-5).reverse();
+  
+  const jobsTable = document.getElementById('recentJobsTable');
+  jobsTable.innerHTML = "";
+  last5Jobs.forEach(job => {
+  jobsTable.innerHTML += `
+    <tr>
+      <td>${job.Title || 'N/A'}</td>
+      <td>${job.company || 'N/A'}</td>
+      <td>${job.description || 'N/A'}</td>
+      <td>${job.location || 'N/A'}</td>
+      <td>${job.salary || 'N/A'}</td>
+    </tr>`;
+});
+
 }
 
   

@@ -447,25 +447,25 @@ window.showAdminSection = function(section) {
 };
 
 // Attach click events for admin side menu
-document.getElementById('adminMenuHome').addEventListener('click', function(e) {
-  e.preventDefault();
-  showAdminSection('home');
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('adminMenuHome').addEventListener('click', function(e) {
+    e.preventDefault();
+    showAdminSection('home');
+  });
+  document.getElementById('adminMenuUsers').addEventListener('click', function(e) {
+    e.preventDefault();
+    showAdminSection('users');
+  });
+  document.getElementById('adminMenuJobs').addEventListener('click', function(e) {
+    e.preventDefault();
+    showAdminSection('jobs');
+  });
+  document.getElementById('adminMenuSettings').addEventListener('click', function(e) {
+    e.preventDefault();
+    showAdminSection('settings');
+  });
 });
 
-document.getElementById('adminMenuUsers').addEventListener('click', function(e) {
-  e.preventDefault();
-  showAdminSection('users');
-});
-
-document.getElementById('adminMenuJobs').addEventListener('click', function(e) {
-  e.preventDefault();
-  showAdminSection('jobs');
-});
-
-document.getElementById('adminMenuSettings').addEventListener('click', function(e) {
-  e.preventDefault();
-  showAdminSection('settings');
-});
 
 
 

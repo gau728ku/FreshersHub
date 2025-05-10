@@ -55,27 +55,14 @@
       width: 250px; height: 100%;
       background: rgba(0,0,0,0.8);
       color: white; padding-top: 60px;
-      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-
+      transition: transform 0.3s ease; z-index: 1000;
     }
-    .sideMenu.open { 
-      transform: translateX(250px); 
-    }
+    .sideMenu.open { transform: translateX(250px); }
 
     .sideMenu a {
-  display: block;
-  color: white;
-  padding: 12px;
-  text-decoration: none;
-  font-size: 18px;
-  transition: background 0.2s, transform 0.1s;
-}
-
-.sideMenu a:active {
-  background: rgba(255,255,255,0.2);
-  transform: scale(0.95);
-}
-
+      display: block; color: white; padding: 12px;
+      text-decoration: none; font-size: 18px;
+    }
     .sideMenu a:hover { background: rgba(255,255,255,0.1); }
 
     .overlay {
@@ -125,23 +112,18 @@ th, td {
   <!-- ADMIN DASHBOARD -->
   <div id="adminDashboard" style="display:none; padding:20px;">
     <div id="adminMenuBtn" onclick="toggleAdminMenu()">☰</div>
-
     <div class="sideMenu" id="adminSideMenu">
-<a href="#" id="adminMenuHome">Dashboard</a>
-<a href="#" id="adminMenuUsers">Manage Users</a>
-<a href="#" id="adminMenuJobs">Manage Jobs</a>
-<a href="#" id="adminMenuSettings">Settings</a>
-<a href="#" onclick="logout(); return false;">Logout</a>
-</div>
-<div class="overlay" id="adminOverlay" onclick="toggleAdminMenu()"></div>
+      <a href="#">Dashboard</a>
+      <a href="#">Manage Users</a>
+      <a href="#">Manage Jobs</a>
+      <a href="#">Settings</a>
+      <a href="#" onclick="logout()">Logout</a>
+    </div>
+    <div class="overlay" id="adminOverlay" onclick="toggleAdminMenu()"></div>
 
-
-<!-- Admin Dashboard Sections -->
-<div id="adminHomeSection">
     <h2>Admin Dashboard</h2>
     <div style="display: flex; gap: 20px; justify-content: center; margin-bottom: 20px;">
-       <!-- stats blocks -->
-      <div style="background: #007bff; padding: 20px; border-radius: 10px; width: 150px;">
+  <div style="background: #007bff; padding: 20px; border-radius: 10px; width: 150px;">
     <p>Total Freshers:</p>
     <h3 id="totalFreshers">0</h3>
   </div>
@@ -154,7 +136,9 @@ th, td {
     <h3 id="totalJobs">0</h3>
   </div>
 </div>
-<h3 style="text-align: center; margin-top: 30px;">🔔 Recent Activity</h3>
+
+    <h3 style="text-align: center; margin-top: 30px;">🔔 Recent Activity</h3>
+
 <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
 
   <!-- Recent Users Table -->
@@ -183,24 +167,10 @@ th, td {
       </thead>
       <tbody id="recentJobsTable"></tbody>
     </table>
-   </div>
- </div>
+  </div>
+
 </div>
 
-<div id="adminUsersSection" style="display:none;">
-  <h2>Manage Users</h2>
-  <p>Table of all users will go here!</p>
-</div>
-
-<div id="adminJobsSection" style="display:none;">
-  <h2>Manage Jobs</h2>
-  <p>Table of all jobs will go here!</p>
-</div>
-
-<div id="adminSettingsSection" style="display:none;">
-  <h2>Settings</h2>
-  <p>Settings form here.</p>
-</div>
 
   <!-- COMPANY DASHBOARD -->
   <div id="companyDashboard" style="display:none; padding:20px;">
@@ -341,7 +311,6 @@ if (role === 'admin') {
    loadAdminStats(); // ✅ call to load stats
    loadRecentActivity();  // recent activity
   document.getElementById('adminMenuBtn').style.display = 'block';
-   showAdminSection('home');  // ✅ ADD THIS LINE!
 } else if (role === 'fresher') {
   document.getElementById('fresherDashboard').style.display = 'block';
   document.getElementById('fresherMenuBtn').style.display = 'block';
@@ -422,52 +391,6 @@ async function loadRecentActivity() {
       if (snap.exists()) showDashboard(snap.data().role);
     }
   });
-
-window.showAdminSection = function(section) {
-  // Hide all admin sections
-  document.getElementById('adminHomeSection').style.display = 'none';
-  document.getElementById('adminUsersSection').style.display = 'none';
-  document.getElementById('adminJobsSection').style.display = 'none';
-  document.getElementById('adminSettingsSection').style.display = 'none';
-
-  // Show selected
-  if (section === 'home') {
-    document.getElementById('adminHomeSection').style.display = 'block';
-  } else if (section === 'users') {
-    document.getElementById('adminUsersSection').style.display = 'block';
-  } else if (section === 'jobs') {
-    document.getElementById('adminJobsSection').style.display = 'block';
-  } else if (section === 'settings') {
-    document.getElementById('adminSettingsSection').style.display = 'block';
-  }
-
-  // ✅ Auto-close side menu
-  document.getElementById('adminSideMenu').classList.remove('open');
-  document.getElementById('adminOverlay').classList.remove('show');
-};
-
-// Attach click events for admin side menu
-document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('adminMenuHome').addEventListener('click', function(e) {
-    e.preventDefault();
-    showAdminSection('home');
-  });
-  document.getElementById('adminMenuUsers').addEventListener('click', function(e) {
-    e.preventDefault();
-    showAdminSection('users');
-  });
-  document.getElementById('adminMenuJobs').addEventListener('click', function(e) {
-    e.preventDefault();
-    showAdminSection('jobs');
-  });
-  document.getElementById('adminMenuSettings').addEventListener('click', function(e) {
-    e.preventDefault();
-    showAdminSection('settings');
-  });
-});
-
-
-
 
 // ✅ Function to load stats
 async function loadAdminStats() {

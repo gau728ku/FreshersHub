@@ -103,6 +103,7 @@ th, td { padding: 12px; text-align: center; border: 1px solid #ddd; word-wrap: b
 
   <div id="adminDashboard" style="display:none; padding:20px;">
     <div id="adminMenuBtn" onclick="toggleAdminMenu()">☰</div>
+    
     <div class="sideMenu" id="adminSideMenu">
       <a href="#">Manage Users</a>
       <a href="#">Manage Jobs</a>
@@ -112,9 +113,8 @@ th, td { padding: 12px; text-align: center; border: 1px solid #ddd; word-wrap: b
 
 
 <h2>Admin Dashboard</h2>
+<div style="display: flex; gap: 20px; justify-content: center; margin-bottom: 20px;"></div>
 <div style="background: #007bff; padding: 20px; border-radius: 10px; width: 150px;">
-
-
   <p>Total Freshers:</p>
   <h3 id="totalFreshers">0</h3>
 </div>
@@ -126,7 +126,6 @@ th, td { padding: 12px; text-align: center; border: 1px solid #ddd; word-wrap: b
   <p>Total Jobs:</p>
   <h3 id="totalJobs">0</h3>
 </div>
-
   </div>
 
   <!-- COMPANY DASHBOARD -->
@@ -166,6 +165,7 @@ th, td { padding: 12px; text-align: center; border: 1px solid #ddd; word-wrap: b
   </div>
 
 <script type="module">
+
   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
   import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
   import { getFirestore, setDoc, doc, getDoc, collection, where, getDocs, query } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";

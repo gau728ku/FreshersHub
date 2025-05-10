@@ -79,6 +79,17 @@
   text-decoration: underline;
 }
 
+table {
+  table-layout: auto; /* allow auto width */
+}
+
+th, td {
+  white-space: nowrap; /* prevent breaking in middle */
+  overflow: hidden;
+  text-overflow: ellipsis; /* show ... if too long */
+  max-width: 120px; /* limit width of each column */
+}
+
 
   </style>
 </head>
@@ -129,7 +140,7 @@
 <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
 
   <!-- Recent Users Table -->
-  <div style="background: rgb(136, 132, 132); color: black; border-radius: 10px; padding: 10px;">
+  <div style="background: rgb(136, 132, 132); color: black; border-radius: 10px; padding: 10px; overflow-x: auto;">
     <h4>Last 5 Users</h4>
     <table style="width: 300px;">
       <thead style="background: #333131; color: white;">
@@ -140,7 +151,7 @@
   </div>
 
   <!-- Recent Jobs Table -->
-  <div style="background: rgb(134, 132, 132); color: black; border-radius: 10px; padding: 10px;">
+  <div style="background: rgb(134, 132, 132); color: black; border-radius: 10px; padding: 10px; overflow-x: auto;">
     <h4>Last 5 Jobs</h4>
     <table style="width: 300px;">
       <thead style="background: #343a40; color: white;">

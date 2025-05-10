@@ -101,7 +101,19 @@
     <div class="overlay" id="adminOverlay" onclick="toggleAdminMenu()"></div>
 
     <h2>Admin Dashboard</h2>
-    <p>Admin content here.</p>
+    <div style="background: #007bff; padding: 20px; border-radius: 10px; width: 150px;">
+  <p>Total Freshers:</p>
+  <h3 id="totalFreshers">0</h3>
+</div>
+<div style="background: #28a745; padding: 20px; border-radius: 10px; width: 150px;">
+  <p>Total Companies:</p>
+  <h3 id="totalCompanies">0</h3>
+</div>
+<div style="background: #ffc107; padding: 20px; border-radius: 10px; width: 150px;">
+  <p>Total Jobs:</p>
+  <h3 id="totalJobs">0</h3>
+</div>
+
   </div>
 
   <!-- COMPANY DASHBOARD -->
@@ -230,6 +242,7 @@ document.getElementById('auth-section').style.display = 'none';
 // Show relevant dashboard + menu
 if (role === 'admin') {
   document.getElementById('adminDashboard').style.display = 'block';
+   loadAdminStats(); // ✅ call to load stats
   document.getElementById('adminMenuBtn').style.display = 'block';
 } else if (role === 'fresher') {
   document.getElementById('fresherDashboard').style.display = 'block';
@@ -270,6 +283,25 @@ if (role === 'admin') {
       if (snap.exists()) showDashboard(snap.data().role);
     }
   });
+
+// ✅ Function to load stats
+async function loadAdminStats() {
+  // Count Freshers
+  const freshersQuery = query(collection(db, "users"), where("role", "==", "fresher"));
+  const freshersSnapshot = await getDocs(freshersQuery);
+  document.getElementById('totalFreshers').innerText = freshersSnapshot.size;
+
+  // Count Companies
+  const companiesQuery = query(collection(db, "users"), where("role", "==", "company"));
+  const companiesSnapshot = await getDocs(companiesQuery);
+  document.getElementById('totalCompanies').innerText = companiesSnapshot.size;
+
+  // Count Jobs
+  const jobsSnapshot = await getDocs(collection(db, "jobs"));
+  document.getElementById('totalJobs').innerText = jobsSnapshot.size;
+}
+
+  
 </script>
 
 </body>

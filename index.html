@@ -126,11 +126,12 @@ th, td {
   <div id="adminDashboard" style="display:none; padding:20px;">
     <div id="adminMenuBtn" onclick="toggleAdminMenu()">☰</div>
     <div class="sideMenu" id="adminSideMenu">
-  <a href="#" id="adminMenuHome">Dashboard</a>
-  <a href="#" id="adminMenuUsers">Manage Users</a>
-  <a href="#" id="adminMenuJobs">Manage Jobs</a>
-  <a href="#" id="adminMenuSettings">Settings</a>
-  <a href="#" onclick="logout()">Logout</a>
+<a href="#" id="adminMenuHome" onclick="showAdminSection('home'); return false;">Dashboard</a>
+<a href="#" id="adminMenuUsers" onclick="showAdminSection('users'); return false;">Manage Users</a>
+<a href="#" id="adminMenuJobs" onclick="showAdminSection('jobs'); return false;">Manage Jobs</a>
+<a href="#" id="adminMenuSettings" onclick="showAdminSection('settings'); return false;">Settings</a>
+<a href="#" onclick="logout(); return false;">Logout</a>
+
 </div>
 
 

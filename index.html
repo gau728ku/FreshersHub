@@ -72,6 +72,14 @@
       z-index: 999; display: none;
     }
     .overlay.show { display: block; }
+
+   #toggle-text a {
+  color: #00a2ff; /* bright pink */
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+
   </style>
 </head>
 <body>
@@ -227,7 +235,7 @@
 // 👇 ADD THIS LINE
 window.toggleForm = toggleForm;
 
-// ✅ attach event after DOM loads
+// ✅ attach event after DOM loads 
 
 document.addEventListener('DOMContentLoaded', () => {
   const toggleLink = document.getElementById('toggleLink');

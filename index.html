@@ -342,6 +342,7 @@ if (role === 'admin') {
    loadAdminStats(); // ✅ call to load stats
    loadRecentActivity();  // recent activity
   document.getElementById('adminMenuBtn').style.display = 'block';
+   showAdminSection('home');  // ✅ ADD THIS LINE!
 } else if (role === 'fresher') {
   document.getElementById('fresherDashboard').style.display = 'block';
   document.getElementById('fresherMenuBtn').style.display = 'block';

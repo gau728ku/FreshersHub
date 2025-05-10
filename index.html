@@ -55,14 +55,27 @@
       width: 250px; height: 100%;
       background: rgba(0,0,0,0.8);
       color: white; padding-top: 60px;
-      transition: transform 0.3s ease; z-index: 1000;
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
     }
-    .sideMenu.open { transform: translateX(250px); }
+    .sideMenu.open { 
+      transform: translateX(250px); 
+    }
 
     .sideMenu a {
-      display: block; color: white; padding: 12px;
-      text-decoration: none; font-size: 18px;
-    }
+  display: block;
+  color: white;
+  padding: 12px;
+  text-decoration: none;
+  font-size: 18px;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.sideMenu a:active {
+  background: rgba(255,255,255,0.2);
+  transform: scale(0.95);
+}
+
     .sideMenu a:hover { background: rgba(255,255,255,0.1); }
 
     .overlay {
@@ -426,6 +439,10 @@ window.showAdminSection = function(section) {
   } else if (section === 'settings') {
     document.getElementById('adminSettingsSection').style.display = 'block';
   }
+
+  // ✅ Auto-close side menu
+  document.getElementById('adminSideMenu').classList.remove('open');
+  document.getElementById('adminOverlay').classList.remove('show');
 };
 
 

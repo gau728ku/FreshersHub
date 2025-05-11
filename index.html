@@ -15,88 +15,189 @@
       color: white;
     }
 
-.container {
-  max-width: 400px;
-  margin: 5% auto;
-  padding: 2rem;
-  background: rgba(0, 0, 0, 0.7);
-  border-radius: 12px;
-  box-shadow: 0 0 15px rgba(0,0,0,0.3);
-}
+    .container {
+      max-width: 400px;
+      margin: 5% auto;
+      padding: 2rem;
+      background: rgba(0, 0, 0, 0.7);
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+    }
 
-h2 { text-align: center; margin-bottom: 1.5rem; }
+    h2 { text-align: center; margin-bottom: 1.5rem; }
 
-input, select, button {
-  width: 100%; padding: 12px; margin: 8px 0;
-  border: none; border-radius: 8px; font-size: 1rem;
-}
+    input, select, button {
+      width: 100%; padding: 12px; margin: 8px 0;
+      border: none; border-radius: 8px; font-size: 1rem;
+    }
 
-button { background-color: #00c6ff; color: white; cursor: pointer; }
-button:hover { background-color: #1c78e9; }
+    button { 
+      background-color: #00c6ff; 
+      color: white; 
+      cursor: pointer; 
+      transition: background 0.3s;
+    }
+    button:hover { background-color: #1c78e9; }
+    button.danger { background-color: #dc3545; }
+    button.danger:hover { background-color: #c82333; }
+    button.success { background-color: #28a745; }
+    button.success:hover { background-color: #218838; }
 
-table {
-  width: 100%; border-collapse: collapse; border-radius: 10px; overflow: hidden;
-  table-layout: fixed; background: white; color: black;
-}
+    /* Dashboard Cards */
+    .card {
+      background: rgba(255,255,255,0.1);
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 20px;
+      backdrop-filter: blur(5px);
+    }
 
-thead { background-color: #007bff; color: white; }
-th, td { padding: 12px; text-align: center; border: 1px solid #ddd; word-wrap: break-word; }
+    /* Tables */
+    .table-container {
+      overflow-x: auto;
+      margin: 20px 0;
+      background: white;
+      border-radius: 10px;
+      color: black;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    
+    th {
+      background-color: #007bff;
+      color: white;
+      position: sticky;
+      top: 0;
+    }
+    
+    tr:hover {
+      background-color: #f5f5f5;
+    }
 
-/* Menu buttons per dashboard */
-#adminMenuBtn, #fresherMenuBtn, #companyMenuBtn {
-  position: fixed; top: 20px; left: 20px;
-  font-size: 28px; cursor: pointer; z-index: 1001;
-  display: none; /* Hidden by default */
-}
+    /* Menu buttons */
+    #adminMenuBtn, #fresherMenuBtn, #companyMenuBtn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      font-size: 28px;
+      cursor: pointer;
+      z-index: 1001;
+      display: none;
+      color: white;
+      background: rgba(0,0,0,0.5);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      text-align: center;
+      line-height: 40px;
+    }
 
-/* Side Menus */
-.sideMenu {
-  position: fixed; top: 0; left: -250px;
-  width: 250px; height: 100%;
-  background: rgba(0,0,0,0.8);
-  color: white; padding-top: 60px;
-  transition: transform 0.3s ease; z-index: 1000;
-}
-.sideMenu.open { transform: translateX(250px); }
+    /* Side Menus */
+    .sideMenu {
+      position: fixed;
+      top: 0;
+      left: -250px;
+      width: 250px;
+      height: 100%;
+      background: rgba(0,0,0,0.9);
+      color: white;
+      padding-top: 60px;
+      transition: transform 0.3s ease;
+      z-index: 1000;
+    }
+    
+    .sideMenu.open { transform: translateX(250px); }
+    
+    .sideMenu a {
+      display: block;
+      color: white;
+      padding: 12px 20px;
+      text-decoration: none;
+      font-size: 18px;
+      border-left: 4px solid transparent;
+    }
+    
+    .sideMenu a:hover {
+      background: rgba(255,255,255,0.1);
+      border-left: 4px solid #00c6ff;
+    }
 
-.sideMenu a {
-  display: block; color: white; padding: 12px;
-  text-decoration: none; font-size: 18px;
-}
-.sideMenu a:hover { background: rgba(255,255,255,0.1); }
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.4);
+      z-index: 999;
+      display: none;
+    }
+    
+    .overlay.show { display: block; }
 
-.overlay {
-  position: fixed; top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0,0,0,0.4);
-  z-index: 999; display: none;
-}
-.overlay.show { display: block; }
+    #toggle-text a {
+      color: #00aeff; 
+      font-weight: bold;
+      text-decoration: underline;
+      cursor: pointer;
+    }
 
-#toggle-text a {
-  color: #00aeff; 
-  font-weight: bold;
-  text-decoration: underline;
-}
+    /* Dashboard sections */
+    .dashboard-section {
+      display: none;
+      padding: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .stats-container {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 30px;
+    }
+    
+    .stat-card {
+      background: rgba(255,255,255,0.1);
+      padding: 20px;
+      border-radius: 10px;
+      width: 200px;
+      text-align: center;
+      backdrop-filter: blur(5px);
+    }
+    
+    .stat-card h3 {
+      margin-top: 10px;
+      font-size: 2rem;
+    }
 
-table {
-  table-layout: auto; /* allow auto width */
-}
-
-th, td {
-  white-space: nowrap; /* prevent breaking in middle */
-  overflow: hidden;
-  text-overflow: ellipsis; /* show ... if too long */
-  max-width: 120px; /* limit width of each column */
-}
-
-
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .container {
+        margin: 20px auto;
+        width: 90%;
+      }
+      
+      .stats-container {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
   </style>
 </head>
 <body>
 
-  <!-- LOGIN/SIGNUP -->
-
+  <!-- LOGIN/SIGNUP SECTION -->
   <div class="container" id="auth-section">
     <h2 id="form-title">FreshersHub - Signup</h2>
     <input type="email" id="email" placeholder="Email" required />
@@ -107,410 +208,794 @@ th, td {
       <option value="admin">Admin</option>
     </select>
     <button id="actionBtn" onclick="signup()">Signup</button>
-    <p id="toggle-text">Already have an account? <a href="#" id="toggleLink">Login here</a></p>
+    <p id="toggle-text">Already have an account? <a id="toggleLink">Login here</a></p>
   </div>
 
- <!-- ADMIN DASHBOARD -->
-<div id="adminDashboard" style="display:none; padding:20px;">
-  <div id="adminMenuBtn" onclick="toggleAdminMenu()">☰</div>
+  <!-- ADMIN DASHBOARD -->
+  <div id="adminDashboard" style="display:none;">
+    <div id="adminMenuBtn" onclick="toggleAdminMenu()">☰</div>
 
-  <div class="sideMenu" id="adminSideMenu">
-    <a href="#" id="adminMenuHome">Dashboard</a>
-    <a href="#" id="adminMenuUsers">Manage Users</a>
-    <a href="#" id="adminMenuJobs">Manage Jobs</a>
-    <a href="#" id="adminMenuSettings">Settings</a>
-    <a href="#" onclick="logout()">Logout</a>
-  </div>
-
-  <div class="overlay" id="adminOverlay" onclick="toggleAdminMenu()"></div>
-
-  <!-- ✅ Wrap entire dashboard in this section -->
-  <div id="adminHomeSection" style="display: block;">
-    <h2>Admin Dashboard</h2>
-    <div style="display: flex; gap: 20px; justify-content: center; margin-bottom: 20px;">
-      <div style="background: #007bff; padding: 20px; border-radius: 10px; width: 150px;">
-        <p>Total Freshers:</p>
-        <h3 id="totalFreshers">0</h3>
-      </div>
-      <div style="background: #28a745; padding: 20px; border-radius: 10px; width: 150px;">
-        <p>Total Companies:</p>
-        <h3 id="totalCompanies">0</h3>
-      </div>
-      <div style="background: #ffc107; padding: 20px; border-radius: 10px; width: 150px;">
-        <p>Total Jobs:</p>
-        <h3 id="totalJobs">0</h3>
-      </div>
+    <div class="sideMenu" id="adminSideMenu">
+      <a href="#" id="adminMenuHome">Dashboard</a>
+      <a href="#" id="adminMenuUsers">Manage Users</a>
+      <a href="#" id="adminMenuJobs">Manage Jobs</a>
+      <a href="#" id="adminMenuSettings">Settings</a>
+      <a href="#" onclick="logout()">Logout</a>
     </div>
 
-    <h3 style="text-align: center; margin-top: 30px;">🔔 Recent Activity</h3>
+    <div class="overlay" id="adminOverlay" onclick="toggleAdminMenu()"></div>
 
-    <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
-      <!-- Recent Users Table -->
-      <div style="background: white; color: black; border-radius: 10px; padding: 10px; overflow-x: auto;">
-        <h4>Last 5 Users</h4>
-        <table style="width: 300px;">
-          <thead style="background: #343a40; color: white;">
-            <tr><th>Email</th><th>Role</th></tr>
-          </thead>
-          <tbody id="recentUsersTable"></tbody>
-        </table>
+    <!-- Admin Home Section -->
+    <div class="dashboard-section" id="adminHomeSection">
+      <h2>Admin Dashboard</h2>
+      
+      <div class="stats-container">
+        <div class="stat-card">
+          <p>Total Freshers</p>
+          <h3 id="totalFreshers">0</h3>
+        </div>
+        <div class="stat-card">
+          <p>Total Companies</p>
+          <h3 id="totalCompanies">0</h3>
+        </div>
+        <div class="stat-card">
+          <p>Total Jobs</p>
+          <h3 id="totalJobs">0</h3>
+        </div>
       </div>
 
-      <!-- Recent Jobs Table -->
-      <div style="background: white; color: black; border-radius: 10px; padding: 10px; overflow-x: auto;">
-        <h4>Last 5 Jobs</h4>
-        <table style="width: 300px;">
-          <thead style="background: #343a40; color: white;">
+      <div class="card">
+        <h3 style="text-align: center;">Recent Activity</h3>
+        
+        <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;">
+          <!-- Recent Users Table -->
+          <div style="flex: 1; min-width: 300px;">
+            <h4>Last 5 Users</h4>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr><th>Email</th><th>Role</th></tr>
+                </thead>
+                <tbody id="recentUsersTable"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Recent Jobs Table -->
+          <div style="flex: 1; min-width: 300px;">
+            <h4>Last 5 Jobs</h4>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Title</th>
+                    <th>Company</th>
+                    <th>Location</th>
+                  </tr>
+                </thead>
+                <tbody id="recentJobsTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Manage Users Section -->
+    <div class="dashboard-section" id="adminUsersSection">
+      <h2>Manage Users</h2>
+      <button onclick="showAdminSection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
+      
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="usersTableBody">
+            <!-- Rows will be added here -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+    
+    <!-- Manage Jobs Section -->
+    <div class="dashboard-section" id="adminJobsSection">
+      <h2>Manage Job Listings</h2>
+      <button onclick="showAdminSection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
+      
+      <div class="table-container">
+        <table>
+          <thead>
             <tr>
               <th>Title</th>
               <th>Company</th>
-              <th>description</th>
-              <th>location</th>
-              <th>salary</th>
+              <th>Location</th>
+              <th>Salary</th>
+              <th>Actions</th>
             </tr>
           </thead>
-          <tbody id="recentJobsTable"></tbody>
+          <tbody id="jobsTableBody">
+            <!-- Job rows will be added here -->
+          </tbody>
         </table>
       </div>
     </div>
-  </div> <!-- 🔚 adminHomeSection -->
-  
-  <!-- MANAGE USERS SECTION -->
-  <div id="adminUsersSection" style="display: none; padding: 20px;">
-    <h2>Manage Users</h2>
-    <table style="width: 100%; background: white; color: black;">
-      <thead style="background: #343a40; color: white;">
-        <tr>
-          <th>Email</th>
-          <th>Role</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody id="usersTableBody">
-        <!-- Rows will be added here -->
-      </tbody>
-    </table>
-    <button onclick="backToAdminDashboard()">Back to Dashboard</button>
+    
+    <!-- Settings Section -->
+    <div class="dashboard-section" id="adminSettingsSection">
+      <h2>Admin Settings</h2>
+      <button onclick="showAdminSection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
+      
+      <div class="card">
+        <h3>System Configuration</h3>
+        <p>Settings will be added here</p>
+      </div>
+    </div>
   </div>
-</div>
-
-
 
   <!-- COMPANY DASHBOARD -->
-
-  <div id="companyDashboard" style="display:none; padding:20px;">
+  <div id="companyDashboard" style="display:none;">
     <div id="companyMenuBtn" onclick="toggleCompanyMenu()">☰</div>
+    
     <div class="sideMenu" id="companySideMenu">
-      <a href="#">Post Job</a>
-      <a href="#">My Jobs</a>
+      <a href="#" id="companyMenuHome">Dashboard</a>
+      <a href="#" id="companyMenuPostJob">Post Job</a>
+      <a href="#" id="companyMenuMyJobs">My Jobs</a>
       <a href="#" onclick="logout()">Logout</a>
     </div>
+    
     <div class="overlay" id="companyOverlay" onclick="toggleCompanyMenu()"></div>
-
-
-<h2>Company Dashboard</h2>
-<p>Welcome Company!</p>
-
-
+    
+    <!-- Company Home Section -->
+    <div class="dashboard-section" id="companyHomeSection">
+      <h2>Company Dashboard</h2>
+      <div class="card">
+        <p>Welcome to your company dashboard!</p>
+      </div>
+    </div>
+    
+    <!-- Post Job Section -->
+    <div class="dashboard-section" id="companyPostJobSection">
+      <h2>Post New Job</h2>
+      <button onclick="showCompanySection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
+      
+      <div class="card">
+        <form id="postJobForm">
+          <input type="text" id="jobTitle" placeholder="Job Title" required>
+          <textarea id="jobDescription" placeholder="Job Description" required style="width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px;"></textarea>
+          <input type="text" id="jobLocation" placeholder="Location" required>
+          <input type="text" id="jobSalary" placeholder="Salary Range" required>
+          <button type="submit" class="success">Post Job</button>
+        </form>
+      </div>
+    </div>
+    
+    <!-- My Jobs Section -->
+    <div class="dashboard-section" id="companyMyJobsSection">
+      <h2>My Job Postings</h2>
+      <button onclick="showCompanySection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
+      
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Applications</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="companyJobsTable">
+            <!-- Company's jobs will be listed here -->
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 
   <!-- FRESHER DASHBOARD -->
-
-  <div id="fresherDashboard" style="display:none; padding:20px;">
+  <div id="fresherDashboard" style="display:none;">
     <div id="fresherMenuBtn" onclick="toggleFresherMenu()">☰</div>
+    
     <div class="sideMenu" id="fresherSideMenu">
-      <a href="#">My Applications</a>
-      <a href="#">Profile</a>
+      <a href="#" id="fresherMenuHome">Dashboard</a>
+      <a href="#" id="fresherMenuJobs">Browse Jobs</a>
+      <a href="#" id="fresherMenuApplications">My Applications</a>
+      <a href="#" id="fresherMenuProfile">Profile</a>
       <a href="#" onclick="logout()">Logout</a>
     </div>
+    
     <div class="overlay" id="fresherOverlay" onclick="toggleFresherMenu()"></div>
-
-
-<h2>Fresher Dashboard</h2>
-<p>Welcome Fresher!</p>
-
-
+    
+    <!-- Fresher Home Section -->
+    <div class="dashboard-section" id="fresherHomeSection">
+      <h2>Fresher Dashboard</h2>
+      <div class="card">
+        <p>Welcome to your job search dashboard!</p>
+      </div>
+    </div>
+    
+    <!-- Browse Jobs Section -->
+    <div class="dashboard-section" id="fresherJobsSection">
+      <h2>Available Jobs</h2>
+      <button onclick="showFresherSection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
+      
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Company</th>
+              <th>Location</th>
+              <th>Salary</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="availableJobsTable">
+            <!-- Available jobs will be listed here -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+    
+    <!-- My Applications Section -->
+    <div class="dashboard-section" id="fresherApplicationsSection">
+      <h2>My Applications</h2>
+      <button onclick="showFresherSection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
+      
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Job Title</th>
+              <th>Company</th>
+              <th>Status</th>
+              <th>Applied On</th>
+            </tr>
+          </thead>
+          <tbody id="myApplicationsTable">
+            <!-- Applications will be listed here -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+    
+    <!-- Profile Section -->
+    <div class="dashboard-section" id="fresherProfileSection">
+      <h2>My Profile</h2>
+      <button onclick="showFresherSection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
+      
+      <div class="card">
+        <form id="fresherProfileForm">
+          <input type="text" id="fullName" placeholder="Full Name" required>
+          <input type="text" id="education" placeholder="Education" required>
+          <textarea id="skills" placeholder="Skills (comma separated)" required style="width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px;"></textarea>
+          <input type="file" id="resume" accept=".pdf,.doc,.docx">
+          <button type="submit" class="success">Update Profile</button>
+        </form>
+      </div>
+    </div>
   </div>
 
 <script type="module">
-
   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
-  import { getFirestore, setDoc, doc, getDoc, collection, where, getDocs, query } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+  import { getFirestore, setDoc, doc, getDoc, collection, where, getDocs, query, addDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
+  // Make Firebase functions available globally
   window.query = query;
   window.collection = collection;
   window.where = where;
   window.getDocs = getDocs;
+  window.deleteDoc = deleteDoc;
 
   const firebaseConfig = {
-  apiKey: "AIzaSyDrrAYywpFdd9iIzSSp2m6XcrGkGUgYY3Y",
-  authDomain: "freshershub-33de8.firebaseapp.com",
-  projectId: "freshershub-33de8",
-  storageBucket: "freshershub-33de8.appspot.com",
-  messagingSenderId: "126389629687",
-  appId: "1:126389629687:web:9b9fb43e488f60ac3159f2"
-};
+    apiKey: "AIzaSyDrrAYywpFdd9iIzSSp2m6XcrGkGUgYY3Y",
+    authDomain: "freshershub-33de8.firebaseapp.com",
+    projectId: "freshershub-33de8",
+    storageBucket: "freshershub-33de8.appspot.com",
+    messagingSenderId: "126389629687",
+    appId: "1:126389629687:web:9b9fb43e488f60ac3159f2"
+  };
+
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  window.signup = async function() {const email = document.getElementById('email').value;
-  const password = document.getElementById('password').value;
-  const role = document.getElementById('role').value;
+  // Auth Functions
+  window.signup = async function() {
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const role = document.getElementById('role').value;
 
-  try {
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    const user = userCredential.user;
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
 
-    await setDoc(doc(db, "users", user.uid), { email, role });
+      await setDoc(doc(db, "users", user.uid), { 
+        email, 
+        role,
+        createdAt: new Date().toISOString()
+      });
 
-    alert("Signup successful!");
-    showDashboard(role);
-  } catch (err) {
-    alert(err.message);
-  }
-};
-
-  window.login = async function() { const email = document.getElementById('email').value;
-  const password = document.getElementById('password').value;
-
-  try {
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    const user = userCredential.user;
-
-    const docRef = doc(db, "users", user.uid);
-    const docSnap = await getDoc(docRef);
-
-    if (docSnap.exists()) {
-      const userData = docSnap.data();
-      showDashboard(userData.role);
-    } else {
-      alert("User data not found.");
+      alert("Signup successful!");
+      showDashboard(role);
+    } catch (err) {
+      alert(err.message);
     }
-  } catch (err) {
-    alert(err.message);
-  }
-};
+  };
 
-  window.toggleForm = function() { const formTitle = document.getElementById('form-title');
-  const actionBtn = document.getElementById('actionBtn');
-  const toggleText = document.getElementById('toggle-text');
-  const roleSelect = document.getElementById('role');
+  window.login = async function() {
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
 
-  if (formTitle.textContent.includes('Signup')) {
-    formTitle.textContent = 'FreshersHub - Login';
-    actionBtn.textContent = 'Login';
-    actionBtn.onclick = login; // 👈 switch to login function
-    toggleText.innerHTML = `Don't have an account? <a href="#" onclick="toggleForm()">Signup here</a>`;
-    roleSelect.style.display = 'none';
-  } else {
-    formTitle.textContent = 'FreshersHub - Signup';
-    actionBtn.textContent = 'Signup';
-    actionBtn.onclick = signup;
-    toggleText.innerHTML = `Already have an account? <a href="#" onclick="toggleForm()">Login here</a>`;
-    roleSelect.style.display = 'block';
-  }
-}
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
 
-// 👇 ADD THIS LINE
-window.toggleForm = toggleForm;
+      const docRef = doc(db, "users", user.uid);
+      const docSnap = await getDoc(docRef);
 
-// ✅ attach event after DOM loads
+      if (docSnap.exists()) {
+        const userData = docSnap.data();
+        showDashboard(userData.role);
+      } else {
+        alert("User data not found.");
+      }
+    } catch (err) {
+      alert(err.message);
+    }
+  };
 
-document.addEventListener('DOMContentLoaded', () => {
-  const toggleLink = document.getElementById('toggleLink');
-  toggleLink.addEventListener('click', (e) => {
-    e.preventDefault();
-    toggleForm();
-  });
-});
+  window.toggleForm = function() {
+    const formTitle = document.getElementById('form-title');
+    const actionBtn = document.getElementById('actionBtn');
+    const toggleText = document.getElementById('toggle-text');
+    const roleSelect = document.getElementById('role');
+
+    if (formTitle.textContent.includes('Signup')) {
+      formTitle.textContent = 'FreshersHub - Login';
+      actionBtn.textContent = 'Login';
+      actionBtn.onclick = login;
+      toggleText.innerHTML = `Don't have an account? <a id="toggleLink">Signup here</a>`;
+      roleSelect.style.display = 'none';
+    } else {
+      formTitle.textContent = 'FreshersHub - Signup';
+      actionBtn.textContent = 'Signup';
+      actionBtn.onclick = signup;
+      toggleText.innerHTML = `Already have an account? <a id="toggleLink">Login here</a>`;
+      roleSelect.style.display = 'block';
+    }
+  };
 
   window.showDashboard = function(role) {
-     // Hide all dashboards
-document.getElementById('adminDashboard').style.display = 'none';
-document.getElementById('fresherDashboard').style.display = 'none';
-document.getElementById('companyDashboard').style.display = 'none';
-// Hide all menu buttons
-document.getElementById('adminMenuBtn').style.display = 'none';
-document.getElementById('companyMenuBtn').style.display = 'none';
-document.getElementById('fresherMenuBtn').style.display = 'none';
-// Hide auth
-document.getElementById('auth-section').style.display = 'none';
+    // Hide all dashboards
+    document.getElementById('adminDashboard').style.display = 'none';
+    document.getElementById('fresherDashboard').style.display = 'none';
+    document.getElementById('companyDashboard').style.display = 'none';
+    
+    // Hide all menu buttons
+    document.getElementById('adminMenuBtn').style.display = 'none';
+    document.getElementById('companyMenuBtn').style.display = 'none';
+    document.getElementById('fresherMenuBtn').style.display = 'none';
+    
+    // Hide auth
+    document.getElementById('auth-section').style.display = 'none';
 
-// Show relevant dashboard + menu
-if (role === 'admin') {
-  document.getElementById('adminDashboard').style.display = 'block';
-  loadAdminStats(); // ✅ call to load stats
-  loadRecentActivity();  // call to recent activities
-  document.getElementById('adminMenuBtn').style.display = 'block';
-} else if (role === 'fresher') {
-  document.getElementById('fresherDashboard').style.display = 'block';
-  document.getElementById('fresherMenuBtn').style.display = 'block';
-} else if (role === 'company') {
-  document.getElementById('companyDashboard').style.display = 'block';
-  document.getElementById('companyMenuBtn').style.display = 'block';
-} else {
-  alert("Unknown role: " + role);
-}
-}
+    // Show relevant dashboard + menu
+    if (role === 'admin') {
+      document.getElementById('adminDashboard').style.display = 'block';
+      document.getElementById('adminMenuBtn').style.display = 'block';
+      showAdminSection('home');
+      loadAdminStats();
+      loadRecentActivity();
+    } else if (role === 'fresher') {
+      document.getElementById('fresherDashboard').style.display = 'block';
+      document.getElementById('fresherMenuBtn').style.display = 'block';
+      showFresherSection('home');
+    } else if (role === 'company') {
+      document.getElementById('companyDashboard').style.display = 'block';
+      document.getElementById('companyMenuBtn').style.display = 'block';
+      showCompanySection('home');
+    } else {
+      alert("Unknown role: " + role);
+    }
+  };
 
-
+  // Menu Toggle Functions
   window.toggleAdminMenu = function() {
     document.getElementById('adminSideMenu').classList.toggle('open');
     document.getElementById('adminOverlay').classList.toggle('show');
   };
+
   window.toggleCompanyMenu = function() {
     document.getElementById('companySideMenu').classList.toggle('open');
     document.getElementById('companyOverlay').classList.toggle('show');
   };
+
   window.toggleFresherMenu = function() {
     document.getElementById('fresherSideMenu').classList.toggle('open');
     document.getElementById('fresherOverlay').classList.toggle('show');
   };
 
+  // Logout Function
   window.logout = function() {
-    auth.signOut().then(() => {
+    signOut(auth).then(() => {
       document.getElementById('auth-section').style.display = 'block';
-      ['adminDashboard','companyDashboard','fresherDashboard'].forEach(id => document.getElementById(id).style.display = 'none');
-      ['adminMenuBtn','companyMenuBtn','fresherMenuBtn'].forEach(id => document.getElementById(id).style.display = 'none');
+      document.getElementById('adminDashboard').style.display = 'none';
+      document.getElementById('companyDashboard').style.display = 'none';
+      document.getElementById('fresherDashboard').style.display = 'none';
+      document.getElementById('adminMenuBtn').style.display = 'none';
+      document.getElementById('companyMenuBtn').style.display = 'none';
+      document.getElementById('fresherMenuBtn').style.display = 'none';
     });
   };
 
-  onAuthStateChanged(auth, async (user) => {
-    if (user) {
-      const snap = await getDoc(doc(db, "users", user.uid));
-      if (snap.exists()) showDashboard(snap.data().role);
+  // Admin Functions
+  window.showAdminSection = function(section) {
+    // Hide all admin sections
+    document.getElementById('adminHomeSection').style.display = 'none';
+    document.getElementById('adminUsersSection').style.display = 'none';
+    document.getElementById('adminJobsSection').style.display = 'none';
+    document.getElementById('adminSettingsSection').style.display = 'none';
+
+    // Show the requested one
+    if (section === 'home') {
+      document.getElementById('adminHomeSection').style.display = 'block';
+    } else if (section === 'users') {
+      document.getElementById('adminUsersSection').style.display = 'block';
+      loadAllUsers();
+    } else if (section === 'jobs') {
+      document.getElementById('adminJobsSection').style.display = 'block';
+      loadAllJobs();
+    } else if (section === 'settings') {
+      document.getElementById('adminSettingsSection').style.display = 'block';
     }
-  });
+  };
 
-  // ✅ Function to load all users
-window.loadAllUsers = async function() {
-  const table = document.getElementById('usersTableBody');
-  table.innerHTML = ''; // Clear old rows
+  window.loadAllUsers = async function() {
+    const table = document.getElementById('usersTableBody');
+    table.innerHTML = '<tr><td colspan="3">Loading users...</td></tr>';
 
-console.log("Loading users...");
-console.log(querySnapshot.size);
+    try {
+      const querySnapshot = await getDocs(collection(db, "users"));
+      table.innerHTML = '';
 
+      if (querySnapshot.empty) {
+        table.innerHTML = '<tr><td colspan="3">No users found</td></tr>';
+        return;
+      }
 
-  const querySnapshot = await getDocs(collection(db, "users"));
-  querySnapshot.forEach(doc => {
-    const data = doc.data();
-    const row = `
-      <tr>
-        <td>${data.email}</td>
-        <td>${data.role}</td>
-        <td><button onclick="deleteUser('${doc.id}')">Delete</button></td>
-      </tr>`;
-    table.innerHTML += row;
-  });
-};
+      querySnapshot.forEach(doc => {
+        const data = doc.data();
+        const row = `
+          <tr>
+            <td>${data.email}</td>
+            <td>${data.role}</td>
+            <td>
+              <button onclick="deleteUser('${doc.id}')" class="danger">Delete</button>
+            </td>
+          </tr>`;
+        table.innerHTML += row;
+      });
+    } catch (error) {
+      table.innerHTML = '<tr><td colspan="3">Error loading users</td></tr>';
+      console.error("Error loading users:", error);
+    }
+  };
 
+  window.loadAllJobs = async function() {
+    const table = document.getElementById('jobsTableBody');
+    table.innerHTML = '<tr><td colspan="5">Loading jobs...</td></tr>';
 
-// ✅ Function to load stats
-async function loadAdminStats() {
-  // Count Freshers
-  const freshersQuery = query(collection(db, "users"), where("role", "==", "fresher"));
-  const freshersSnapshot = await getDocs(freshersQuery);
-  document.getElementById('totalFreshers').innerText = freshersSnapshot.size;
+    try {
+      const querySnapshot = await getDocs(collection(db, "jobs"));
+      table.innerHTML = '';
 
-  // Count Companies
-  const companiesQuery = query(collection(db, "users"), where("role", "==", "company"));
-  const companiesSnapshot = await getDocs(companiesQuery);
-  document.getElementById('totalCompanies').innerText = companiesSnapshot.size;
+      if (querySnapshot.empty) {
+        table.innerHTML = '<tr><td colspan="5">No jobs found</td></tr>';
+        return;
+      }
 
-  // Count Jobs
-  const jobsSnapshot = await getDocs(collection(db, "jobs"));
-  document.getElementById('totalJobs').innerText = jobsSnapshot.size;
-}
+      querySnapshot.forEach(doc => {
+        const data = doc.data();
+        const row = `
+          <tr>
+            <td>${data.Title || 'N/A'}</td>
+            <td>${data.company || 'N/A'}</td>
+            <td>${data.location || 'N/A'}</td>
+            <td>${data.salary || 'N/A'}</td>
+            <td>
+              <button onclick="deleteJob('${doc.id}')" class="danger">Delete</button>
+            </td>
+          </tr>`;
+        table.innerHTML += row;
+      });
+    } catch (error) {
+      table.innerHTML = '<tr><td colspan="5">Error loading jobs</td></tr>';
+      console.error("Error loading jobs:", error);
+    }
+  };
 
-async function loadRecentActivity() {
-  // 1️⃣ Recent Users
-  const usersQuery = query(
-    collection(db, "users"),
-    where("role", "in", ["fresher", "company"])
-  );
-  const usersSnapshot = await getDocs(usersQuery);
+  window.deleteUser = async function(userId) {
+    if (!confirm("Are you sure you want to delete this user?")) return;
+    
+    try {
+      await deleteDoc(doc(db, "users", userId));
+      alert("User deleted successfully");
+      loadAllUsers();
+    } catch (error) {
+      alert("Error deleting user: " + error.message);
+    }
+  };
 
-  const usersData = [];
-  usersSnapshot.forEach(doc => usersData.push({ id: doc.id, ...doc.data() }));
-  
-  // sort by Firestore document ID or use a timestamp field if available
-  const last5Users = usersData.slice(-5).reverse(); // take last 5
-  
-  const usersTable = document.getElementById('recentUsersTable');
-  usersTable.innerHTML = "";
-  last5Users.forEach(user => {
-    usersTable.innerHTML += `<tr><td>${user.email}</td><td>${user.role}</td></tr>`;
-  });
+  window.deleteJob = async function(jobId) {
+    if (!confirm("Are you sure you want to delete this job?")) return;
+    
+    try {
+      await deleteDoc(doc(db, "jobs", jobId));
+      alert("Job deleted successfully");
+      loadAllJobs();
+    } catch (error) {
+      alert("Error deleting job: " + error.message);
+    }
+  };
 
-  // 2️⃣ Recent Jobs
-  const jobsSnapshot = await getDocs(collection(db, "jobs"));
-  const jobsData = [];
-  jobsSnapshot.forEach(doc => jobsData.push({ id: doc.id, ...doc.data() }));
-  
-  const last5Jobs = jobsData.slice(-5).reverse();
-  
-  const jobsTable = document.getElementById('recentJobsTable');
-  jobsTable.innerHTML = "";
-  last5Jobs.forEach(job => {
-  jobsTable.innerHTML += `
-    <tr>
-      <td>${job.Title || 'N/A'}</td>
-      <td>${job.company || 'N/A'}</td>
-      <td>${job.description || 'N/A'}</td>
-      <td>${job.location || 'N/A'}</td>
-      <td>${job.salary || 'N/A'}</td>
-    </tr>`;
-});
+  // Company Functions
+  window.showCompanySection = function(section) {
+    // Hide all company sections
+    document.getElementById('companyHomeSection').style.display = 'none';
+    document.getElementById('companyPostJobSection').style.display = 'none';
+    document.getElementById('companyMyJobsSection').style.display = 'none';
 
-}
+    // Show the requested one
+    if (section === 'home') {
+      document.getElementById('companyHomeSection').style.display = 'block';
+    } else if (section === 'postJob') {
+      document.getElementById('companyPostJobSection').style.display = 'block';
+    } else if (section === 'myJobs') {
+      document.getElementById('companyMyJobsSection').style.display = 'block';
+      loadCompanyJobs();
+    }
+  };
 
-document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('adminMenuHome').addEventListener('click', function(e) {
-    e.preventDefault();
-    showAdminSection('home');
-  });
+  // Fresher Functions
+  window.showFresherSection = function(section) {
+    // Hide all fresher sections
+    document.getElementById('fresherHomeSection').style.display = 'none';
+    document.getElementById('fresherJobsSection').style.display = 'none';
+    document.getElementById('fresherApplicationsSection').style.display = 'none';
+    document.getElementById('fresherProfileSection').style.display = 'none';
 
-  document.getElementById('adminMenuUsers').addEventListener('click', function(e) {
-    e.preventDefault();
-    showAdminSection('users');
-    loadAllUsers(); // ✅ this loads users when clicking "Manage Users"
-  });
+    // Show the requested one
+    if (section === 'home') {
+      document.getElementById('fresherHomeSection').style.display = 'block';
+    } else if (section === 'jobs') {
+      document.getElementById('fresherJobsSection').style.display = 'block';
+      loadAvailableJobs();
+    } else if (section === 'applications') {
+      document.getElementById('fresherApplicationsSection').style.display = 'block';
+      loadMyApplications();
+    } else if (section === 'profile') {
+      document.getElementById('fresherProfileSection').style.display = 'block';
+      loadFresherProfile();
+    }
+  };
 
-  document.getElementById('adminMenuJobs').addEventListener('click', function(e) {
-    e.preventDefault();
-    showAdminSection('jobs');
-  });
+  // Stats and Activity Functions
+  async function loadAdminStats() {
+    try {
+      // Count Freshers
+      const freshersQuery = query(collection(db, "users"), where("role", "==", "fresher"));
+      const freshersSnapshot = await getDocs(freshersQuery);
+      document.getElementById('totalFreshers').innerText = freshersSnapshot.size;
 
-  document.getElementById('adminMenuSettings').addEventListener('click', function(e) {
-    e.preventDefault();
-    showAdminSection('settings');
-  });
-});
+      // Count Companies
+      const companiesQuery = query(collection(db, "users"), where("role", "==", "company"));
+      const companiesSnapshot = await getDocs(companiesQuery);
+      document.getElementById('totalCompanies').innerText = companiesSnapshot.size;
 
-// ✅ Show specific admin section and hide others
-window.showAdminSection = function(section) {
-  // Hide all admin sections
-  document.getElementById('adminHomeSection').style.display = 'none';
-  document.getElementById('adminUsersSection').style.display = 'none';
-  document.getElementById('adminJobsSection').style.display = 'none';
-  document.getElementById('adminSettingsSection').style.display = 'none';
-
-  // Show the requested one
-  if (section === 'home') {
-    document.getElementById('adminHomeSection').style.display = 'block';
-  } else if (section === 'users') {
-    document.getElementById('adminUsersSection').style.display = 'block';
-  } else if (section === 'jobs') {
-    document.getElementById('adminJobsSection').style.display = 'block';
-  } else if (section === 'settings') {
-    document.getElementById('adminSettingsSection').style.display = 'block';
+      // Count Jobs
+      const jobsSnapshot = await getDocs(collection(db, "jobs"));
+      document.getElementById('totalJobs').innerText = jobsSnapshot.size;
+    } catch (error) {
+      console.error("Error loading stats:", error);
+    }
   }
-};
 
-  
+  async function loadRecentActivity() {
+    try {
+      // Recent Users
+      const usersQuery = query(collection(db, "users"), where("role", "in", ["fresher", "company"]));
+      const usersSnapshot = await getDocs(usersQuery);
+      
+      const usersData = [];
+      usersSnapshot.forEach(doc => usersData.push({ id: doc.id, ...doc.data() }));
+      
+      // Sort by creation date (newest first)
+      usersData.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      const last5Users = usersData.slice(0, 5);
+      
+      const usersTable = document.getElementById('recentUsersTable');
+      usersTable.innerHTML = "";
+      last5Users.forEach(user => {
+        usersTable.innerHTML += `<tr><td>${user.email}</td><td>${user.role}</td></tr>`;
+      });
+
+      // Recent Jobs
+      const jobsSnapshot = await getDocs(collection(db, "jobs"));
+      const jobsData = [];
+      jobsSnapshot.forEach(doc => jobsData.push({ id: doc.id, ...doc.data() }));
+      
+      // Sort by creation date (newest first)
+      jobsData.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      const last5Jobs = jobsData.slice(0, 5);
+      
+      const jobsTable = document.getElementById('recentJobsTable');
+      jobsTable.innerHTML = "";
+      last5Jobs.forEach(job => {
+        jobsTable.innerHTML += `
+          <tr>
+            <td>${job.Title || 'N/A'}</td>
+            <td>${job.company || 'N/A'}</td>
+            <td>${job.location || 'N/A'}</td>
+          </tr>`;
+      });
+    } catch (error) {
+      console.error("Error loading recent activity:", error);
+    }
+  }
+
+  // Initialize Event Listeners
+  document.addEventListener('DOMContentLoaded', () => {
+    // Toggle between login/signup
+    const toggleLink = document.getElementById('toggleLink');
+    toggleLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      toggleForm();
+    });
+
+    // Admin menu links
+    document.getElementById('adminMenuHome').addEventListener('click', (e) => {
+      e.preventDefault();
+      showAdminSection('home');
+      toggleAdminMenu();
+    });
+    
+    document.getElementById('adminMenuUsers').addEventListener('click', (e) => {
+      e.preventDefault();
+      showAdminSection('users');
+      toggleAdminMenu();
+    });
+    
+    document.getElementById('adminMenuJobs').addEventListener('click', (e) => {
+      e.preventDefault();
+      showAdminSection('jobs');
+      toggleAdminMenu();
+    });
+    
+    document.getElementById('adminMenuSettings').addEventListener('click', (e) => {
+      e.preventDefault();
+      showAdminSection('settings');
+      toggleAdminMenu();
+    });
+
+    // Company menu links
+    document.getElementById('companyMenuHome').addEventListener('click', (e) => {
+      e.preventDefault();
+      showCompanySection('home');
+      toggleCompanyMenu();
+    });
+    
+    document.getElementById('companyMenuPostJob').addEventListener('click', (e) => {
+      e.preventDefault();
+      showCompanySection('postJob');
+      toggleCompanyMenu();
+    });
+    
+    document.getElementById('companyMenuMyJobs').addEventListener('click', (e) => {
+      e.preventDefault();
+      showCompanySection('myJobs');
+      toggleCompanyMenu();
+    });
+
+    // Fresher menu links
+    document.getElementById('fresherMenuHome').addEventListener('click', (e) => {
+      e.preventDefault();
+      showFresherSection('home');
+      toggleFresherMenu();
+    });
+    
+    document.getElementById('fresherMenuJobs').addEventListener('click', (e) => {
+      e.preventDefault();
+      showFresherSection('jobs');
+      toggleFresherMenu();
+    });
+    
+    document.getElementById('fresherMenuApplications').addEventListener('click', (e) => {
+      e.preventDefault();
+      showFresherSection('applications');
+      toggleFresherMenu();
+    });
+    
+    document.getElementById('fresherMenuProfile').addEventListener('click', (e) => {
+      e.preventDefault();
+      showFresherSection('profile');
+      toggleFresherMenu();
+    });
+
+    // Post Job Form
+    const postJobForm = document.getElementById('postJobForm');
+    if (postJobForm) {
+      postJobForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const title = document.getElementById('jobTitle').value;
+        const description = document.getElementById('jobDescription').value;
+        const location = document.getElementById('jobLocation').value;
+        const salary = document.getElementById('jobSalary').value;
+        
+        try {
+          const user = auth.currentUser;
+          if (!user) throw new Error("Not authenticated");
+          
+          await addDoc(collection(db, "jobs"), {
+            Title: title,
+            description: description,
+            location: location,
+            salary: salary,
+            company: user.email,
+            createdAt: new Date().toISOString()
+          });
+          
+          alert("Job posted successfully!");
+          postJobForm.reset();
+        } catch (error) {
+          alert("Error posting job: " + error.message);
+        }
+      });
+    }
+
+    // Check auth state
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const snap = await getDoc(doc(db, "users", user.uid));
+        if (snap.exists()) {
+          showDashboard(snap.data().role);
+        }
+      }
+    });
+  });
+
+  // Placeholder functions for future implementation
+  window.loadCompanyJobs = function() {
+    document.getElementById('companyJobsTable').innerHTML = `
+      <tr>
+        <td colspan="4">Job listings will appear here</td>
+      </tr>`;
+  };
+
+  window.loadAvailableJobs = function() {
+    document.getElementById('availableJobsTable').innerHTML = `
+      <tr>
+        <td colspan="5">Available jobs will appear here</td>
+      </tr>`;
+  };
+
+  window.loadMyApplications = function() {
+    document.getElementById('myApplicationsTable').innerHTML = `
+      <tr>
+        <td colspan="4">Your applications will appear here</td>
+      </tr>`;
+  };
+
+  window.loadFresherProfile = function() {
+    // Would load profile data here
+  };
 </script>
-
 </body>
 </html>

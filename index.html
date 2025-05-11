@@ -233,6 +233,7 @@
     <select id="role">
       <option value="fresher">Fresher</option>
       <option value="Employer">Employer</option>
+      <option value="admin">Admin</option>
     </select>
     <button id="actionBtn" onclick="signup()">Signup</button>
     <p id="toggle-text">Already have an account? <a id="toggleLink">Login here</a></p>
@@ -915,19 +916,19 @@
       const currentUser = auth.currentUser;
       if (!currentUser) throw new Error("Not authenticated");
       
-      // Verify current user is admin
       const currentUserDoc = await getDoc(doc(db, "users", currentUser.uid));
       if (currentUserDoc.data().role !== "admin") {
         throw new Error("Unauthorized access");
       }
       
+      // Fixed the query syntax here:
       const querySnapshot = await getDocs(
-         query(
-        collection(db, "users"),
-        where("role", "==", "admin")
+        query(
+          collection(db, "users"),
+          where("role", "==", "admin")
         )
       );
-
+      
       table.innerHTML = '';
       
       if (querySnapshot.empty) {
@@ -956,7 +957,7 @@
       table.innerHTML = '<tr><td colspan="3">Error loading admin list</td></tr>';
       alert("Error loading admin list: " + error.message);
     }
-  };
+};
 
   window.createNewAdmin = async function() {
     const email = document.getElementById('newAdminEmail').value.trim();

@@ -1072,6 +1072,15 @@ async function createNewAdmin() {
   }
 }
 
+async function loadAdminSettings() {
+  const user = auth.currentUser;
+  const userDoc = await getDoc(doc(db, "users", user.uid));
+  
+  if (userDoc.data().role !== "admin") {
+    document.getElementById('adminManagementCard').style.display = 'none';
+  }
+}
+
 </script>
 </body>
 </html>

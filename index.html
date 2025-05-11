@@ -210,21 +210,6 @@
   }
 }
 
-/* Dropdown menu */
-.submenu {
-  display: none;
-  padding-left: 20px;
-}
-
-.sideMenu.open .submenu {
-  display: block;
-}
-
-.dropdown-icon {
-  font-size: 0.8em;
-  margin-left: 5px;
-}
-
   </style>
 </head>
 <body>
@@ -250,10 +235,7 @@
       <a href="#" id="adminMenuHome">Dashboard</a>
       <a href="#" id="adminMenuUsers">Manage Users</a>
       <a href="#" id="adminMenuJobs">Manage Jobs</a>
-      <a href="#" id="adminMenuSettings"> Settings <i class="dropdown-icon">▼</i>
-        </a>
-         <div class="submenu">
-      <a href="#" id="adminMenuGeneral">General</a>
+      <a href="#" id="adminMenuSettings"> Settings</a>
       <a href="#" id="adminMenuManagement">Admin Management</a>
     </div>
       <a href="#" onclick="logout()">Logout</a>

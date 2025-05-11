@@ -484,6 +484,26 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
+// ✅ Show specific admin section and hide others
+window.showAdminSection = function(section) {
+  // Hide all admin sections
+  document.getElementById('adminHomeSection').style.display = 'none';
+  document.getElementById('adminUsersSection').style.display = 'none';
+  document.getElementById('adminJobsSection').style.display = 'none';
+  document.getElementById('adminSettingsSection').style.display = 'none';
+
+  // Show the requested one
+  if (section === 'home') {
+    document.getElementById('adminHomeSection').style.display = 'block';
+  } else if (section === 'users') {
+    document.getElementById('adminUsersSection').style.display = 'block';
+  } else if (section === 'jobs') {
+    document.getElementById('adminJobsSection').style.display = 'block';
+  } else if (section === 'settings') {
+    document.getElementById('adminSettingsSection').style.display = 'block';
+  }
+};
+
   
 </script>
 

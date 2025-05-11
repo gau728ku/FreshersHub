@@ -1146,7 +1146,7 @@ async function loadAdminSettings() {
       const querySnapshot = await getDocs(
         query(collection(db, "users"), 
         where("role", "==", "admin")
-      );
+      ,')',),
       
       table.innerHTML = '';
       

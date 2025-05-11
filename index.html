@@ -1148,7 +1148,7 @@ async function loadAdminSettings() {
         where("role", "==", "admin")
       ,')',),
       
-      table.innerHTML = '';
+      table.innerHTML = '');
       
       if (querySnapshot.empty) {
         table.innerHTML = '<tr><td colspan="3">No admin users found</td></tr>';

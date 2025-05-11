@@ -110,89 +110,90 @@ th, td {
     <p id="toggle-text">Already have an account? <a href="#" id="toggleLink">Login here</a></p>
   </div>
 
-  <!-- ADMIN DASHBOARD -->
+ <!-- ADMIN DASHBOARD -->
+<div id="adminDashboard" style="display:none; padding:20px;">
+  <div id="adminMenuBtn" onclick="toggleAdminMenu()">☰</div>
 
-  <div id="adminDashboard" style="display:none; padding:20px;">
-    <div id="adminMenuBtn" onclick="toggleAdminMenu()">☰</div>
-    
-    <div class="sideMenu" id="adminSideMenu">
-  <a href="#" id="adminMenuHome">Dashboard</a>
-  <a href="#" id="adminMenuUsers">Manage Users</a>
-  <a href="#" id="adminMenuJobs">Manage Jobs</a>
-  <a href="#" id="adminMenuSettings">Settings</a>
-  <a href="#" onclick="logout()">Logout</a>
-</div>
-
-    <div class="overlay" id="adminOverlay" onclick="toggleAdminMenu()"></div>
-<div id="adminHomeSection" style="display: block;"></div>
-
-<h2>Admin Dashboard</h2>
-<div style="display: flex; gap: 20px; justify-content: center; margin-bottom: 20px;">
-  <div style="background: #007bff; padding: 20px; border-radius: 10px; width: 150px;">
-    <p>Total Freshers:</p>
-    <h3 id="totalFreshers">0</h3>
-  </div>
-  <div style="background: #28a745; padding: 20px; border-radius: 10px; width: 150px;">
-    <p>Total Companies:</p>
-    <h3 id="totalCompanies">0</h3>
-  </div>
-  <div style="background: #ffc107; padding: 20px; border-radius: 10px; width: 150px;">
-    <p>Total Jobs:</p>
-    <h3 id="totalJobs">0</h3>
-  </div>
-</div>
-
-
-<h3 style="text-align: center; margin-top: 30px;">🔔 Recent Activity</h3>
-
-<div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
-
-  <!-- Recent Users Table -->
-  <div style="background: white; color: black; border-radius: 10px; padding: 10px; overflow-x: auto;">
-    <h4>Last 5 Users</h4>
-    <table style="width: 300px;">
-      <thead style="background: #343a40; color: white;">
-        <tr><th>Email</th><th>Role</th></tr>
-      </thead>
-      <tbody id="recentUsersTable"></tbody>
-    </table>
+  <div class="sideMenu" id="adminSideMenu">
+    <a href="#" id="adminMenuHome">Dashboard</a>
+    <a href="#" id="adminMenuUsers">Manage Users</a>
+    <a href="#" id="adminMenuJobs">Manage Jobs</a>
+    <a href="#" id="adminMenuSettings">Settings</a>
+    <a href="#" onclick="logout()">Logout</a>
   </div>
 
-  <!-- Recent Jobs Table -->
-  <div style="background: white; color: black; border-radius: 10px; padding: 10px; overflow-x: auto;">
-    <h4>Last 5 Jobs</h4>
-    <table style="width: 300px;">
+  <div class="overlay" id="adminOverlay" onclick="toggleAdminMenu()"></div>
+
+  <!-- ✅ Wrap entire dashboard in this section -->
+  <div id="adminHomeSection" style="display: block;">
+    <h2>Admin Dashboard</h2>
+    <div style="display: flex; gap: 20px; justify-content: center; margin-bottom: 20px;">
+      <div style="background: #007bff; padding: 20px; border-radius: 10px; width: 150px;">
+        <p>Total Freshers:</p>
+        <h3 id="totalFreshers">0</h3>
+      </div>
+      <div style="background: #28a745; padding: 20px; border-radius: 10px; width: 150px;">
+        <p>Total Companies:</p>
+        <h3 id="totalCompanies">0</h3>
+      </div>
+      <div style="background: #ffc107; padding: 20px; border-radius: 10px; width: 150px;">
+        <p>Total Jobs:</p>
+        <h3 id="totalJobs">0</h3>
+      </div>
+    </div>
+
+    <h3 style="text-align: center; margin-top: 30px;">🔔 Recent Activity</h3>
+
+    <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+      <!-- Recent Users Table -->
+      <div style="background: white; color: black; border-radius: 10px; padding: 10px; overflow-x: auto;">
+        <h4>Last 5 Users</h4>
+        <table style="width: 300px;">
+          <thead style="background: #343a40; color: white;">
+            <tr><th>Email</th><th>Role</th></tr>
+          </thead>
+          <tbody id="recentUsersTable"></tbody>
+        </table>
+      </div>
+
+      <!-- Recent Jobs Table -->
+      <div style="background: white; color: black; border-radius: 10px; padding: 10px; overflow-x: auto;">
+        <h4>Last 5 Jobs</h4>
+        <table style="width: 300px;">
+          <thead style="background: #343a40; color: white;">
+            <tr>
+              <th>Title</th>
+              <th>Company</th>
+              <th>description</th>
+              <th>location</th>
+              <th>salary</th>
+            </tr>
+          </thead>
+          <tbody id="recentJobsTable"></tbody>
+        </table>
+      </div>
+    </div>
+  </div> <!-- 🔚 adminHomeSection -->
+  
+  <!-- MANAGE USERS SECTION -->
+  <div id="adminUsersSection" style="display: none; padding: 20px;">
+    <h2>Manage Users</h2>
+    <table style="width: 100%; background: white; color: black;">
       <thead style="background: #343a40; color: white;">
         <tr>
-        <th>Title</th>
-        <th>Company</th>
-        <th>description</th>
-        <th>location</th>
-        <th>salary</th>
-      </tr>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Action</th>
+        </tr>
       </thead>
-      <tbody id="recentJobsTable"></tbody>
+      <tbody id="usersTableBody">
+        <!-- Rows will be added here -->
+      </tbody>
     </table>
+    <button onclick="backToAdminDashboard()">Back to Dashboard</button>
   </div>
 </div>
 
-<!-- MANAGE USERS SECTION -->
-<div id="adminUsersSection" style="display: none; padding: 20px;">
-  <h2>Manage Users</h2>
-  <table style="width: 100%; background: white; color: black;">
-    <thead style="background: #343a40; color: white;">
-      <tr>
-        <th>Email</th>
-        <th>Role</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-    <tbody id="usersTableBody">
-      <!-- Rows will be added here -->
-    </tbody>
-  </table>
-  <button onclick="backToAdminDashboard()">Back to Dashboard</button>
-</div>
 
 
   <!-- COMPANY DASHBOARD -->

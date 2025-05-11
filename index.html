@@ -348,7 +348,13 @@
       
       <div class="card">
         <h3>System Configuration</h3>
-        <p>Settings will be added here</p>
+        <div class="card">
+  <h3>Admin Settings</h3>
+  <ul>
+    <li><a href="#" id="openAdminManagement">→ Admin Management</a></li>
+  </ul>
+</div>
+
 
 <!-- Admin Management Section -->
 <div class="dashboard-section" id="adminManagementSection" style="display:none;">
@@ -939,6 +945,11 @@
       e.preventDefault();
       showAdminSection('management');
       toggleAdminMenu();
+    });
+
+    document.getElementById('openAdminManagement').addEventListener('click', (e) => {
+      e.preventDefault();
+      showAdminSection('management');
     });
 
 

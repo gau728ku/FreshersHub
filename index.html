@@ -116,12 +116,13 @@ th, td {
     <div id="adminMenuBtn" onclick="toggleAdminMenu()">☰</div>
     
     <div class="sideMenu" id="adminSideMenu">
-      <a href="#">Dashboard</a>
-      <a href="#">Manage Users</a>
-      <a href="#">Manage Jobs</a>
-      <a href="#">Settings</a>
-      <a href="#" onclick="logout()">Logout</a>
-    </div>
+  <a href="#" id="adminMenuHome">Dashboard</a>
+  <a href="#" id="adminMenuUsers">Manage Users</a>
+  <a href="#" id="adminMenuJobs">Manage Jobs</a>
+  <a href="#" id="adminMenuSettings">Settings</a>
+  <a href="#" onclick="logout()">Logout</a>
+</div>
+
     <div class="overlay" id="adminOverlay" onclick="toggleAdminMenu()"></div>
 
 
@@ -173,6 +174,24 @@ th, td {
       <tbody id="recentJobsTable"></tbody>
     </table>
   </div>
+</div>
+
+<!-- MANAGE USERS SECTION -->
+<div id="manageUsersSection" style="display: none; padding: 20px;">
+  <h2>Manage Users</h2>
+  <table style="width: 100%; background: white; color: black;">
+    <thead style="background: #343a40; color: white;">
+      <tr>
+        <th>Email</th>
+        <th>Role</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="usersTableBody">
+      <!-- Rows will be added here -->
+    </tbody>
+  </table>
+  <button onclick="backToAdminDashboard()">Back to Dashboard</button>
 </div>
 
 
@@ -364,6 +383,25 @@ if (role === 'admin') {
     }
   });
 
+  // ✅ Function to load all users
+window.loadAllUsers = async function() {
+  const table = document.getElementById('usersTableBody');
+  table.innerHTML = ''; // Clear old rows
+
+  const querySnapshot = await getDocs(collection(db, "users"));
+  querySnapshot.forEach(doc => {
+    const data = doc.data();
+    const row = `
+      <tr>
+        <td>${data.email}</td>
+        <td>${data.role}</td>
+        <td><button onclick="deleteUser('${doc.id}')">Delete</button></td>
+      </tr>`;
+    table.innerHTML += row;
+  });
+};
+
+
 // ✅ Function to load stats
 async function loadAdminStats() {
   // Count Freshers
@@ -422,6 +460,29 @@ async function loadRecentActivity() {
 });
 
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('adminMenuHome').addEventListener('click', function(e) {
+    e.preventDefault();
+    showAdminSection('home');
+  });
+
+  document.getElementById('adminMenuUsers').addEventListener('click', function(e) {
+    e.preventDefault();
+    showAdminSection('users');
+    loadAllUsers(); // ✅ this loads users when clicking "Manage Users"
+  });
+
+  document.getElementById('adminMenuJobs').addEventListener('click', function(e) {
+    e.preventDefault();
+    showAdminSection('jobs');
+  });
+
+  document.getElementById('adminMenuSettings').addEventListener('click', function(e) {
+    e.preventDefault();
+    showAdminSection('settings');
+  });
+});
 
   
 </script>

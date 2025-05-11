@@ -351,25 +351,38 @@
         <h3>System Configuration</h3>
         <p>Settings will be added here</p>
 
-<!-- Admin Management Page -->
-<div class="dashboard-section" id="adminManagementSection">
+<!-- Admin Management Section -->
+<div class="dashboard-section" id="adminManagementSection" style="display:none;">
   <h2>Admin Management</h2>
   <button onclick="showAdminSection('settings')" style="margin-bottom: 20px;">← Back to Settings</button>
   
   <div class="card">
     <h3>Add New Admin</h3>
     <div class="form-group">
-      <label>New Admin Email</label>
-      <input type="email" id="newAdminEmail" placeholder="Enter professional email">
+      <input type="email" id="newAdminEmail" placeholder="New Admin Email">
+      <input type="password" id="newAdminPassword" placeholder="Temporary Password">
+      <button onclick="createNewAdmin()" class="success">Create Admin</button>
     </div>
-    <div class="form-group">
-      <label>Temporary Password</label>
-      <input type="password" id="newAdminPassword" placeholder="Generate strong password">
+    <p class="hint">New admins will be required to reset their password on first login.</p>
+  </div>
+
+  <div class="card">
+    <h3>Current Admins</h3>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Email</th>
+            <th>Created On</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="adminListTable"></tbody>
+      </table>
     </div>
-    <button onclick="createNewAdmin()" class="danger-btn">Create Admin</button>
-    <p class="hint">Admins will need to reset password on first login</p>
   </div>
 </div>
+
 
 
   <!-- Employer DASHBOARD -->
@@ -692,6 +705,7 @@
       document.getElementById('adminSettingsSection').style.display = 'block';
     } else if (section === 'management') {
     document.getElementById('adminManagementSection').style.display = 'block';
+    loadAdmins();
     }
   };
 
@@ -1096,6 +1110,48 @@ async function loadAdminSettings() {
     document.getElementById('adminManagementCard').style.display = 'none';
   }
 }
+
+window.loadAdmins = async function() {
+  const table = document.getElementById('adminListTable');
+  table.innerHTML = '<tr><td colspan="3">Loading...</td></tr>';
+
+  try {
+    const user = auth.currentUser;
+    const querySnapshot = await getDocs(query(collection(db, "users"), where("role", "==", "admin")));
+    
+    table.innerHTML = '';
+
+    querySnapshot.forEach(docSnap => {
+      const admin = docSnap.data();
+      const isSelf = admin.email === "gauravku7409@gmail.com.com"; // replace with your email
+      
+      table.innerHTML += `
+        <tr>
+          <td>${admin.email}</td>
+          <td>${new Date(admin.createdAt).toLocaleDateString()}</td>
+          <td>
+            ${isSelf ? '<em>Primary Admin</em>' : `<button onclick="deleteAdmin('${docSnap.id}')" class="danger">Delete</button>`}
+          </td>
+        </tr>`;
+    });
+  } catch (err) {
+    console.error("Error loading admins:", err);
+    table.innerHTML = '<tr><td colspan="3">Failed to load admins</td></tr>';
+  }
+};
+
+window.deleteAdmin = async function(userId) {
+  if (!confirm("Are you sure you want to delete this admin?")) return;
+
+  try {
+    await deleteDoc(doc(db, "users", userId));
+    alert("Admin deleted successfully.");
+    loadAdmins();
+  } catch (err) {
+    alert("Error deleting admin: " + err.message);
+  }
+};
+
 
 </script>
 </body>

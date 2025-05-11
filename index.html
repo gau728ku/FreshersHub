@@ -211,7 +211,7 @@
 }
 
 .settings-link {
-  padding: 15px;
+  padding: 12px 15px;
   margin-top: 15px;
   background: rgba(255,255,255,0.05);
   border-radius: 8px;
@@ -224,15 +224,11 @@
 }
 
 .settings-link h4 {
-  color: #0b0c0c;
-  margin: 0 0 5px 0;
+  color: #00c6ff;
+  margin: 0;
+  font-size: 1.1em;
 }
 
-.settings-link p {
-  margin: 0;
-  font-size: 0.9em;
-  color: #f7f5f5;
-}
 
   </style>
 </head>
@@ -372,13 +368,11 @@
       <button onclick="showAdminSection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
       
       <div class="card">
-        <h3>System Configuration</h3>
-        <p>Platform settings and configurations</p>
+        <h3>System configurations</h3>
 
          <!-- Add this Admin Management link -->
       <div class="settings-link" onclick="showAdminSection('management')">
         <h4>→ Admin Management</h4>
-        <p>Manage admin users and permissions</p>
       </div>
     </div>
   </div>

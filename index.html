@@ -250,8 +250,8 @@
           <h3 id="totalFreshers">-</h3>
         </div>
         <div class="stat-card">
-          <p>Total Companies</p>
-          <h3 id="totalCompanies">-</h3>
+          <p>Total Employers</p>
+          <h3 id="totalEmployers">-</h3>
         </div>
         <div class="stat-card">
           <p>Total Jobs</p>
@@ -823,10 +823,10 @@
     const freshersSnapshot = await getDocs(freshersQuery);
     animateValue("totalFreshers", freshersSnapshot.size);
     
-    // Count Companies
-    const companiesQuery = query(collection(db, "users"), where("role", "==", "Employer"));
-    const companiesSnapshot = await getDocs(companiesQuery);
-    animateValue("totalCompanies", companiesSnapshot.size);
+    // Count Employers
+    const EmployersQuery = query(collection(db, "users"), where("role", "==", "Employer"));
+    const EmployersSnapshot = await getDocs(EmployersQuery);
+    animateValue("totalEmployers", EmployersSnapshot.size);
     
     // Count Jobs
     const jobsSnapshot = await getDocs(collection(db, "jobs"));

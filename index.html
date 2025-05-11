@@ -184,9 +184,15 @@
     }
     
     .stat-card h3 {
-      margin-top: 10px;
-      font-size: 2rem;
-    }
+  margin-top: 10px;
+  font-size: 2rem;
+  transition: transform 0.3s ease;
+}
+
+.stat-card:hover h3 {
+  transform: scale(1.1);
+  color: #00c6ff;
+}
 
     /* Responsive adjustments */
     @media (max-width: 768px) {
@@ -242,15 +248,15 @@
       <div class="stats-container horizontal">
         <div class="stat-card">
           <p>Total Freshers</p>
-          <h3 id="totalFreshers">0</h3>
+          <h3 id="totalFreshers">-</h3>
         </div>
         <div class="stat-card">
           <p>Total Companies</p>
-          <h3 id="totalCompanies">0</h3>
+          <h3 id="totalCompanies">-</h3>
         </div>
         <div class="stat-card">
           <p>Total Jobs</p>
-          <h3 id="totalJobs">0</h3>
+          <h3 id="totalJobs">-</h3>
         </div>
       </div>
 
@@ -798,24 +804,24 @@
 
   // Stats and Activity Functions
   async function loadAdminStats() {
-    try {
-      // Count Freshers
-      const freshersQuery = query(collection(db, "users"), where("role", "==", "fresher"));
-      const freshersSnapshot = await getDocs(freshersQuery);
-      document.getElementById('totalFreshers').innerText = freshersSnapshot.size;
-
-      // Count Companies
-      const companiesQuery = query(collection(db, "users"), where("role", "==", "company"));
-      const companiesSnapshot = await getDocs(companiesQuery);
-      document.getElementById('totalCompanies').innerText = companiesSnapshot.size;
-
-      // Count Jobs
-      const jobsSnapshot = await getDocs(collection(db, "jobs"));
-      document.getElementById('totalJobs').innerText = jobsSnapshot.size;
-    } catch (error) {
-      console.error("Error loading stats:", error);
-    }
+  try {
+    // Count Freshers
+    const freshersQuery = query(collection(db, "users"), where("role", "==", "fresher"));
+    const freshersSnapshot = await getDocs(freshersQuery);
+    animateValue("totalFreshers", freshersSnapshot.size);
+    
+    // Count Companies
+    const companiesQuery = query(collection(db, "users"), where("role", "==", "company"));
+    const companiesSnapshot = await getDocs(companiesQuery);
+    animateValue("totalCompanies", companiesSnapshot.size);
+    
+    // Count Jobs
+    const jobsSnapshot = await getDocs(collection(db, "jobs"));
+    animateValue("totalJobs", jobsSnapshot.size);
+  } catch (error) {
+    console.error("Error loading stats:", error);
   }
+}
 
   async function loadRecentActivity() {
     try {
@@ -1006,6 +1012,24 @@
   window.loadFresherProfile = function() {
     // Would load profile data here
   };
+
+// Number counting animation
+function animateValue(element, target, duration = 1000) {
+  const start = 0;
+  const increment = target / (duration / 16); // 60fps
+  let current = start;
+  const el = document.getElementById(element);
+  
+  const timer = setInterval(() => {
+    current += increment;
+    if (current >= target) {
+      clearInterval(timer);
+      current = target;
+    }
+    el.textContent = Math.floor(current);
+  }, 16);
+}
+
 </script>
 </body>
 </html>

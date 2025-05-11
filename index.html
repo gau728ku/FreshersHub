@@ -1215,35 +1215,6 @@ function animateValue(element, target, duration = 1000) {
   }, 16);
 }
 
-
-
-
-// Temporary debug function
-window.debugCheckAdminStatus = async function() {
-  try {
-    const user = auth.currentUser;
-    if (!user) {
-      alert("Not logged in");
-      return;
-    }
-
-    const docSnap = await getDoc(doc(db, "users", user.uid));
-    const userData = docSnap.data();
-    
-    alert(`
-      Admin Debug Info:
-      Email: ${user.email}
-      UID: ${user.uid}
-      Role: ${userData.role}
-      isOriginalAdmin: ${userData.isOriginalAdmin || 'false'}
-    `);
-    
-    console.log("Full user data:", userData);
-  } catch (error) {
-    console.error("Debug error:", error);
-    alert("Debug error - check console");
-  }
-};
 </script>
 </body>
 </html>

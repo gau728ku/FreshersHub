@@ -84,7 +84,7 @@
     }
 
     /* Menu buttons */
-    #adminMenuBtn, #fresherMenuBtn, #EmployerMenuBtn {
+    #adminMenuBtn, #fresherMenuBtn, #companyMenuBtn {
       position: fixed;
       top: 20px;
       left: 20px;
@@ -168,11 +168,11 @@
     }
     
      /* New: Horizontal variation (add this) */
-.stats-container.horizontal {
-  flex-wrap: nowrap; /* Force horizontal layout */
-  overflow-x: auto; /* Enable scrolling if needed */
-  padding-bottom: 10px; /* Space for scrollbar */
-}
+    .stats-container.horizontal {
+       flex-wrap: nowrap; /* Force horizontal layout */
+       overflow-x: auto; /* Enable scrolling if needed */
+       padding-bottom: 10px; /* Space for scrollbar */
+    }
 
     .stat-card {
       background: rgba(255,255,255,0.1);
@@ -184,6 +184,22 @@
     }
     
     .stat-card h3 {
+      margin-top: 10px;
+      font-size: 2rem;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .stats-container {
+    flex-direction: row; /* Horizontal scroll on mobile */
+    justify-content: flex-start; /* Align cards to start */
+    }
+     .stat-card {
+      min-width: 180px; /* Better for scrolling */
+     }
+     }
+
+  .stat-card h3 {
   margin-top: 10px;
   font-size: 2rem;
   transition: transform 0.3s ease;
@@ -192,22 +208,6 @@
 .stat-card:hover h3 {
   transform: scale(1.1);
   color: #00c6ff;
-}
-
-    /* Responsive adjustments */
-    @media (max-width: 768px) {
-      .container {
-        margin: 20px auto;
-        width: 90%;
-      }
-      
-      .stats-container {
-    flex-direction: row; /* Horizontal scroll on mobile */
-    justify-content: flex-start; /* Align cards to start */
-  }
-  .stat-card {
-    min-width: 180px; /* Better for scrolling */
-  }
 }
 
   </style>
@@ -221,7 +221,8 @@
     <input type="password" id="password" placeholder="Password" required />
     <select id="role">
       <option value="fresher">Fresher</option>
-      <option value="Employer">Employer</option>
+      <option value="company">Company</option>
+      <option value="admin">Admin</option>
     </select>
     <button id="actionBtn" onclick="signup()">Signup</button>
     <p id="toggle-text">Already have an account? <a id="toggleLink">Login here</a></p>
@@ -235,7 +236,7 @@
       <a href="#" id="adminMenuHome">Dashboard</a>
       <a href="#" id="adminMenuUsers">Manage Users</a>
       <a href="#" id="adminMenuJobs">Manage Jobs</a>
-      <a href="#" id="adminMenuSettings"> Settings</a>
+      <a href="#" id="adminMenuSettings">Settings</a>
       <a href="#" onclick="logout()">Logout</a>
     </div>
 
@@ -251,8 +252,8 @@
           <h3 id="totalFreshers">-</h3>
         </div>
         <div class="stat-card">
-          <p>Total Employers</p>
-          <h3 id="totalEmployers">-</h3>
+          <p>Total Companies</p>
+          <h3 id="totalCompanies">-</h3>
         </div>
         <div class="stat-card">
           <p>Total Jobs</p>
@@ -285,7 +286,7 @@
                 <thead>
                   <tr>
                     <th>Title</th>
-                    <th>Employer</th>
+                    <th>Company</th>
                     <th>Location</th>
                   </tr>
                 </thead>
@@ -328,7 +329,7 @@
           <thead>
             <tr>
               <th>Title</th>
-              <th>Employer</th>
+              <th>Company</th>
               <th>Location</th>
               <th>Salary</th>
               <th>Actions</th>
@@ -348,73 +349,36 @@
       
       <div class="card">
         <h3>System Configuration</h3>
-        <div class="card">
-  <h3>Admin Settings</h3>
-  <ul>
-    <li><a href="#" id="openAdminManagement">→ Admin Management</a></li>
-  </ul>
-</div>
-
-
-<!-- Admin Management Section -->
-<div class="dashboard-section" id="adminManagementSection" style="display:none;">
-  <h2>Admin Management</h2>
-  <button onclick="showAdminSection('settings')" style="margin-bottom: 20px;">← Back to Settings</button>
-  
-  <div class="card">
-    <h3>Add New Admin</h3>
-    <div class="form-group">
-      <input type="email" id="newAdminEmail" placeholder="New Admin Email">
-      <input type="password" id="newAdminPassword" placeholder="Temporary Password">
-      <button onclick="createNewAdmin()" class="success">Create Admin</button>
-    </div>
-    <p class="hint">New admins will be required to reset their password on first login.</p>
-  </div>
-
-  <div class="card">
-    <h3>Current Admins</h3>
-    <div class="table-container">
-      <table>
-        <thead>
-          <tr>
-            <th>Email</th>
-            <th>Created On</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody id="adminListTable"></tbody>
-      </table>
+        <p>Settings will be added here</p>
+      </div>
     </div>
   </div>
-</div>
 
-
-
-  <!-- Employer DASHBOARD -->
-  <div id="EmployerDashboard" style="display:none;">
-    <div id="EmployerMenuBtn" onclick="toggleEmployerMenu()">☰</div>
+  <!-- COMPANY DASHBOARD -->
+  <div id="companyDashboard" style="display:none;">
+    <div id="companyMenuBtn" onclick="toggleCompanyMenu()">☰</div>
     
-    <div class="sideMenu" id="EmployerSideMenu">
-      <a href="#" id="EmployerMenuHome">Dashboard</a>
-      <a href="#" id="EmployerMenuPostJob">Post Job</a>
-      <a href="#" id="EmployerMenuMyJobs">My Jobs</a>
+    <div class="sideMenu" id="companySideMenu">
+      <a href="#" id="companyMenuHome">Dashboard</a>
+      <a href="#" id="companyMenuPostJob">Post Job</a>
+      <a href="#" id="companyMenuMyJobs">My Jobs</a>
       <a href="#" onclick="logout()">Logout</a>
     </div>
     
-    <div class="overlay" id="EmployerOverlay" onclick="toggleEmployerMenu()"></div>
+    <div class="overlay" id="companyOverlay" onclick="toggleCompanyMenu()"></div>
     
-    <!-- Employer Home Section -->
-    <div class="dashboard-section" id="EmployerHomeSection">
-      <h2>Employer Dashboard</h2>
+    <!-- Company Home Section -->
+    <div class="dashboard-section" id="companyHomeSection">
+      <h2>Company Dashboard</h2>
       <div class="card">
-        <p>Welcome to your Employer dashboard!</p>
+        <p>Welcome to your company dashboard!</p>
       </div>
     </div>
     
     <!-- Post Job Section -->
-    <div class="dashboard-section" id="EmployerPostJobSection">
+    <div class="dashboard-section" id="companyPostJobSection">
       <h2>Post New Job</h2>
-      <button onclick="showEmployerSection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
+      <button onclick="showCompanySection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
       
       <div class="card">
         <form id="postJobForm">
@@ -428,9 +392,9 @@
     </div>
     
     <!-- My Jobs Section -->
-    <div class="dashboard-section" id="EmployerMyJobsSection">
+    <div class="dashboard-section" id="companyMyJobsSection">
       <h2>My Job Postings</h2>
-      <button onclick="showEmployerSection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
+      <button onclick="showCompanySection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
       
       <div class="table-container">
         <table>
@@ -442,8 +406,8 @@
               <th>Actions</th>
             </tr>
           </thead>
-          <tbody id="EmployerJobsTable">
-            <!-- Employer's jobs will be listed here -->
+          <tbody id="companyJobsTable">
+            <!-- Company's jobs will be listed here -->
           </tbody>
         </table>
       </div>
@@ -482,7 +446,7 @@
           <thead>
             <tr>
               <th>Title</th>
-              <th>Employer</th>
+              <th>Company</th>
               <th>Location</th>
               <th>Salary</th>
               <th>Actions</th>
@@ -505,7 +469,7 @@
           <thead>
             <tr>
               <th>Job Title</th>
-              <th>Employer</th>
+              <th>Company</th>
               <th>Status</th>
               <th>Applied On</th>
             </tr>
@@ -629,11 +593,11 @@
     // Hide all dashboards
     document.getElementById('adminDashboard').style.display = 'none';
     document.getElementById('fresherDashboard').style.display = 'none';
-    document.getElementById('EmployerDashboard').style.display = 'none';
+    document.getElementById('companyDashboard').style.display = 'none';
     
     // Hide all menu buttons
     document.getElementById('adminMenuBtn').style.display = 'none';
-    document.getElementById('EmployerMenuBtn').style.display = 'none';
+    document.getElementById('companyMenuBtn').style.display = 'none';
     document.getElementById('fresherMenuBtn').style.display = 'none';
     
     // Hide auth
@@ -650,10 +614,10 @@
       document.getElementById('fresherDashboard').style.display = 'block';
       document.getElementById('fresherMenuBtn').style.display = 'block';
       showFresherSection('home');
-    } else if (role === 'Employer') {
-      document.getElementById('EmployerDashboard').style.display = 'block';
-      document.getElementById('EmployerMenuBtn').style.display = 'block';
-      showEmployerSection('home');
+    } else if (role === 'company') {
+      document.getElementById('companyDashboard').style.display = 'block';
+      document.getElementById('companyMenuBtn').style.display = 'block';
+      showCompanySection('home');
     } else {
       alert("Unknown role: " + role);
     }
@@ -665,9 +629,9 @@
     document.getElementById('adminOverlay').classList.toggle('show');
   };
 
-  window.toggleEmployerMenu = function() {
-    document.getElementById('EmployerSideMenu').classList.toggle('open');
-    document.getElementById('EmployerOverlay').classList.toggle('show');
+  window.toggleCompanyMenu = function() {
+    document.getElementById('companySideMenu').classList.toggle('open');
+    document.getElementById('companyOverlay').classList.toggle('show');
   };
 
   window.toggleFresherMenu = function() {
@@ -680,10 +644,10 @@
     signOut(auth).then(() => {
       document.getElementById('auth-section').style.display = 'block';
       document.getElementById('adminDashboard').style.display = 'none';
-      document.getElementById('EmployerDashboard').style.display = 'none';
+      document.getElementById('companyDashboard').style.display = 'none';
       document.getElementById('fresherDashboard').style.display = 'none';
       document.getElementById('adminMenuBtn').style.display = 'none';
-      document.getElementById('EmployerMenuBtn').style.display = 'none';
+      document.getElementById('companyMenuBtn').style.display = 'none';
       document.getElementById('fresherMenuBtn').style.display = 'none';
     });
   };
@@ -695,7 +659,6 @@
     document.getElementById('adminUsersSection').style.display = 'none';
     document.getElementById('adminJobsSection').style.display = 'none';
     document.getElementById('adminSettingsSection').style.display = 'none';
-    document.getElementById('adminManagementSection').style.display = 'none'; // new
 
     // Show the requested one
     if (section === 'home') {
@@ -708,9 +671,6 @@
       loadAllJobs();
     } else if (section === 'settings') {
       document.getElementById('adminSettingsSection').style.display = 'block';
-    } else if (section === 'management') {
-    document.getElementById('adminManagementSection').style.display = 'block';
-    loadAdmins();
     }
   };
 
@@ -763,7 +723,7 @@
         const row = `
           <tr>
             <td>${data.Title || 'N/A'}</td>
-            <td>${data.Employer || 'N/A'}</td>
+            <td>${data.company || 'N/A'}</td>
             <td>${data.location || 'N/A'}</td>
             <td>${data.salary || 'N/A'}</td>
             <td>
@@ -802,21 +762,21 @@
     }
   };
 
-  // Employer Functions
-  window.showEmployerSection = function(section) {
-    // Hide all Employer sections
-    document.getElementById('EmployerHomeSection').style.display = 'none';
-    document.getElementById('EmployerPostJobSection').style.display = 'none';
-    document.getElementById('EmployerMyJobsSection').style.display = 'none';
+  // Company Functions
+  window.showCompanySection = function(section) {
+    // Hide all company sections
+    document.getElementById('companyHomeSection').style.display = 'none';
+    document.getElementById('companyPostJobSection').style.display = 'none';
+    document.getElementById('companyMyJobsSection').style.display = 'none';
 
     // Show the requested one
     if (section === 'home') {
-      document.getElementById('EmployerHomeSection').style.display = 'block';
+      document.getElementById('companyHomeSection').style.display = 'block';
     } else if (section === 'postJob') {
-      document.getElementById('EmployerPostJobSection').style.display = 'block';
+      document.getElementById('companyPostJobSection').style.display = 'block';
     } else if (section === 'myJobs') {
-      document.getElementById('EmployerMyJobsSection').style.display = 'block';
-      loadEmployerJobs();
+      document.getElementById('companyMyJobsSection').style.display = 'block';
+      loadCompanyJobs();
     }
   };
 
@@ -845,29 +805,32 @@
 
   // Stats and Activity Functions
   async function loadAdminStats() {
-  try {
-    // Count Freshers
-    const freshersQuery = query(collection(db, "users"), where("role", "==", "fresher"));
-    const freshersSnapshot = await getDocs(freshersQuery);
-    animateValue("totalFreshers", freshersSnapshot.size);
-    
-    // Count Employers
-    const EmployersQuery = query(collection(db, "users"), where("role", "==", "Employer"));
-    const EmployersSnapshot = await getDocs(EmployersQuery);
-    animateValue("totalEmployers", EmployersSnapshot.size);
-    
-    // Count Jobs
-    const jobsSnapshot = await getDocs(collection(db, "jobs"));
-    animateValue("totalJobs", jobsSnapshot.size);
-  } catch (error) {
-    console.error("Error loading stats:", error);
+    try {
+      // Count Freshers
+      const freshersQuery = query(collection(db, "users"), where("role", "==", "fresher"));
+      const freshersSnapshot = await getDocs(freshersQuery);
+      animateValue("totalFreshers", freshersSnapshot.size);
+      document.getElementById('totalFreshers').innerText = freshersSnapshot.size;
+
+      // Count Companies
+      const companiesQuery = query(collection(db, "users"), where("role", "==", "company"));
+      const companiesSnapshot = await getDocs(companiesQuery);
+      animateValue("totalCompanies", companiesSnapshot.size);
+      document.getElementById('totalCompanies').innerText = companiesSnapshot.size;
+
+      // Count Jobs
+      const jobsSnapshot = await getDocs(collection(db, "jobs"));
+      animateValue("totalJobs", jobsSnapshot.size);
+      document.getElementById('totalJobs').innerText = jobsSnapshot.size;
+    } catch (error) {
+      console.error("Error loading stats:", error);
+    }
   }
-}
 
   async function loadRecentActivity() {
     try {
       // Recent Users
-      const usersQuery = query(collection(db, "users"), where("role", "in", ["fresher", "Employer"]));
+      const usersQuery = query(collection(db, "users"), where("role", "in", ["fresher", "company"]));
       const usersSnapshot = await getDocs(usersQuery);
       
       const usersData = [];
@@ -898,7 +861,7 @@
         jobsTable.innerHTML += `
           <tr>
             <td>${job.Title || 'N/A'}</td>
-            <td>${job.Employer || 'N/A'}</td>
+            <td>${job.company || 'N/A'}</td>
             <td>${job.location || 'N/A'}</td>
           </tr>`;
       });
@@ -941,35 +904,23 @@
       toggleAdminMenu();
     });
 
-    document.getElementById('adminMenuManagement').addEventListener('click', (e) => {
+    // Company menu links
+    document.getElementById('companyMenuHome').addEventListener('click', (e) => {
       e.preventDefault();
-      showAdminSection('management');
-      toggleAdminMenu();
-    });
-
-    document.getElementById('openAdminManagement').addEventListener('click', (e) => {
-      e.preventDefault();
-      showAdminSection('management');
-    });
-
-
-    // Employer menu links
-    document.getElementById('EmployerMenuHome').addEventListener('click', (e) => {
-      e.preventDefault();
-      showEmployerSection('home');
-      toggleEmployerMenu();
+      showCompanySection('home');
+      toggleCompanyMenu();
     });
     
-    document.getElementById('EmployerMenuPostJob').addEventListener('click', (e) => {
+    document.getElementById('companyMenuPostJob').addEventListener('click', (e) => {
       e.preventDefault();
-      showEmployerSection('postJob');
-      toggleEmployerMenu();
+      showCompanySection('postJob');
+      toggleCompanyMenu();
     });
     
-    document.getElementById('EmployerMenuMyJobs').addEventListener('click', (e) => {
+    document.getElementById('companyMenuMyJobs').addEventListener('click', (e) => {
       e.preventDefault();
-      showEmployerSection('myJobs');
-      toggleEmployerMenu();
+      showCompanySection('myJobs');
+      toggleCompanyMenu();
     });
 
     // Fresher menu links
@@ -1017,7 +968,7 @@
             description: description,
             location: location,
             salary: salary,
-            Employer: user.email,
+            company: user.email,
             createdAt: new Date().toISOString()
           });
           
@@ -1041,8 +992,8 @@
   });
 
   // Placeholder functions for future implementation
-  window.loadEmployerJobs = function() {
-    document.getElementById('EmployerJobsTable').innerHTML = `
+  window.loadCompanyJobs = function() {
+    document.getElementById('companyJobsTable').innerHTML = `
       <tr>
         <td colspan="4">Job listings will appear here</td>
       </tr>`;
@@ -1066,7 +1017,7 @@
     // Would load profile data here
   };
 
-// Number counting animation
+  // Number counting animation
 function animateValue(element, target, duration = 1000) {
   const start = 0;
   const increment = target / (duration / 16); // 60fps
@@ -1082,86 +1033,6 @@ function animateValue(element, target, duration = 1000) {
     el.textContent = Math.floor(current);
   }, 16);
 }
-
-async function createNewAdmin() {
-  const email = document.getElementById('newAdminEmail').value;
-  const tempPassword = document.getElementById('newAdminPassword').value;
-  
-  if (!email.includes('@') || tempPassword.length < 8) {
-    alert("Please enter valid email and password (min 8 chars)");
-    return;
-  }
-
-  try {
-    // 1. Create auth account
-    const userCredential = await createUserWithEmailAndPassword(auth, email, tempPassword);
-    
-    // 2. Set Firestore role
-    await setDoc(doc(db, "users", userCredential.user.uid), {
-      email: email,
-      role: "admin",
-      createdAt: new Date().toISOString()
-    });
-    
-    // 3. Force password reset
-    await sendPasswordResetEmail(auth, email);
-    
-    alert(`Admin created successfully! Password reset sent to ${email}`);
-  } catch (error) {
-    alert("Error creating admin: " + error.message);
-  }
-}
-
-async function loadAdminSettings() {
-  const user = auth.currentUser;
-  const userDoc = await getDoc(doc(db, "users", user.uid));
-  
-  if (userDoc.data().role !== "admin") {
-    document.getElementById('adminManagementCard').style.display = 'none';
-  }
-}
-
-window.loadAdmins = async function() {
-  const table = document.getElementById('adminListTable');
-  table.innerHTML = '<tr><td colspan="3">Loading...</td></tr>';
-
-  try {
-    const user = auth.currentUser;
-    const querySnapshot = await getDocs(query(collection(db, "users"), where("role", "==", "admin")));
-    
-    table.innerHTML = '';
-
-    querySnapshot.forEach(docSnap => {
-      const admin = docSnap.data();
-      const isSelf = admin.email === "gauravku7409@gmail.com.com"; // replace with your email
-      
-      table.innerHTML += `
-        <tr>
-          <td>${admin.email}</td>
-          <td>${new Date(admin.createdAt).toLocaleDateString()}</td>
-          <td>
-            ${isSelf ? '<em>Primary Admin</em>' : `<button onclick="deleteAdmin('${docSnap.id}')" class="danger">Delete</button>`}
-          </td>
-        </tr>`;
-    });
-  } catch (err) {
-    console.error("Error loading admins:", err);
-    table.innerHTML = '<tr><td colspan="3">Failed to load admins</td></tr>';
-  }
-};
-
-window.deleteAdmin = async function(userId) {
-  if (!confirm("Are you sure you want to delete this admin?")) return;
-
-  try {
-    await deleteDoc(doc(db, "users", userId));
-    alert("Admin deleted successfully.");
-    loadAdmins();
-  } catch (err) {
-    alert("Error deleting admin: " + err.message);
-  }
-};
-
 
 </script>
 </body>

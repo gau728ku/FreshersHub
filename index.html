@@ -167,6 +167,13 @@
       margin-bottom: 30px;
     }
     
+     /* New: Horizontal variation (add this) */
+.stats-container.horizontal {
+  flex-wrap: nowrap; /* Force horizontal layout */
+  overflow-x: auto; /* Enable scrolling if needed */
+  padding-bottom: 10px; /* Space for scrollbar */
+}
+
     .stat-card {
       background: rgba(255,255,255,0.1);
       padding: 20px;
@@ -189,10 +196,13 @@
       }
       
       .stats-container {
-        flex-direction: column;
-        align-items: center;
-      }
-    }
+    flex-direction: row; /* Horizontal scroll on mobile */
+    justify-content: flex-start; /* Align cards to start */
+  }
+  .stat-card {
+    min-width: 180px; /* Better for scrolling */
+  }
+}
   </style>
 </head>
 <body>
@@ -229,7 +239,7 @@
     <div class="dashboard-section" id="adminHomeSection">
       <h2>Admin Dashboard</h2>
       
-      <div class="stats-container">
+      <div class="stats-container horizontal">
         <div class="stat-card">
           <p>Total Freshers</p>
           <h3 id="totalFreshers">0</h3>

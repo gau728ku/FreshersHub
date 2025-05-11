@@ -167,12 +167,12 @@
       margin-bottom: 30px;
     }
     
-    /* Horizontal variation */
-    .stats-container.horizontal {
-      flex-wrap: nowrap;
-      overflow-x: auto;
-      padding-bottom: 10px;
-    }
+     /* New: Horizontal variation (add this) */
+.stats-container.horizontal {
+  flex-wrap: nowrap; /* Force horizontal layout */
+  overflow-x: auto; /* Enable scrolling if needed */
+  padding-bottom: 10px; /* Space for scrollbar */
+}
 
     .stat-card {
       background: rgba(255,255,255,0.1);
@@ -184,15 +184,15 @@
     }
     
     .stat-card h3 {
-      margin-top: 10px;
-      font-size: 2rem;
-      transition: transform 0.3s ease;
-    }
+  margin-top: 10px;
+  font-size: 2rem;
+  transition: transform 0.3s ease;
+}
 
-    .stat-card:hover h3 {
-      transform: scale(1.1);
-      color: #00c6ff;
-    }
+.stat-card:hover h3 {
+  transform: scale(1.1);
+  color: #00c6ff;
+}
 
     /* Responsive adjustments */
     @media (max-width: 768px) {
@@ -202,30 +202,19 @@
       }
       
       .stats-container {
-        flex-direction: row;
-        justify-content: flex-start;
-      }
-      .stat-card {
-        min-width: 180px;
-      }
-    }
-    
-    /* Additional Admin Management Styles */
-    .admin-form {
-      background: rgba(255,255,255,0.1);
-      padding: 20px;
-      border-radius: 10px;
-      margin-bottom: 20px;
-    }
-    
-    .admin-form input {
-      margin-bottom: 15px;
-    }
+    flex-direction: row; /* Horizontal scroll on mobile */
+    justify-content: flex-start; /* Align cards to start */
+  }
+  .stat-card {
+    min-width: 180px; /* Better for scrolling */
+  }
+}
+
   </style>
 </head>
 <body>
 
-  <!-- AUTHENTICATION SECTION -->
+  <!-- LOGIN/SIGNUP SECTION -->
   <div class="container" id="auth-section">
     <h2 id="form-title">FreshersHub - Signup</h2>
     <input type="email" id="email" placeholder="Email" required />
@@ -238,7 +227,7 @@
     <p id="toggle-text">Already have an account? <a id="toggleLink">Login here</a></p>
   </div>
 
-  <!-- ADMIN DASHBOARD SECTION -->
+  <!-- ADMIN DASHBOARD -->
   <div id="adminDashboard" style="display:none;">
     <div id="adminMenuBtn" onclick="toggleAdminMenu()">☰</div>
 
@@ -246,7 +235,7 @@
       <a href="#" id="adminMenuHome">Dashboard</a>
       <a href="#" id="adminMenuUsers">Manage Users</a>
       <a href="#" id="adminMenuJobs">Manage Jobs</a>
-      <a href="#" id="adminMenuSettings">Settings</a>
+      <a href="#" id="adminMenuSettings"> Settings</a>
       <a href="#" onclick="logout()">Logout</a>
     </div>
 
@@ -355,52 +344,53 @@
     <!-- Settings Section -->
     <div class="dashboard-section" id="adminSettingsSection">
       <h2>Admin Settings</h2>
-      <button onclick="showAdminSection('home')" class="back-btn">← Back to Dashboard</button>
+      <button onclick="showAdminSection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
       
       <div class="card">
         <h3>System Configuration</h3>
-        <p>Platform settings and configurations</p>
-        
-        <div class="settings-link" onclick="showAdminSection('management')">
-          <h4>→ Admin Management</h4>
-          <p>Manage admin users and permissions</p>
-        </div>
-      </div>
-    </div>
-    
-    <!-- Admin Management Section -->
-    <div class="dashboard-section" id="adminManagementSection" style="display:none;">
-      <h2>Admin Management</h2>
-      <button onclick="showAdminSection('settings')" class="back-btn">← Back to Settings</button>
-      
-      <div class="admin-form">
-        <h3>Add New Admin</h3>
-        <input type="email" id="newAdminEmail" placeholder="Admin email address">
-        <input type="password" id="newAdminPassword" placeholder="Temporary password">
-        <button onclick="createNewAdmin()" class="success">Create Admin</button>
-        <p class="hint">New admin will receive password reset instructions</p>
-      </div>
-      
-      <div class="card">
-        <h3>Current Admins</h3>
-        <div class="table-container">
-          <table>
-            <thead>
-              <tr>
-                <th>Email</th>
-                <th>Created On</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="adminListTable">
-              <tr><td colspan="3">Loading admin users...</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
+        <div class="card">
+  <h3>Admin Settings</h3>
+  <ul>
+    <li><a href="#" id="openAdminManagement">→ Admin Management</a></li>
+  </ul>
+</div>
 
-  <!-- EMPLOYER DASHBOARD SECTION -->
+
+<!-- Admin Management Section -->
+<div class="dashboard-section" id="adminManagementSection" style="display:none;">
+  <h2>Admin Management</h2>
+  <button onclick="showAdminSection('settings')" style="margin-bottom: 20px;">← Back to Settings</button>
+  
+  <div class="card">
+    <h3>Add New Admin</h3>
+    <div class="form-group">
+      <input type="email" id="newAdminEmail" placeholder="New Admin Email">
+      <input type="password" id="newAdminPassword" placeholder="Temporary Password">
+      <button onclick="createNewAdmin()" class="success">Create Admin</button>
+    </div>
+    <p class="hint">New admins will be required to reset their password on first login.</p>
+  </div>
+
+  <div class="card">
+    <h3>Current Admins</h3>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Email</th>
+            <th>Created On</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="adminListTable"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+
+  <!-- Employer DASHBOARD -->
   <div id="EmployerDashboard" style="display:none;">
     <div id="EmployerMenuBtn" onclick="toggleEmployerMenu()">☰</div>
     
@@ -460,7 +450,7 @@
     </div>
   </div>
 
-  <!-- FRESHER DASHBOARD SECTION -->
+  <!-- FRESHER DASHBOARD -->
   <div id="fresherDashboard" style="display:none;">
     <div id="fresherMenuBtn" onclick="toggleFresherMenu()">☰</div>
     
@@ -545,29 +535,9 @@
   </div>
 
 <script type="module">
-  import { 
-    initializeApp, 
-    sendPasswordResetEmail 
-  } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-  import { 
-    getAuth, 
-    createUserWithEmailAndPassword, 
-    signInWithEmailAndPassword, 
-    onAuthStateChanged, 
-    signOut 
-  } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
-  import { 
-    getFirestore, 
-    setDoc, 
-    doc, 
-    getDoc, 
-    collection, 
-    where, 
-    getDocs, 
-    query, 
-    addDoc, 
-    deleteDoc 
-  } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+  import { getFirestore, setDoc, doc, getDoc, collection, where, getDocs, query, addDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
   // Make Firebase functions available globally
   window.query = query;
@@ -575,7 +545,6 @@
   window.where = where;
   window.getDocs = getDocs;
   window.deleteDoc = deleteDoc;
-  window.sendPasswordResetEmail = sendPasswordResetEmail;
 
   const firebaseConfig = {
     apiKey: "AIzaSyDrrAYywpFdd9iIzSSp2m6XcrGkGUgYY3Y",
@@ -590,9 +559,7 @@
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  // =============================================
-  // AUTHENTICATION FUNCTIONS
-  // =============================================
+  // Auth Functions
   window.signup = async function() {
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
@@ -692,21 +659,7 @@
     }
   };
 
-  window.logout = function() {
-    signOut(auth).then(() => {
-      document.getElementById('auth-section').style.display = 'block';
-      document.getElementById('adminDashboard').style.display = 'none';
-      document.getElementById('EmployerDashboard').style.display = 'none';
-      document.getElementById('fresherDashboard').style.display = 'none';
-      document.getElementById('adminMenuBtn').style.display = 'none';
-      document.getElementById('EmployerMenuBtn').style.display = 'none';
-      document.getElementById('fresherMenuBtn').style.display = 'none';
-    });
-  };
-
-  // =============================================
-  // MENU FUNCTIONS
-  // =============================================
+  // Menu Toggle Functions
   window.toggleAdminMenu = function() {
     document.getElementById('adminSideMenu').classList.toggle('open');
     document.getElementById('adminOverlay').classList.toggle('show');
@@ -722,39 +675,42 @@
     document.getElementById('fresherOverlay').classList.toggle('show');
   };
 
-  // =============================================
-  // ADMIN DASHBOARD FUNCTIONS
-  // =============================================
+  // Logout Function
+  window.logout = function() {
+    signOut(auth).then(() => {
+      document.getElementById('auth-section').style.display = 'block';
+      document.getElementById('adminDashboard').style.display = 'none';
+      document.getElementById('EmployerDashboard').style.display = 'none';
+      document.getElementById('fresherDashboard').style.display = 'none';
+      document.getElementById('adminMenuBtn').style.display = 'none';
+      document.getElementById('EmployerMenuBtn').style.display = 'none';
+      document.getElementById('fresherMenuBtn').style.display = 'none';
+    });
+  };
+
+  // Admin Functions
   window.showAdminSection = function(section) {
     // Hide all admin sections
     document.getElementById('adminHomeSection').style.display = 'none';
     document.getElementById('adminUsersSection').style.display = 'none';
     document.getElementById('adminJobsSection').style.display = 'none';
     document.getElementById('adminSettingsSection').style.display = 'none';
-    document.getElementById('adminManagementSection').style.display = 'none';
-    
-    // Show selected section
-    switch(section) {
-      case 'home':
-        document.getElementById('adminHomeSection').style.display = 'block';
-        loadAdminStats();
-        loadRecentActivity();
-        break;
-      case 'users':
-        document.getElementById('adminUsersSection').style.display = 'block';
-        loadAllUsers();
-        break;
-      case 'jobs':
-        document.getElementById('adminJobsSection').style.display = 'block';
-        loadAllJobs();
-        break;
-      case 'settings':
-        document.getElementById('adminSettingsSection').style.display = 'block';
-        break;
-      case 'management':
-        document.getElementById('adminManagementSection').style.display = 'block';
-        loadAdmins();
-        break;
+    document.getElementById('adminManagementSection').style.display = 'none'; // new
+
+    // Show the requested one
+    if (section === 'home') {
+      document.getElementById('adminHomeSection').style.display = 'block';
+    } else if (section === 'users') {
+      document.getElementById('adminUsersSection').style.display = 'block';
+      loadAllUsers();
+    } else if (section === 'jobs') {
+      document.getElementById('adminJobsSection').style.display = 'block';
+      loadAllJobs();
+    } else if (section === 'settings') {
+      document.getElementById('adminSettingsSection').style.display = 'block';
+    } else if (section === 'management') {
+    document.getElementById('adminManagementSection').style.display = 'block';
+    loadAdmins();
     }
   };
 
@@ -846,25 +802,67 @@
     }
   };
 
-  async function loadAdminStats() {
-    try {
-      // Count Freshers
-      const freshersQuery = query(collection(db, "users"), where("role", "==", "fresher"));
-      const freshersSnapshot = await getDocs(freshersQuery);
-      animateValue("totalFreshers", freshersSnapshot.size);
-      
-      // Count Employers
-      const EmployersQuery = query(collection(db, "users"), where("role", "==", "Employer"));
-      const EmployersSnapshot = await getDocs(EmployersQuery);
-      animateValue("totalEmployers", EmployersSnapshot.size);
-      
-      // Count Jobs
-      const jobsSnapshot = await getDocs(collection(db, "jobs"));
-      animateValue("totalJobs", jobsSnapshot.size);
-    } catch (error) {
-      console.error("Error loading stats:", error);
+  // Employer Functions
+  window.showEmployerSection = function(section) {
+    // Hide all Employer sections
+    document.getElementById('EmployerHomeSection').style.display = 'none';
+    document.getElementById('EmployerPostJobSection').style.display = 'none';
+    document.getElementById('EmployerMyJobsSection').style.display = 'none';
+
+    // Show the requested one
+    if (section === 'home') {
+      document.getElementById('EmployerHomeSection').style.display = 'block';
+    } else if (section === 'postJob') {
+      document.getElementById('EmployerPostJobSection').style.display = 'block';
+    } else if (section === 'myJobs') {
+      document.getElementById('EmployerMyJobsSection').style.display = 'block';
+      loadEmployerJobs();
     }
+  };
+
+  // Fresher Functions
+  window.showFresherSection = function(section) {
+    // Hide all fresher sections
+    document.getElementById('fresherHomeSection').style.display = 'none';
+    document.getElementById('fresherJobsSection').style.display = 'none';
+    document.getElementById('fresherApplicationsSection').style.display = 'none';
+    document.getElementById('fresherProfileSection').style.display = 'none';
+
+    // Show the requested one
+    if (section === 'home') {
+      document.getElementById('fresherHomeSection').style.display = 'block';
+    } else if (section === 'jobs') {
+      document.getElementById('fresherJobsSection').style.display = 'block';
+      loadAvailableJobs();
+    } else if (section === 'applications') {
+      document.getElementById('fresherApplicationsSection').style.display = 'block';
+      loadMyApplications();
+    } else if (section === 'profile') {
+      document.getElementById('fresherProfileSection').style.display = 'block';
+      loadFresherProfile();
+    }
+  };
+
+  // Stats and Activity Functions
+  async function loadAdminStats() {
+  try {
+    // Count Freshers
+    const freshersQuery = query(collection(db, "users"), where("role", "==", "fresher"));
+    const freshersSnapshot = await getDocs(freshersQuery);
+    animateValue("totalFreshers", freshersSnapshot.size);
+    
+    // Count Employers
+    const EmployersQuery = query(collection(db, "users"), where("role", "==", "Employer"));
+    const EmployersSnapshot = await getDocs(EmployersQuery);
+    animateValue("totalEmployers", EmployersSnapshot.size);
+    
+    // Count Jobs
+    const jobsSnapshot = await getDocs(collection(db, "jobs"));
+    animateValue("totalJobs", jobsSnapshot.size);
+  } catch (error) {
+    console.error("Error loading stats:", error);
   }
+}
 
   async function loadRecentActivity() {
     try {
@@ -909,153 +907,262 @@
     }
   }
 
-  window.loadAdmins = async function() {
-    const table = document.getElementById('adminListTable');
-    table.innerHTML = '<tr><td colspan="3">Loading admins...</td></tr>';
+  // Initialize Event Listeners
+  document.addEventListener('DOMContentLoaded', () => {
+    // Toggle between login/signup
+    const toggleLink = document.getElementById('toggleLink');
+    toggleLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      toggleForm();
+    });
+
+    // Admin menu links
+    document.getElementById('adminMenuHome').addEventListener('click', (e) => {
+      e.preventDefault();
+      showAdminSection('home');
+      toggleAdminMenu();
+    });
     
-    try {
-      const currentUser = auth.currentUser;
-      if (!currentUser) throw new Error("Not authenticated");
-      
-      // Verify current user is admin
-      const currentUserDoc = await getDoc(doc(db, "users", currentUser.uid));
-      if (currentUserDoc.data().role !== "admin") {
-        throw new Error("Unauthorized access");
-      }
-      
-      const querySnapshot = await getDocs(
-        query(collection(db, "users"), 
-        where("role", "==", "admin")
-       );
-      
-      table.innerHTML = '';
-      
-      if (querySnapshot.empty) {
-        table.innerHTML = '<tr><td colspan="3">No admin users found</td></tr>';
-        return;
-      }
-      
-      querySnapshot.forEach(docSnap => {
-        const adminData = docSnap.data();
-        const isCurrentUser = docSnap.id === currentUser.uid;
+    document.getElementById('adminMenuUsers').addEventListener('click', (e) => {
+      e.preventDefault();
+      showAdminSection('users');
+      toggleAdminMenu();
+    });
+    
+    document.getElementById('adminMenuJobs').addEventListener('click', (e) => {
+      e.preventDefault();
+      showAdminSection('jobs');
+      toggleAdminMenu();
+    });
+    
+    document.getElementById('adminMenuSettings').addEventListener('click', (e) => {
+      e.preventDefault();
+      showAdminSection('settings');
+      toggleAdminMenu();
+    });
+
+    document.getElementById('adminMenuManagement').addEventListener('click', (e) => {
+      e.preventDefault();
+      showAdminSection('management');
+      toggleAdminMenu();
+    });
+
+    document.getElementById('openAdminManagement').addEventListener('click', (e) => {
+      e.preventDefault();
+      showAdminSection('management');
+    });
+
+
+    // Employer menu links
+    document.getElementById('EmployerMenuHome').addEventListener('click', (e) => {
+      e.preventDefault();
+      showEmployerSection('home');
+      toggleEmployerMenu();
+    });
+    
+    document.getElementById('EmployerMenuPostJob').addEventListener('click', (e) => {
+      e.preventDefault();
+      showEmployerSection('postJob');
+      toggleEmployerMenu();
+    });
+    
+    document.getElementById('EmployerMenuMyJobs').addEventListener('click', (e) => {
+      e.preventDefault();
+      showEmployerSection('myJobs');
+      toggleEmployerMenu();
+    });
+
+    // Fresher menu links
+    document.getElementById('fresherMenuHome').addEventListener('click', (e) => {
+      e.preventDefault();
+      showFresherSection('home');
+      toggleFresherMenu();
+    });
+    
+    document.getElementById('fresherMenuJobs').addEventListener('click', (e) => {
+      e.preventDefault();
+      showFresherSection('jobs');
+      toggleFresherMenu();
+    });
+    
+    document.getElementById('fresherMenuApplications').addEventListener('click', (e) => {
+      e.preventDefault();
+      showFresherSection('applications');
+      toggleFresherMenu();
+    });
+    
+    document.getElementById('fresherMenuProfile').addEventListener('click', (e) => {
+      e.preventDefault();
+      showFresherSection('profile');
+      toggleFresherMenu();
+    });
+
+    // Post Job Form
+    const postJobForm = document.getElementById('postJobForm');
+    if (postJobForm) {
+      postJobForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
         
-        table.innerHTML += `
-          <tr>
-            <td>${adminData.email}</td>
-            <td>${new Date(adminData.createdAt).toLocaleDateString()}</td>
-            <td>
-              ${isCurrentUser ? 
-                '<em>Current Admin</em>' : 
-                `<button onclick="deleteAdmin('${docSnap.id}')" class="danger">Remove</button>`
-              }
-            </td>
-          </tr>`;
+        const title = document.getElementById('jobTitle').value;
+        const description = document.getElementById('jobDescription').value;
+        const location = document.getElementById('jobLocation').value;
+        const salary = document.getElementById('jobSalary').value;
+        
+        try {
+          const user = auth.currentUser;
+          if (!user) throw new Error("Not authenticated");
+          
+          await addDoc(collection(db, "jobs"), {
+            Title: title,
+            description: description,
+            location: location,
+            salary: salary,
+            Employer: user.email,
+            createdAt: new Date().toISOString()
+          });
+          
+          alert("Job posted successfully!");
+          postJobForm.reset();
+        } catch (error) {
+          alert("Error posting job: " + error.message);
+        }
       });
-    } catch (error) {
-      console.error("Error loading admins:", error);
-      table.innerHTML = '<tr><td colspan="3">Error loading admin list</td></tr>';
-      alert("Error loading admin list: " + error.message);
     }
+
+    // Check auth state
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const snap = await getDoc(doc(db, "users", user.uid));
+        if (snap.exists()) {
+          showDashboard(snap.data().role);
+        }
+      }
+    });
+  });
+
+  // Placeholder functions for future implementation
+  window.loadEmployerJobs = function() {
+    document.getElementById('EmployerJobsTable').innerHTML = `
+      <tr>
+        <td colspan="4">Job listings will appear here</td>
+      </tr>`;
   };
 
-  window.createNewAdmin = async function() {
-    const email = document.getElementById('newAdminEmail').value.trim();
-    const tempPassword = document.getElementById('newAdminPassword').value;
-    
-    if (!email || !tempPassword) {
-      alert("Please enter both email and password");
-      return;
-    }
-    
-    if (tempPassword.length < 8) {
-      alert("Password must be at least 8 characters");
-      return;
-    }
-    
-    try {
-      // 1. Create auth account
-      const userCredential = await createUserWithEmailAndPassword(auth, email, tempPassword);
-      
-      // 2. Set admin role in Firestore
-      await setDoc(doc(db, "users", userCredential.user.uid), {
-        email: email,
-        role: "admin",
-        createdAt: new Date().toISOString()
-      });
-      
-      // 3. Force password reset
-      await sendPasswordResetEmail(auth, email);
-      
-      // 4. Refresh admin list
-      loadAdmins();
-      
-      // 5. Clear form
-      document.getElementById('newAdminEmail').value = '';
-      document.getElementById('newAdminPassword').value = '';
-      
-      alert(`Admin created successfully! Password reset email sent to ${email}`);
-    } catch (error) {
-      console.error("Error creating admin:", error);
-      alert("Error creating admin: " + error.message);
-    }
+  window.loadAvailableJobs = function() {
+    document.getElementById('availableJobsTable').innerHTML = `
+      <tr>
+        <td colspan="5">Available jobs will appear here</td>
+      </tr>`;
   };
 
-  window.deleteAdmin = async function(adminId) {
-    if (!confirm("Are you sure you want to remove this admin's privileges?")) {
-      return;
-    }
-    
-    try {
-      // Don't delete the user, just change their role
-      await setDoc(doc(db, "users", adminId), {
-        role: "employer"
-      }, { merge: true });
-      
-      alert("Admin privileges removed successfully");
-      loadAdmins();
-    } catch (error) {
-      console.error("Error removing admin:", error);
-      alert("Error removing admin: " + error.message);
-    }
+  window.loadMyApplications = function() {
+    document.getElementById('myApplicationsTable').innerHTML = `
+      <tr>
+        <td colspan="4">Your applications will appear here</td>
+      </tr>`;
   };
 
-  // [Rest of your existing JavaScript remains the same]
+  window.loadFresherProfile = function() {
+    // Would load profile data here
+  };
+
+// Number counting animation
+function animateValue(element, target, duration = 1000) {
+  const start = 0;
+  const increment = target / (duration / 16); // 60fps
+  let current = start;
+  const el = document.getElementById(element);
   
-  // Update the showAdminSection function to include management section
-  window.showAdminSection = function(section) {
-    // Hide all admin sections
-    document.getElementById('adminHomeSection').style.display = 'none';
-    document.getElementById('adminUsersSection').style.display = 'none';
-    document.getElementById('adminJobsSection').style.display = 'none';
-    document.getElementById('adminSettingsSection').style.display = 'none';
-    document.getElementById('adminManagementSection').style.display = 'none';
-    
-    // Show selected section
-    switch(section) {
-      case 'home':
-        document.getElementById('adminHomeSection').style.display = 'block';
-        loadAdminStats();
-        loadRecentActivity();
-        break;
-      case 'users':
-        document.getElementById('adminUsersSection').style.display = 'block';
-        loadAllUsers();
-        break;
-      case 'jobs':
-        document.getElementById('adminJobsSection').style.display = 'block';
-        loadAllJobs();
-        break;
-      case 'settings':
-        document.getElementById('adminSettingsSection').style.display = 'block';
-        break;
-      case 'management':
-        document.getElementById('adminManagementSection').style.display = 'block';
-        loadAdmins();
-        break;
+  const timer = setInterval(() => {
+    current += increment;
+    if (current >= target) {
+      clearInterval(timer);
+      current = target;
     }
-  };
+    el.textContent = Math.floor(current);
+  }, 16);
+}
 
-  // [Rest of your existing event listeners remain the same]
+async function createNewAdmin() {
+  const email = document.getElementById('newAdminEmail').value;
+  const tempPassword = document.getElementById('newAdminPassword').value;
+  
+  if (!email.includes('@') || tempPassword.length < 8) {
+    alert("Please enter valid email and password (min 8 chars)");
+    return;
+  }
+
+  try {
+    // 1. Create auth account
+    const userCredential = await createUserWithEmailAndPassword(auth, email, tempPassword);
+    
+    // 2. Set Firestore role
+    await setDoc(doc(db, "users", userCredential.user.uid), {
+      email: email,
+      role: "admin",
+      createdAt: new Date().toISOString()
+    });
+    
+    // 3. Force password reset
+    await sendPasswordResetEmail(auth, email);
+    
+    alert(`Admin created successfully! Password reset sent to ${email}`);
+  } catch (error) {
+    alert("Error creating admin: " + error.message);
+  }
+}
+
+async function loadAdminSettings() {
+  const user = auth.currentUser;
+  const userDoc = await getDoc(doc(db, "users", user.uid));
+  
+  if (userDoc.data().role !== "admin") {
+    document.getElementById('adminManagementCard').style.display = 'none';
+  }
+}
+
+window.loadAdmins = async function() {
+  const table = document.getElementById('adminListTable');
+  table.innerHTML = '<tr><td colspan="3">Loading...</td></tr>';
+
+  try {
+    const user = auth.currentUser;
+    const querySnapshot = await getDocs(query(collection(db, "users"), where("role", "==", "admin")));
+    
+    table.innerHTML = '';
+
+    querySnapshot.forEach(docSnap => {
+      const admin = docSnap.data();
+      const isSelf = admin.email === "gauravku7409@gmail.com.com"; // replace with your email
+      
+      table.innerHTML += `
+        <tr>
+          <td>${admin.email}</td>
+          <td>${new Date(admin.createdAt).toLocaleDateString()}</td>
+          <td>
+            ${isSelf ? '<em>Primary Admin</em>' : `<button onclick="deleteAdmin('${docSnap.id}')" class="danger">Delete</button>`}
+          </td>
+        </tr>`;
+    });
+  } catch (err) {
+    console.error("Error loading admins:", err);
+    table.innerHTML = '<tr><td colspan="3">Failed to load admins</td></tr>';
+  }
+};
+
+window.deleteAdmin = async function(userId) {
+  if (!confirm("Are you sure you want to delete this admin?")) return;
+
+  try {
+    await deleteDoc(doc(db, "users", userId));
+    alert("Admin deleted successfully.");
+    loadAdmins();
+  } catch (err) {
+    alert("Error deleting admin: " + err.message);
+  }
+};
+
+
 </script>
 </body>
 </html>

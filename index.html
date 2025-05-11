@@ -208,8 +208,17 @@
   .stat-card {
     min-width: 180px; /* Better for scrolling */
   }
-}
-
+    /* Additional Admin Management Styles */
+    .admin-form {
+      background: rgba(255,255,255,0.1);
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+    
+    .admin-form input {
+      margin-bottom: 15px;
+    }
   </style>
 </head>
 <body>
@@ -340,55 +349,53 @@
         </table>
       </div>
     </div>
-    
     <!-- Settings Section -->
     <div class="dashboard-section" id="adminSettingsSection">
       <h2>Admin Settings</h2>
-      <button onclick="showAdminSection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
+      <button onclick="showAdminSection('home')" class="back-btn">← Back to Dashboard</button>
       
       <div class="card">
         <h3>System Configuration</h3>
-        <div class="card">
-  <h3>Admin Settings</h3>
-  <ul>
-    <li><a href="#" id="openAdminManagement">→ Admin Management</a></li>
-  </ul>
-</div>
-
-
-<!-- Admin Management Section -->
-<div class="dashboard-section" id="adminManagementSection" style="display:none;">
-  <h2>Admin Management</h2>
-  <button onclick="showAdminSection('settings')" style="margin-bottom: 20px;">← Back to Settings</button>
-  
-  <div class="card">
-    <h3>Add New Admin</h3>
-    <div class="form-group">
-      <input type="email" id="newAdminEmail" placeholder="New Admin Email">
-      <input type="password" id="newAdminPassword" placeholder="Temporary Password">
-      <button onclick="createNewAdmin()" class="success">Create Admin</button>
+        <p>Platform settings and configurations</p>
+        
+        <div class="settings-link" onclick="showAdminSection('management')">
+          <h4>→ Admin Management</h4>
+          <p>Manage admin users and permissions</p>
+        </div>
+      </div>
     </div>
-    <p class="hint">New admins will be required to reset their password on first login.</p>
-  </div>
-
-  <div class="card">
-    <h3>Current Admins</h3>
-    <div class="table-container">
-      <table>
-        <thead>
-          <tr>
-            <th>Email</th>
-            <th>Created On</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody id="adminListTable"></tbody>
-      </table>
+    
+    <!-- Admin Management Section -->
+    <div class="dashboard-section" id="adminManagementSection" style="display:none;">
+      <h2>Admin Management</h2>
+      <button onclick="showAdminSection('settings')" class="back-btn">← Back to Settings</button>
+      
+      <div class="admin-form">
+        <h3>Add New Admin</h3>
+        <input type="email" id="newAdminEmail" placeholder="Admin email address">
+        <input type="password" id="newAdminPassword" placeholder="Temporary password">
+        <button onclick="createNewAdmin()" class="success">Create Admin</button>
+        <p class="hint">New admin will receive password reset instructions</p>
+      </div>
+      
+      <div class="card">
+        <h3>Current Admins</h3>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Email</th>
+                <th>Created On</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="adminListTable">
+              <tr><td colspan="3">Loading admin users...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
-
-
 
   <!-- Employer DASHBOARD -->
   <div id="EmployerDashboard" style="display:none;">
@@ -534,8 +541,9 @@
     </div>
   </div>
 
+
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
   import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
   import { getFirestore, setDoc, doc, getDoc, collection, where, getDocs, query, addDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
@@ -1120,49 +1128,154 @@ async function loadAdminSettings() {
     document.getElementById('adminManagementCard').style.display = 'none';
   }
 }
-
-window.loadAdmins = async function() {
-  const table = document.getElementById('adminListTable');
-  table.innerHTML = '<tr><td colspan="3">Loading...</td></tr>';
-
-  try {
-    const user = auth.currentUser;
-    const querySnapshot = await getDocs(query(collection(db, "users"), where("role", "==", "admin")));
+  
+  window.loadAdmins = async function() {
+    const table = document.getElementById('adminListTable');
+    table.innerHTML = '<tr><td colspan="3">Loading admins...</td></tr>';
     
-    table.innerHTML = '';
-
-    querySnapshot.forEach(docSnap => {
-      const admin = docSnap.data();
-      const isSelf = admin.email === "gauravku7409@gmail.com.com"; // replace with your email
+    try {
+      const currentUser = auth.currentUser;
+      if (!currentUser) throw new Error("Not authenticated");
       
-      table.innerHTML += `
-        <tr>
-          <td>${admin.email}</td>
-          <td>${new Date(admin.createdAt).toLocaleDateString()}</td>
-          <td>
-            ${isSelf ? '<em>Primary Admin</em>' : `<button onclick="deleteAdmin('${docSnap.id}')" class="danger">Delete</button>`}
-          </td>
-        </tr>`;
-    });
-  } catch (err) {
-    console.error("Error loading admins:", err);
-    table.innerHTML = '<tr><td colspan="3">Failed to load admins</td></tr>';
-  }
-};
+      // Verify current user is admin
+      const currentUserDoc = await getDoc(doc(db, "users", currentUser.uid));
+      if (currentUserDoc.data().role !== "admin") {
+        throw new Error("Unauthorized access");
+      }
+      
+      const querySnapshot = await getDocs(
+        query(collection(db, "users"), 
+        where("role", "==", "admin")
+      );
+      
+      table.innerHTML = '';
+      
+      if (querySnapshot.empty) {
+        table.innerHTML = '<tr><td colspan="3">No admin users found</td></tr>';
+        return;
+      }
+      
+      querySnapshot.forEach(docSnap => {
+        const adminData = docSnap.data();
+        const isCurrentUser = docSnap.id === currentUser.uid;
+        
+        table.innerHTML += `
+          <tr>
+            <td>${adminData.email}</td>
+            <td>${new Date(adminData.createdAt).toLocaleDateString()}</td>
+            <td>
+              ${isCurrentUser ? 
+                '<em>Current Admin</em>' : 
+                `<button onclick="deleteAdmin('${docSnap.id}')" class="danger">Remove</button>`
+              }
+            </td>
+          </tr>`;
+      });
+    } catch (error) {
+      console.error("Error loading admins:", error);
+      table.innerHTML = '<tr><td colspan="3">Error loading admin list</td></tr>';
+      alert("Error loading admin list: " + error.message);
+    }
+  };
 
-window.deleteAdmin = async function(userId) {
-  if (!confirm("Are you sure you want to delete this admin?")) return;
+  window.createNewAdmin = async function() {
+    const email = document.getElementById('newAdminEmail').value.trim();
+    const tempPassword = document.getElementById('newAdminPassword').value;
+    
+    if (!email || !tempPassword) {
+      alert("Please enter both email and password");
+      return;
+    }
+    
+    if (tempPassword.length < 8) {
+      alert("Password must be at least 8 characters");
+      return;
+    }
+    
+    try {
+      // 1. Create auth account
+      const userCredential = await createUserWithEmailAndPassword(auth, email, tempPassword);
+      
+      // 2. Set admin role in Firestore
+      await setDoc(doc(db, "users", userCredential.user.uid), {
+        email: email,
+        role: "admin",
+        createdAt: new Date().toISOString()
+      });
+      
+      // 3. Force password reset
+      await sendPasswordResetEmail(auth, email);
+      
+      // 4. Refresh admin list
+      loadAdmins();
+      
+      // 5. Clear form
+      document.getElementById('newAdminEmail').value = '';
+      document.getElementById('newAdminPassword').value = '';
+      
+      alert(`Admin created successfully! Password reset email sent to ${email}`);
+    } catch (error) {
+      console.error("Error creating admin:", error);
+      alert("Error creating admin: " + error.message);
+    }
+  };
 
-  try {
-    await deleteDoc(doc(db, "users", userId));
-    alert("Admin deleted successfully.");
-    loadAdmins();
-  } catch (err) {
-    alert("Error deleting admin: " + err.message);
-  }
-};
+  window.deleteAdmin = async function(adminId) {
+    if (!confirm("Are you sure you want to remove this admin's privileges?")) {
+      return;
+    }
+    
+    try {
+      // Don't delete the user, just change their role
+      await setDoc(doc(db, "users", adminId), {
+        role: "employer"
+      }, { merge: true });
+      
+      alert("Admin privileges removed successfully");
+      loadAdmins();
+    } catch (error) {
+      console.error("Error removing admin:", error);
+      alert("Error removing admin: " + error.message);
+    }
+  };
 
+  // [Rest of your existing JavaScript remains the same]
+  
+  // Update the showAdminSection function to include management section
+  window.showAdminSection = function(section) {
+    // Hide all admin sections
+    document.getElementById('adminHomeSection').style.display = 'none';
+    document.getElementById('adminUsersSection').style.display = 'none';
+    document.getElementById('adminJobsSection').style.display = 'none';
+    document.getElementById('adminSettingsSection').style.display = 'none';
+    document.getElementById('adminManagementSection').style.display = 'none';
+    
+    // Show selected section
+    switch(section) {
+      case 'home':
+        document.getElementById('adminHomeSection').style.display = 'block';
+        loadAdminStats();
+        loadRecentActivity();
+        break;
+      case 'users':
+        document.getElementById('adminUsersSection').style.display = 'block';
+        loadAllUsers();
+        break;
+      case 'jobs':
+        document.getElementById('adminJobsSection').style.display = 'block';
+        loadAllJobs();
+        break;
+      case 'settings':
+        document.getElementById('adminSettingsSection').style.display = 'block';
+        break;
+      case 'management':
+        document.getElementById('adminManagementSection').style.display = 'block';
+        loadAdmins();
+        break;
+    }
+  };
 
+  // [Rest of your existing event listeners remain the same]
 </script>
 </body>
 </html>

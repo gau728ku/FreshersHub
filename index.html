@@ -84,7 +84,7 @@
     }
 
     /* Menu buttons */
-    #adminMenuBtn, #fresherMenuBtn, #EmployerMenuBtn {
+    #adminMenuBtn, #fresherMenuBtn, #companyMenuBtn {
       position: fixed;
       top: 20px;
       left: 20px;
@@ -210,47 +210,6 @@
   color: #00c6ff;
 }
 
-.settings-link {
-  padding: 15px;
-  margin: 15px 0;
-  background: rgba(255,255,255,0.1);
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.3s;
-  border-left: 4px solid #00c6ff;
-}
-
-.settings-link:hover {
-  background: rgba(255,255,255,0.2);
-  transform: translateX(5px);
-}
-
-.settings-link h4 {
-  color: #023c4d;
-  margin: 0;
-  font-size: 1.2em;
-  display: flex;
-  align-items: center;
-}
-
-.settings-link h4::before {
-  content: "→";
-  margin-right: 10px;
-  font-size: 1.5em;
-}
-
-/* Add this to your existing CSS */
-#fresherHomeSection,
-#EmployerHomeSection {
-  display: block !important; /* Force show the home sections */
-}
-
-#fresherDashboard,
-#EmployerDashboard {
-  background: rgba(0,0,0,0.8); /* Make sure background is visible */
-  min-height: 100vh; /* Full height */
-}
-
   </style>
 </head>
 <body>
@@ -262,8 +221,8 @@
     <input type="password" id="password" placeholder="Password" required />
     <select id="role">
       <option value="fresher">Fresher</option>
-      <option value="Employer">Employer</option>
-      
+      <option value="company">Company</option>
+      <option value="admin">Admin</option>
     </select>
     <button id="actionBtn" onclick="signup()">Signup</button>
     <p id="toggle-text">Already have an account? <a id="toggleLink">Login here</a></p>
@@ -293,8 +252,8 @@
           <h3 id="totalFreshers">-</h3>
         </div>
         <div class="stat-card">
-          <p>Total Employers</p>
-          <h3 id="totalEmployers">-</h3>
+          <p>Total Companies</p>
+          <h3 id="totalCompanies">-</h3>
         </div>
         <div class="stat-card">
           <p>Total Jobs</p>
@@ -327,7 +286,7 @@
                 <thead>
                   <tr>
                     <th>Title</th>
-                    <th>Employer</th>
+                    <th>Company</th>
                     <th>Location</th>
                   </tr>
                 </thead>
@@ -370,7 +329,7 @@
           <thead>
             <tr>
               <th>Title</th>
-              <th>Employer</th>
+              <th>Company</th>
               <th>Location</th>
               <th>Salary</th>
               <th>Actions</th>
@@ -389,73 +348,37 @@
       <button onclick="showAdminSection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
       
       <div class="card">
-        <h3>System configurations</h3>
-
-         <!-- Add this Admin Management link -->
-      <div class="settings-link" onclick="showAdminSection('management')">
-        <h4>→ Admin Management</h4>
+        <h3>System Configuration</h3>
+        <p>Settings will be added here</p>
       </div>
     </div>
   </div>
 
-    <!-- Admin Management Section -->
-<div class="dashboard-section" id="adminManagementSection" style="display:none;">
-  <h2>Admin Management</h2>
-  <button onclick="showAdminSection('settings')" style="margin-bottom: 20px;">← Back to Settings</button>
-  
-  <div class="card">
-    <h3>Add New Admin</h3>
-    <div class="form-group">
-      <input type="email" id="newAdminEmail" placeholder="Admin email address">
-      <input type="password" id="newAdminPassword" placeholder="Temporary password">
-      <button onclick="createNewAdmin()" class="success">Create Admin</button>
-    </div>
-    <p class="hint">New admin will receive password reset instructions</p>
-  </div>
-
-  <div class="card">
-    <h3>Current Admins</h3>
-    <div class="table-container">
-      <table>
-        <thead>
-          <tr>
-            <th>Email</th>
-            <th>Created On</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody id="adminListTable"></tbody>
-      </table>
-    </div>
-  </div>
-</div>
-
-
-  <!-- Employer DASHBOARD -->
-  <div id="EmployerDashboard" style="display:none;">
-    <div id="EmployerMenuBtn" onclick="toggleEmployerMenu()">☰</div>
+  <!-- COMPANY DASHBOARD -->
+  <div id="companyDashboard" style="display:none;">
+    <div id="companyMenuBtn" onclick="toggleCompanyMenu()">☰</div>
     
-    <div class="sideMenu" id="EmployerSideMenu">
-      <a href="#" id="EmployerMenuHome">Dashboard</a>
-      <a href="#" id="EmployerMenuPostJob">Post Job</a>
-      <a href="#" id="EmployerMenuMyJobs">My Jobs</a>
+    <div class="sideMenu" id="companySideMenu">
+      <a href="#" id="companyMenuHome">Dashboard</a>
+      <a href="#" id="companyMenuPostJob">Post Job</a>
+      <a href="#" id="companyMenuMyJobs">My Jobs</a>
       <a href="#" onclick="logout()">Logout</a>
     </div>
     
-    <div class="overlay" id="EmployerOverlay" onclick="toggleEmployerMenu()"></div>
+    <div class="overlay" id="companyOverlay" onclick="toggleCompanyMenu()"></div>
     
-    <!-- Employer Home Section -->
-    <div class="dashboard-section" id="EmployerHomeSection">
-      <h2>Employer Dashboard</h2>
+    <!-- Company Home Section -->
+    <div class="dashboard-section" id="companyHomeSection">
+      <h2>Company Dashboard</h2>
       <div class="card">
-        <p>Welcome to your Employer dashboard!</p>
+        <p>Welcome to your company dashboard!</p>
       </div>
     </div>
     
     <!-- Post Job Section -->
-    <div class="dashboard-section" id="EmployerPostJobSection">
+    <div class="dashboard-section" id="companyPostJobSection">
       <h2>Post New Job</h2>
-      <button onclick="showEmployerSection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
+      <button onclick="showCompanySection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
       
       <div class="card">
         <form id="postJobForm">
@@ -469,9 +392,9 @@
     </div>
     
     <!-- My Jobs Section -->
-    <div class="dashboard-section" id="EmployerMyJobsSection">
+    <div class="dashboard-section" id="companyMyJobsSection">
       <h2>My Job Postings</h2>
-      <button onclick="showEmployerSection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
+      <button onclick="showCompanySection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
       
       <div class="table-container">
         <table>
@@ -483,8 +406,8 @@
               <th>Actions</th>
             </tr>
           </thead>
-          <tbody id="EmployerJobsTable">
-            <!-- Employer's jobs will be listed here -->
+          <tbody id="companyJobsTable">
+            <!-- Company's jobs will be listed here -->
           </tbody>
         </table>
       </div>
@@ -523,7 +446,7 @@
           <thead>
             <tr>
               <th>Title</th>
-              <th>Employer</th>
+              <th>Company</th>
               <th>Location</th>
               <th>Salary</th>
               <th>Actions</th>
@@ -546,7 +469,7 @@
           <thead>
             <tr>
               <th>Job Title</th>
-              <th>Employer</th>
+              <th>Company</th>
               <th>Status</th>
               <th>Applied On</th>
             </tr>
@@ -577,7 +500,7 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
   import { getFirestore, setDoc, doc, getDoc, collection, where, getDocs, query, addDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
   // Make Firebase functions available globally
@@ -652,40 +575,29 @@
     const roleSelect = document.getElementById('role');
 
     if (formTitle.textContent.includes('Signup')) {
-    // Switch to login mode
-    formTitle.textContent = 'FreshersHub - Login';
-    actionBtn.textContent = 'Login';
-    actionBtn.onclick = login;
-    roleSelect.style.display = 'none';
-    toggleText.innerHTML = `Don't have an account? <a id="toggleLink">Signup here</a>`;
-  } else {
-    // Switch to signup mode
-    formTitle.textContent = 'FreshersHub - Signup';
-    actionBtn.textContent = 'Signup';
-    actionBtn.onclick = signup;
-    roleSelect.style.display = 'block';
-    toggleText.innerHTML = `Already have an account? <a id="toggleLink">Login here</a>`;
-  }
-
-  // ✅ Re-attach the toggle link listener every time
-  const toggleLink = document.getElementById('toggleLink');
-  if (toggleLink) {
-    toggleLink.addEventListener('click', (e) => {
-      e.preventDefault();
-      toggleForm();
-    });
-  }
-};
+      formTitle.textContent = 'FreshersHub - Login';
+      actionBtn.textContent = 'Login';
+      actionBtn.onclick = login;
+      toggleText.innerHTML = `Don't have an account? <a id="toggleLink">Signup here</a>`;
+      roleSelect.style.display = 'none';
+    } else {
+      formTitle.textContent = 'FreshersHub - Signup';
+      actionBtn.textContent = 'Signup';
+      actionBtn.onclick = signup;
+      toggleText.innerHTML = `Already have an account? <a id="toggleLink">Login here</a>`;
+      roleSelect.style.display = 'block';
+    }
+  };
 
   window.showDashboard = function(role) {
     // Hide all dashboards
     document.getElementById('adminDashboard').style.display = 'none';
     document.getElementById('fresherDashboard').style.display = 'none';
-    document.getElementById('EmployerDashboard').style.display = 'none';
+    document.getElementById('companyDashboard').style.display = 'none';
     
     // Hide all menu buttons
     document.getElementById('adminMenuBtn').style.display = 'none';
-    document.getElementById('EmployerMenuBtn').style.display = 'none';
+    document.getElementById('companyMenuBtn').style.display = 'none';
     document.getElementById('fresherMenuBtn').style.display = 'none';
     
     // Hide auth
@@ -699,16 +611,14 @@
       loadAdminStats();
       loadRecentActivity();
     } else if (role === 'fresher') {
-  document.getElementById('fresherDashboard').style.display = 'block';
-  document.getElementById('fresherMenuBtn').style.display = 'block';
-  showFresherSection('home');
-}
-else if (role === 'Employer') {
-  document.getElementById('EmployerDashboard').style.display = 'block';
-  document.getElementById('EmployerMenuBtn').style.display = 'block';
-  showEmployerSection('home');
-}
- else {
+      document.getElementById('fresherDashboard').style.display = 'block';
+      document.getElementById('fresherMenuBtn').style.display = 'block';
+      showFresherSection('home');
+    } else if (role === 'company') {
+      document.getElementById('companyDashboard').style.display = 'block';
+      document.getElementById('companyMenuBtn').style.display = 'block';
+      showCompanySection('home');
+    } else {
       alert("Unknown role: " + role);
     }
   };
@@ -719,9 +629,9 @@ else if (role === 'Employer') {
     document.getElementById('adminOverlay').classList.toggle('show');
   };
 
-  window.toggleEmployerMenu = function() {
-    document.getElementById('EmployerSideMenu').classList.toggle('open');
-    document.getElementById('EmployerOverlay').classList.toggle('show');
+  window.toggleCompanyMenu = function() {
+    document.getElementById('companySideMenu').classList.toggle('open');
+    document.getElementById('companyOverlay').classList.toggle('show');
   };
 
   window.toggleFresherMenu = function() {
@@ -734,16 +644,11 @@ else if (role === 'Employer') {
     signOut(auth).then(() => {
       document.getElementById('auth-section').style.display = 'block';
       document.getElementById('adminDashboard').style.display = 'none';
-      document.getElementById('EmployerDashboard').style.display = 'none';
+      document.getElementById('companyDashboard').style.display = 'none';
       document.getElementById('fresherDashboard').style.display = 'none';
       document.getElementById('adminMenuBtn').style.display = 'none';
-      document.getElementById('EmployerMenuBtn').style.display = 'none';
+      document.getElementById('companyMenuBtn').style.display = 'none';
       document.getElementById('fresherMenuBtn').style.display = 'none';
-     
-      // Optional: reset sections
-      showAdminSection('home');
-      showFresherSection('home');
-      showEmployerSection('home');
     });
   };
 
@@ -754,8 +659,7 @@ else if (role === 'Employer') {
     document.getElementById('adminUsersSection').style.display = 'none';
     document.getElementById('adminJobsSection').style.display = 'none';
     document.getElementById('adminSettingsSection').style.display = 'none';
-    document.getElementById('adminManagementSection').style.display = 'none';
-   
+
     // Show the requested one
     if (section === 'home') {
       document.getElementById('adminHomeSection').style.display = 'block';
@@ -767,9 +671,6 @@ else if (role === 'Employer') {
       loadAllJobs();
     } else if (section === 'settings') {
       document.getElementById('adminSettingsSection').style.display = 'block';
-    } else if (section === 'management') {
-    document.getElementById('adminManagementSection').style.display = 'block';
-    loadAdmins(); // We'll create this function next
     }
   };
 
@@ -822,7 +723,7 @@ else if (role === 'Employer') {
         const row = `
           <tr>
             <td>${data.Title || 'N/A'}</td>
-            <td>${data.Employer || 'N/A'}</td>
+            <td>${data.company || 'N/A'}</td>
             <td>${data.location || 'N/A'}</td>
             <td>${data.salary || 'N/A'}</td>
             <td>
@@ -861,21 +762,21 @@ else if (role === 'Employer') {
     }
   };
 
-  // Employer Functions
-  window.showEmployerSection = function(section) {
-    // Hide all Employer sections
-    document.getElementById('EmployerHomeSection').style.display = 'none';
-    document.getElementById('EmployerPostJobSection').style.display = 'none';
-    document.getElementById('EmployerMyJobsSection').style.display = 'none';
+  // Company Functions
+  window.showCompanySection = function(section) {
+    // Hide all company sections
+    document.getElementById('companyHomeSection').style.display = 'none';
+    document.getElementById('companyPostJobSection').style.display = 'none';
+    document.getElementById('companyMyJobsSection').style.display = 'none';
 
     // Show the requested one
     if (section === 'home') {
-      document.getElementById('EmployerHomeSection').style.display = 'block';
+      document.getElementById('companyHomeSection').style.display = 'block';
     } else if (section === 'postJob') {
-      document.getElementById('EmployerPostJobSection').style.display = 'block';
+      document.getElementById('companyPostJobSection').style.display = 'block';
     } else if (section === 'myJobs') {
-      document.getElementById('EmployerMyJobsSection').style.display = 'block';
-      loadEmployerJobs();
+      document.getElementById('companyMyJobsSection').style.display = 'block';
+      loadCompanyJobs();
     }
   };
 
@@ -902,106 +803,6 @@ else if (role === 'Employer') {
     }
   };
 
-
- // Load admin users list
-window.loadAdmins = async function() {
-  const table = document.getElementById('adminListTable');
-  table.innerHTML = '<tr><td colspan="3">Loading admins...</td></tr>';
-
-  try {
-    const currentUser = auth.currentUser;
-    const currentUserDoc = await getDoc(doc(db, "users", currentUser.uid));
-    const isOriginalAdmin = currentUserDoc.data().isOriginalAdmin; // You'll need to set this flag for your original admin
-    
-    const querySnapshot = await getDocs(
-      query(collection(db, "users"), 
-      where("role", "==", "admin"))
-    );
-    
-    table.innerHTML = '';
-    
-    if (querySnapshot.empty) {
-      table.innerHTML = '<tr><td colspan="3">No admin users found</td></tr>';
-      return;
-    }
-    
-    querySnapshot.forEach(doc => {
-      const data = doc.data();
-      const showRemoveButton = isOriginalAdmin && doc.id !== currentUser.uid; // Don't show remove for self
-      
-      table.innerHTML += `
-        <tr>
-          <td>${data.email}</td>
-          <td>${new Date(data.createdAt).toLocaleDateString()}</td>
-          <td>
-            ${showRemoveButton ? `<button onclick="deleteAdmin('${doc.id}')" class="danger">Remove</button>` : ''}
-          </td>
-        </tr>`;
-    });
-  } catch (error) {
-    table.innerHTML = '<tr><td colspan="3">Error loading admins</td></tr>';
-    console.error("Error loading admins:", error);
-  }
-};
-
-// Create new admin
-window.createNewAdmin = async function() {
-  const email = document.getElementById('newAdminEmail').value;
-  const tempPassword = document.getElementById('newAdminPassword').value;
-  
-  if (!email || !tempPassword) {
-    alert("Please enter both email and password");
-    return;
-  }
-  
-  try {
-    // 1. Create auth account
-    const userCredential = await createUserWithEmailAndPassword(auth, email, tempPassword);
-    
-    // 2. Set admin role in Firestore
-    await setDoc(doc(db, "users", userCredential.user.uid), {
-      email: email,
-      role: "admin",
-      createdAt: new Date().toISOString()
-    });
-    
-    // 3. Force password reset
-    await sendPasswordResetEmail(auth, email);
-    
-    // 4. Refresh admin list
-    loadAdmins();
-    
-    // 5. Clear form
-    document.getElementById('newAdminEmail').value = '';
-    document.getElementById('newAdminPassword').value = '';
-    
-    alert(`Admin created successfully! Password reset email sent to ${email}`);
-  } catch (error) {
-    console.error("Error creating admin:", error);
-    alert("Error creating admin: " + error.message);
-  }
-};
-
-// Delete admin
-window.deleteAdmin = async function(userId) {
-  if (!confirm("Are you sure you want to remove this admin's privileges?")) {
-    return;
-  }
-  
-  try {
-    // Don't delete the user, just change their role
-    await setDoc(doc(db, "users", userId), {
-      role: "employer"
-    }, { merge: true });
-    
-    alert("Admin privileges removed successfully");
-    loadAdmins();
-  } catch (error) {
-    console.error("Error removing admin:", error);
-    alert("Error removing admin: " + error.message);
-  }
-};
-
   // Stats and Activity Functions
   async function loadAdminStats() {
     try {
@@ -1011,11 +812,11 @@ window.deleteAdmin = async function(userId) {
       animateValue("totalFreshers", freshersSnapshot.size);
       document.getElementById('totalFreshers').innerText = freshersSnapshot.size;
 
-      // Count Employers
-      const EmployersQuery = query(collection(db, "users"), where("role", "==", "Employer"));
-      const EmployersSnapshot = await getDocs(EmployersQuery);
-      animateValue("totalEmployers", EmployersSnapshot.size);
-      document.getElementById('totalEmployers').innerText = EmployersSnapshot.size;
+      // Count Companies
+      const companiesQuery = query(collection(db, "users"), where("role", "==", "company"));
+      const companiesSnapshot = await getDocs(companiesQuery);
+      animateValue("totalCompanies", companiesSnapshot.size);
+      document.getElementById('totalCompanies').innerText = companiesSnapshot.size;
 
       // Count Jobs
       const jobsSnapshot = await getDocs(collection(db, "jobs"));
@@ -1029,7 +830,7 @@ window.deleteAdmin = async function(userId) {
   async function loadRecentActivity() {
     try {
       // Recent Users
-      const usersQuery = query(collection(db, "users"), where("role", "in", ["fresher", "Employer"]));
+      const usersQuery = query(collection(db, "users"), where("role", "in", ["fresher", "company"]));
       const usersSnapshot = await getDocs(usersQuery);
       
       const usersData = [];
@@ -1060,7 +861,7 @@ window.deleteAdmin = async function(userId) {
         jobsTable.innerHTML += `
           <tr>
             <td>${job.Title || 'N/A'}</td>
-            <td>${job.Employer || 'N/A'}</td>
+            <td>${job.company || 'N/A'}</td>
             <td>${job.location || 'N/A'}</td>
           </tr>`;
       });
@@ -1103,23 +904,23 @@ window.deleteAdmin = async function(userId) {
       toggleAdminMenu();
     });
 
-    // Employer menu links
-    document.getElementById('EmployerMenuHome').addEventListener('click', (e) => {
+    // Company menu links
+    document.getElementById('companyMenuHome').addEventListener('click', (e) => {
       e.preventDefault();
-      showEmployerSection('home');
-      toggleEmployerMenu();
+      showCompanySection('home');
+      toggleCompanyMenu();
     });
     
-    document.getElementById('EmployerMenuPostJob').addEventListener('click', (e) => {
+    document.getElementById('companyMenuPostJob').addEventListener('click', (e) => {
       e.preventDefault();
-      showEmployerSection('postJob');
-      toggleEmployerMenu();
+      showCompanySection('postJob');
+      toggleCompanyMenu();
     });
     
-    document.getElementById('EmployerMenuMyJobs').addEventListener('click', (e) => {
+    document.getElementById('companyMenuMyJobs').addEventListener('click', (e) => {
       e.preventDefault();
-      showEmployerSection('myJobs');
-      toggleEmployerMenu();
+      showCompanySection('myJobs');
+      toggleCompanyMenu();
     });
 
     // Fresher menu links
@@ -1167,7 +968,7 @@ window.deleteAdmin = async function(userId) {
             description: description,
             location: location,
             salary: salary,
-            Employer: user.email,
+            company: user.email,
             createdAt: new Date().toISOString()
           });
           
@@ -1191,8 +992,8 @@ window.deleteAdmin = async function(userId) {
   });
 
   // Placeholder functions for future implementation
-  window.loadEmployerJobs = function() {
-    document.getElementById('EmployerJobsTable').innerHTML = `
+  window.loadCompanyJobs = function() {
+    document.getElementById('companyJobsTable').innerHTML = `
       <tr>
         <td colspan="4">Job listings will appear here</td>
       </tr>`;

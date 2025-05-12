@@ -393,6 +393,31 @@
     </div>
   </div>
 
+<div class="dashboard-section" id="fresherJobsSection">
+    <h2>Available Jobs</h2>
+    <button onclick="showFresherSection('home')">← Back to Dashboard</button>
+    <div class="table-container">
+      <!-- Jobs table will go here -->
+    </div>
+  </div>
+
+  <div class="dashboard-section" id="fresherApplicationsSection">
+    <h2>My Applications</h2>
+    <button onclick="showFresherSection('home')">← Back to Dashboard</button>
+    <div class="table-container">
+      <!-- Applications table will go here -->
+    </div>
+  </div>
+
+  <div class="dashboard-section" id="fresherProfileSection">
+    <h2>My Profile</h2>
+    <button onclick="showFresherSection('home')">← Back to Dashboard</button>
+    <div class="card">
+      <!-- Profile form will go here -->
+    </div>
+  </div>
+</div>
+  
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
   import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
@@ -550,62 +575,151 @@
   });
 
   // Dashboard Navigation Functions
-window.showAdminSection = function(section) {
-  document.getElementById('adminHomeSection').style.display = 'none';
-  document.getElementById('adminUsersSection').style.display = 'none';
-  document.getElementById('adminJobsSection').style.display = 'none';
-  document.getElementById('adminSettingsSection').style.display = 'none';
+// Enhanced showDashboard function with error handling
+window.showDashboard = async function(role) {
+  console.log("Showing dashboard for role:", role);
+  
+  try {
+    // Hide all dashboards first
+    document.getElementById('auth-section').style.display = 'none';
+    
+    const dashboards = ['adminDashboard', 'fresherDashboard', 'employerDashboard'];
+    dashboards.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
 
-  if (section === 'home') {
-    document.getElementById('adminHomeSection').style.display = 'block';
-    loadAdminStats();
-    loadRecentActivity();
-  } else if (section === 'users') {
-    document.getElementById('adminUsersSection').style.display = 'block';
-    loadAllUsers();
-  } else if (section === 'jobs') {
-    document.getElementById('adminJobsSection').style.display = 'block';
-    loadAllJobs();
-  } else if (section === 'settings') {
-    document.getElementById('adminSettingsSection').style.display = 'block';
+    // Show loading state
+    const loadingMessage = document.createElement('div');
+    loadingMessage.innerHTML = '<div class="spinner"></div><p>Loading dashboard...</p>';
+    document.body.appendChild(loadingMessage);
+
+    // Show relevant dashboard
+    if (role === 'admin') {
+      const adminDashboard = document.getElementById('adminDashboard');
+      if (adminDashboard) {
+        adminDashboard.style.display = 'block';
+        document.getElementById('adminMenuBtn').style.display = 'block';
+        showAdminSection('home');
+      }
+    } 
+    else if (role === 'fresher') {
+      const fresherDashboard = document.getElementById('fresherDashboard');
+      if (fresherDashboard) {
+        fresherDashboard.style.display = 'block';
+        document.getElementById('fresherMenuBtn').style.display = 'block';
+        showFresherSection('home');
+      }
+    } 
+    else if (role === 'employer') {
+      const employerDashboard = document.getElementById('employerDashboard');
+      if (employerDashboard) {
+        employerDashboard.style.display = 'block';
+        document.getElementById('employerMenuBtn').style.display = 'block';
+        showEmployerSection('home');
+      }
+    } 
+    else {
+      console.error("Unknown role:", role);
+      document.getElementById('auth-section').style.display = 'block';
+    }
+  } catch (error) {
+    console.error("Dashboard error:", error);
+    document.getElementById('auth-section').style.display = 'block';
+    alert("Error loading dashboard. Please try again.");
+  } finally {
+    // Remove loading message if it exists
+    const loading = document.querySelector('.spinner')?.parentElement;
+    if (loading) document.body.removeChild(loading);
   }
 };
 
+// Enhanced showFresherSection with null checks
 window.showFresherSection = function(section) {
-  document.getElementById('fresherHomeSection').style.display = 'none';
-  document.getElementById('fresherJobsSection').style.display = 'none';
-  document.getElementById('fresherApplicationsSection').style.display = 'none';
-  document.getElementById('fresherProfileSection').style.display = 'none';
+  try {
+    const sections = [
+      'fresherHomeSection',
+      'fresherJobsSection',
+      'fresherApplicationsSection',
+      'fresherProfileSection'
+    ];
+    
+    // Hide all sections
+    sections.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
 
-  if (section === 'home') {
-    document.getElementById('fresherHomeSection').style.display = 'block';
-  } else if (section === 'jobs') {
-    document.getElementById('fresherJobsSection').style.display = 'block';
-    loadAvailableJobs();
-  } else if (section === 'applications') {
-    document.getElementById('fresherApplicationsSection').style.display = 'block';
-    loadMyApplications();
-  } else if (section === 'profile') {
-    document.getElementById('fresherProfileSection').style.display = 'block';
-    loadFresherProfile();
+    // Show requested section
+    const targetSection = document.getElementById(`fresher${section.charAt(0).toUpperCase() + section.slice(1)}Section`);
+    if (targetSection) {
+      targetSection.style.display = 'block';
+      
+      // Load data if needed
+      if (section === 'jobs') loadAvailableJobs();
+      else if (section === 'applications') loadMyApplications();
+      else if (section === 'profile') loadFresherProfile();
+    } else {
+      console.error("Fresher section not found:", section);
+    }
+  } catch (error) {
+    console.error("Error showing fresher section:", error);
+  }
+};
+
+// Similar enhancements for showAdminSection and showEmployerSection
+window.showAdminSection = function(section) {
+  try {
+    const sections = [
+      'adminHomeSection',
+      'adminUsersSection',
+      'adminJobsSection',
+      'adminSettingsSection'
+    ];
+    
+    sections.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+
+    const targetSection = document.getElementById(`admin${section.charAt(0).toUpperCase() + section.slice(1)}Section`);
+    if (targetSection) {
+      targetSection.style.display = 'block';
+      
+      if (section === 'home') {
+        loadAdminStats();
+        loadRecentActivity();
+      }
+      else if (section === 'users') loadAllUsers();
+      else if (section === 'jobs') loadAllJobs();
+    }
+  } catch (error) {
+    console.error("Error showing admin section:", error);
   }
 };
 
 window.showEmployerSection = function(section) {
-  document.getElementById('employerHomeSection').style.display = 'none';
-  document.getElementById('employerPostJobSection').style.display = 'none';
-  document.getElementById('employerMyJobsSection').style.display = 'none';
+  try {
+    const sections = [
+      'employerHomeSection',
+      'employerPostJobSection',
+      'employerMyJobsSection'
+    ];
+    
+    sections.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
 
-  if (section === 'home') {
-    document.getElementById('employerHomeSection').style.display = 'block';
-  } else if (section === 'postJob') {
-    document.getElementById('employerPostJobSection').style.display = 'block';
-  } else if (section === 'myJobs') {
-    document.getElementById('employerMyJobsSection').style.display = 'block';
-    loadEmployerJobs();
+    const targetSection = document.getElementById(`employer${section.charAt(0).toUpperCase() + section.slice(1)}Section`);
+    if (targetSection) {
+      targetSection.style.display = 'block';
+      if (section === 'myJobs') loadEmployerJobs();
+    }
+  } catch (error) {
+    console.error("Error showing employer section:", error);
   }
 };
-
 // Menu Toggle Functions
 window.toggleAdminMenu = function() {
   document.getElementById('adminSideMenu').classList.toggle('open');

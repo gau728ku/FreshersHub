@@ -549,7 +549,191 @@
     });
   });
 
-  // Add other necessary functions here...
+  // Dashboard Navigation Functions
+window.showAdminSection = function(section) {
+  document.getElementById('adminHomeSection').style.display = 'none';
+  document.getElementById('adminUsersSection').style.display = 'none';
+  document.getElementById('adminJobsSection').style.display = 'none';
+  document.getElementById('adminSettingsSection').style.display = 'none';
+
+  if (section === 'home') {
+    document.getElementById('adminHomeSection').style.display = 'block';
+    loadAdminStats();
+    loadRecentActivity();
+  } else if (section === 'users') {
+    document.getElementById('adminUsersSection').style.display = 'block';
+    loadAllUsers();
+  } else if (section === 'jobs') {
+    document.getElementById('adminJobsSection').style.display = 'block';
+    loadAllJobs();
+  } else if (section === 'settings') {
+    document.getElementById('adminSettingsSection').style.display = 'block';
+  }
+};
+
+window.showFresherSection = function(section) {
+  document.getElementById('fresherHomeSection').style.display = 'none';
+  document.getElementById('fresherJobsSection').style.display = 'none';
+  document.getElementById('fresherApplicationsSection').style.display = 'none';
+  document.getElementById('fresherProfileSection').style.display = 'none';
+
+  if (section === 'home') {
+    document.getElementById('fresherHomeSection').style.display = 'block';
+  } else if (section === 'jobs') {
+    document.getElementById('fresherJobsSection').style.display = 'block';
+    loadAvailableJobs();
+  } else if (section === 'applications') {
+    document.getElementById('fresherApplicationsSection').style.display = 'block';
+    loadMyApplications();
+  } else if (section === 'profile') {
+    document.getElementById('fresherProfileSection').style.display = 'block';
+    loadFresherProfile();
+  }
+};
+
+window.showEmployerSection = function(section) {
+  document.getElementById('employerHomeSection').style.display = 'none';
+  document.getElementById('employerPostJobSection').style.display = 'none';
+  document.getElementById('employerMyJobsSection').style.display = 'none';
+
+  if (section === 'home') {
+    document.getElementById('employerHomeSection').style.display = 'block';
+  } else if (section === 'postJob') {
+    document.getElementById('employerPostJobSection').style.display = 'block';
+  } else if (section === 'myJobs') {
+    document.getElementById('employerMyJobsSection').style.display = 'block';
+    loadEmployerJobs();
+  }
+};
+
+// Menu Toggle Functions
+window.toggleAdminMenu = function() {
+  document.getElementById('adminSideMenu').classList.toggle('open');
+  document.getElementById('adminOverlay').classList.toggle('show');
+};
+
+window.toggleFresherMenu = function() {
+  document.getElementById('fresherSideMenu').classList.toggle('open');
+  document.getElementById('fresherOverlay').classList.toggle('show');
+};
+
+window.toggleEmployerMenu = function() {
+  document.getElementById('employerSideMenu').classList.toggle('open');
+  document.getElementById('employerOverlay').classList.toggle('show');
+};
+
+// Placeholder functions for data loading
+window.loadAdminStats = async function() {
+  console.log("Loading admin stats...");
+  // Implement actual stats loading here
+};
+
+window.loadRecentActivity = async function() {
+  console.log("Loading recent activity...");
+  // Implement activity loading here
+};
+
+window.loadAllUsers = async function() {
+  console.log("Loading all users...");
+  // Implement user loading here
+};
+
+window.loadAllJobs = async function() {
+  console.log("Loading all jobs...");
+  // Implement job loading here
+};
+
+window.loadAvailableJobs = function() {
+  console.log("Loading available jobs...");
+  // Implement available jobs loading here
+};
+
+window.loadMyApplications = function() {
+  console.log("Loading my applications...");
+  // Implement applications loading here
+};
+
+window.loadFresherProfile = function() {
+  console.log("Loading fresher profile...");
+  // Implement profile loading here
+};
+
+window.loadEmployerJobs = function() {
+  console.log("Loading employer jobs...");
+  // Implement employer jobs loading here
+};
+
+// Add menu event listeners
+document.addEventListener('DOMContentLoaded', () => {
+  // Admin menu links
+  document.getElementById('adminMenuHome')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    showAdminSection('home');
+    toggleAdminMenu();
+  });
+  
+  document.getElementById('adminMenuUsers')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    showAdminSection('users');
+    toggleAdminMenu();
+  });
+  
+  document.getElementById('adminMenuJobs')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    showAdminSection('jobs');
+    toggleAdminMenu();
+  });
+  
+  document.getElementById('adminMenuSettings')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    showAdminSection('settings');
+    toggleAdminMenu();
+  });
+
+  // Fresher menu links
+  document.getElementById('fresherMenuHome')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    showFresherSection('home');
+    toggleFresherMenu();
+  });
+  
+  document.getElementById('fresherMenuJobs')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    showFresherSection('jobs');
+    toggleFresherMenu();
+  });
+  
+  document.getElementById('fresherMenuApplications')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    showFresherSection('applications');
+    toggleFresherMenu();
+  });
+  
+  document.getElementById('fresherMenuProfile')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    showFresherSection('profile');
+    toggleFresherMenu();
+  });
+
+  // Employer menu links
+  document.getElementById('employerMenuHome')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    showEmployerSection('home');
+    toggleEmployerMenu();
+  });
+  
+  document.getElementById('employerMenuPostJob')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    showEmployerSection('postJob');
+    toggleEmployerMenu();
+  });
+  
+  document.getElementById('employerMenuMyJobs')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    showEmployerSection('myJobs');
+    toggleEmployerMenu();
+  });
+});
 </script>
 </body>
 </html>

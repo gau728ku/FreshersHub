@@ -575,17 +575,27 @@
     const roleSelect = document.getElementById('role');
 
     if (formTitle.textContent.includes('Signup')) {
+      // Switch to login mode
       formTitle.textContent = 'FreshersHub - Login';
       actionBtn.textContent = 'Login';
       actionBtn.onclick = login;
       toggleText.innerHTML = `Don't have an account? <a id="toggleLink">Signup here</a>`;
       roleSelect.style.display = 'none';
     } else {
+      // Switch to signup mode
       formTitle.textContent = 'FreshersHub - Signup';
       actionBtn.textContent = 'Signup';
       actionBtn.onclick = signup;
       toggleText.innerHTML = `Already have an account? <a id="toggleLink">Login here</a>`;
       roleSelect.style.display = 'block';
+    } 
+      // ✅ Re-attach the toggle link listener every time
+      const toggleLink = document.getElementById('toggleLink');
+    if (toggleLink) {
+      toggleLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      toggleForm();
+    });
     }
   };
 

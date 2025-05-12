@@ -239,6 +239,17 @@
   font-size: 1.5em;
 }
 
+/* Add this to your existing CSS */
+#fresherHomeSection,
+#EmployerHomeSection {
+  display: block !important; /* Force show the home sections */
+}
+
+#fresherDashboard,
+#EmployerDashboard {
+  background: rgba(0,0,0,0.8); /* Make sure background is visible */
+  min-height: 100vh; /* Full height */
+}
 
   </style>
 </head>
@@ -688,13 +699,23 @@
       loadAdminStats();
       loadRecentActivity();
     } else if (role === 'fresher') {
-      document.getElementById('fresherDashboard').style.display = 'block';
-      document.getElementById('fresherMenuBtn').style.display = 'block';
-      showFresherSection('home');
-    } else if (role === 'Employer') {
-      document.getElementById('EmployerDashboard').style.display = 'block';
-      document.getElementById('EmployerMenuBtn').style.display = 'block';
-      showEmployerSection('home');
+    document.getElementById('fresherDashboard').style.display = 'block';
+    document.getElementById('fresherMenuBtn').style.display = 'block';
+    // Explicitly show home section
+    document.getElementById('fresherHomeSection').style.display = 'block'; 
+    // Hide other fresher sections
+    document.getElementById('fresherJobsSection').style.display = 'none';
+    document.getElementById('fresherApplicationsSection').style.display = 'none';
+    document.getElementById('fresherProfileSection').style.display = 'none';
+  } 
+  else if (role === 'Employer') {
+    document.getElementById('EmployerDashboard').style.display = 'block';
+    document.getElementById('EmployerMenuBtn').style.display = 'block';
+    // Explicitly show home section  
+    document.getElementById('EmployerHomeSection').style.display = 'block';
+    // Hide other employer sections
+    document.getElementById('EmployerPostJobSection').style.display = 'none';
+    document.getElementById('EmployerMyJobsSection').style.display = 'none';
     } else {
       alert("Unknown role: " + role);
     }

@@ -670,6 +670,9 @@
   };
 
   window.showDashboard = function(role) {
+     console.log("Current user:", auth.currentUser); 
+     console.log("User role:", role);
+
     // Hide all dashboards
     document.getElementById('adminDashboard').style.display = 'none';
     document.getElementById('fresherDashboard').style.display = 'none';

@@ -235,27 +235,6 @@
   color: #aaa;
 }
 
-
-/* TEMPORARY DEBUG STYLES */
-#fresherDashboard, #EmployerDashboard {
-  display: block !important;
-  background: rgba(0,0,0,0.9) !important;
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  width: 100vw !important;
-  height: 100vh !important;
-  z-index: 10000 !important;
-  border: 5px solid red !important;
-  padding: 20px !important;
-}
-
-#fresherMenuBtn, #EmployerMenuBtn {
-  display: block !important;
-  background: lime !important;
-}
-
-
   </style>
 </head>
 <body>
@@ -681,48 +660,38 @@
   };
 
   window.showDashboard = function(role) {
-  console.log("Attempting to show dashboard for:", role);
-  
-  // Reset all dashboards
-  document.getElementById('adminDashboard').style.display = 'none';
-  document.getElementById('fresherDashboard').style.display = 'none';
-  document.getElementById('EmployerDashboard').style.display = 'none';
-  
-  // Hide auth
-  document.getElementById('auth-section').style.display = 'none';
+    // Hide all dashboards
+    document.getElementById('adminDashboard').style.display = 'none';
+    document.getElementById('fresherDashboard').style.display = 'none';
+    document.getElementById('EmployerDashboard').style.display = 'none';
+    
+    // Hide all menu buttons
+    document.getElementById('adminMenuBtn').style.display = 'none';
+    document.getElementById('EmployerMenuBtn').style.display = 'none';
+    document.getElementById('fresherMenuBtn').style.display = 'none';
+    
+    // Hide auth
+    document.getElementById('auth-section').style.display = 'none';
 
-  // Show the correct dashboard
-  if (role === 'admin') {
-    console.log("Showing admin dashboard");
-    document.getElementById('adminDashboard').style.display = 'block';
-    document.getElementById('adminMenuBtn').style.display = 'block';
-    showAdminSection('home');
-  } 
-  else if (role === 'fresher') {
-    console.log("Showing fresher dashboard");
-    const fresherDashboard = document.getElementById('fresherDashboard');
-    fresherDashboard.style.display = 'block';
-    document.getElementById('fresherMenuBtn').style.display = 'block';
-    
-    // Force show home section
-    document.getElementById('fresherHomeSection').style.display = 'block';
-    // Hide other fresher sections
-    document.querySelectorAll('#fresherDashboard .dashboard-section:not(#fresherHomeSection)')
-      .forEach(el => el.style.display = 'none');
-  } 
-  else if (role === 'Employer') {
-    console.log("Showing employer dashboard");
-    const employerDashboard = document.getElementById('EmployerDashboard');
-    employerDashboard.style.display = 'block';
-    document.getElementById('EmployerMenuBtn').style.display = 'block';
-    
-    // Force show home section
-    document.getElementById('EmployerHomeSection').style.display = 'block';
-    // Hide other employer sections
-    document.querySelectorAll('#EmployerDashboard .dashboard-section:not(#EmployerHomeSection)')
-      .forEach(el => el.style.display = 'none');
-  }
-};
+    // Show relevant dashboard + menu
+    if (role === 'admin') {
+      document.getElementById('adminDashboard').style.display = 'block';
+      document.getElementById('adminMenuBtn').style.display = 'block';
+      showAdminSection('home');
+      loadAdminStats();
+      loadRecentActivity();
+    } else if (role === 'fresher') {
+      document.getElementById('fresherDashboard').style.display = 'block';
+      document.getElementById('fresherMenuBtn').style.display = 'block';
+      showFresherSection('home');
+    } else if (role === 'Employer') {
+      document.getElementById('EmployerDashboard').style.display = 'block';
+      document.getElementById('EmployerMenuBtn').style.display = 'block';
+      showEmployerSection('home');
+    } else {
+      alert("Unknown role: " + role);
+    }
+  };
 
   // Menu Toggle Functions
   window.toggleAdminMenu = function() {
@@ -1086,15 +1055,29 @@
     }
 
     // Check auth state
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        const snap = await getDoc(doc(db, "users", user.uid));
-        if (snap.exists()) {
-          showDashboard(snap.data().role);
-        }
+   onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    const snap = await getDoc(doc(db, "users", user.uid));
+    if (snap.exists()) {
+      const role = snap.data().role;
+      console.log("✅ Logged in role:", role);  // <-- 👈 Add this line
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+          showDashboard(role);
+        });
+      } else {
+        showDashboard(role);
       }
-    });
-  });
+    } else {
+      console.warn("⚠️ User document not found in Firestore.");
+    }
+  } else {
+    console.log("ℹ️ No user is signed in.");
+  }
+});
+
+
 
   // Placeholder functions for future implementation
   window.loadEmployerJobs = function() {
@@ -1231,19 +1214,7 @@ window.deleteAdmin = async function(userId) {
     alert("Error removing admin: " + error.message);
   }
 };
-
+  
 </script>
-
-<div id="debugLogout" style="
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background: red;
-  color: white;
-  padding: 10px;
-  z-index: 99999;
-  cursor: pointer;
-" onclick="logout()">DEBUG LOGOUT</div>
-
 </body>
 </html>

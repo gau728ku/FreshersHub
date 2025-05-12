@@ -704,6 +704,10 @@
     } else {
       alert("Unknown role: " + role);
     }
+    if (!["admin", "fresher", "Employer"].includes(role)) {
+  console.error("Invalid role:", role);
+  return;
+}
   };
 
   // Menu Toggle Functions

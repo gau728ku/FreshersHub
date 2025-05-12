@@ -210,46 +210,6 @@
   color: #00c6ff;
 }
 
-.settings-link {
-  padding: 12px 15px;
-  margin-top: 15px;
-  background: rgba(255,255,255,0.05);
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.3s;
-}
-
-.settings-link:hover {
-  background: rgba(255,255,255,0.1);
-}
-
-.settings-link h4 {
-  color: #00c6ff;
-  margin: 0;
-  font-size: 1.1em;
-}
-
-.settings-link p {
-  margin: 0;
-  font-size: 0.9em;
-  color: #aaa;
-}
-
-#fresherHomeSection {
-  min-height: 200px;
-  border: 1px dashed white;
-}
-
-.card {
-  background: rgba(0, 0, 0, 0.6); /* darker */
-  color: white;
-  padding: 20px;
-  border-radius: 10px;
-}
-
-
-
-
   </style>
 </head>
 <body>
@@ -389,45 +349,10 @@
       
       <div class="card">
         <h3>System Configuration</h3>
-        
-        <!-- Add this Admin Management link -->
-     <div class="settings-link" onclick="showAdminSection('management')">
-      <h4>→ Admin Management</h4>
+        <p>Settings will be added here</p>
       </div>
     </div>
   </div>
-
-   <!-- Admin Management Section -->
-<div class="dashboard-section" id="adminManagementSection" style="display:none;">
-  <h2>Admin Management</h2>
-  <button onclick="showAdminSection('settings')" style="margin-bottom: 20px;">← Back to Settings</button>
-  
-  <div class="card">
-    <h3>Add New Admin</h3>
-    <div class="form-group">
-      <input type="email" id="newAdminEmail" placeholder="Admin email address">
-      <input type="password" id="newAdminPassword" placeholder="Temporary password">
-      <button onclick="createNewAdmin()" class="success">Create Admin</button>
-    </div>
-    <p class="hint">New admin will receive password reset instructions</p>
-  </div>
-
-  <div class="card">
-    <h3>Current Admins</h3>
-    <div class="table-container">
-      <table>
-        <thead>
-          <tr>
-            <th>Email</th>
-            <th>Created On</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody id="adminListTable"></tbody>
-      </table>
-    </div>
-  </div>
-</div>
 
   <!-- Employer DASHBOARD -->
   <div id="EmployerDashboard" style="display:none;">
@@ -447,10 +372,6 @@
       <h2>Employer Dashboard</h2>
       <div class="card">
         <p>Welcome to your Employer dashboard!</p>
-       <ul>
-    <li>📄 Post a job</li>
-    <li>📊 View your posted jobs</li>
-    <li>📝 Manage applications</li>
       </div>
     </div>
     
@@ -579,7 +500,7 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
   import { getFirestore, setDoc, doc, getDoc, collection, where, getDocs, query, addDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
   // Make Firebase functions available globally
@@ -679,9 +600,6 @@
   };
 
   window.showDashboard = function(role) {
-    console.log("🔁 showDashboard called with:", role);
-
-
     // Hide all dashboards
     document.getElementById('adminDashboard').style.display = 'none';
     document.getElementById('fresherDashboard').style.display = 'none';
@@ -751,8 +669,7 @@
     document.getElementById('adminUsersSection').style.display = 'none';
     document.getElementById('adminJobsSection').style.display = 'none';
     document.getElementById('adminSettingsSection').style.display = 'none';
-    document.getElementById('adminManagementSection').style.display = 'none';
-    
+
     // Show the requested one
     if (section === 'home') {
       document.getElementById('adminHomeSection').style.display = 'block';
@@ -764,9 +681,6 @@
       loadAllJobs();
     } else if (section === 'settings') {
       document.getElementById('adminSettingsSection').style.display = 'block';
-    } else if (section === 'management') {
-      document.getElementById('adminManagementSection').style.display = 'block';
-      loadAdmins(); // We'll create this function next
     }
   };
 
@@ -860,9 +774,6 @@
 
   // Employer Functions
   window.showEmployerSection = function(section) {
-   console.log("📌 Showing Employer Section:", section);
-
-
     // Hide all Employer sections
     document.getElementById('EmployerHomeSection').style.display = 'none';
     document.getElementById('EmployerPostJobSection').style.display = 'none';
@@ -881,9 +792,6 @@
 
   // Fresher Functions
   window.showFresherSection = function(section) {
-   console.log("📌 Showing Fresher Section:", section);
-
-
     // Hide all fresher sections
     document.getElementById('fresherHomeSection').style.display = 'none';
     document.getElementById('fresherJobsSection').style.display = 'none';
@@ -1083,32 +991,15 @@
     }
 
     // Check auth state
-  onAuthStateChanged(auth, async (user) => {
-  if (user) {
-    const snap = await getDoc(doc(db, "users", user.uid));
-    if (snap.exists()) {
-      const role = snap.data().role;
-      console.log("✅ Logged in role:", role);
-
-      // Delay execution until DOM is fully ready
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => {
-          requestAnimationFrame(() => showDashboard(role));
-        });
-      } else {
-        requestAnimationFrame(() => showDashboard(role));
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const snap = await getDoc(doc(db, "users", user.uid));
+        if (snap.exists()) {
+          showDashboard(snap.data().role);
+        }
       }
-    } else {
-      console.warn("⚠️ User document not found in Firestore.");
-    }
-  } else {
-    console.log("ℹ️ No user is signed in.");
-  }
-});
-
-
-
-
+    });
+  });
 
   // Placeholder functions for future implementation
   window.loadEmployerJobs = function() {
@@ -1153,99 +1044,6 @@ function animateValue(element, target, duration = 1000) {
   }, 16);
 }
 
-// Load admin users list
-window.loadAdmins = async function() {
-  const table = document.getElementById('adminListTable');
-  table.innerHTML = '<tr><td colspan="3">Loading admins...</td></tr>';
-
-  try {
-    const querySnapshot = await getDocs(
-      query(collection(db, "users"), 
-      where("role", "==", "admin"))
-    );
-    
-    table.innerHTML = '';
-    
-    if (querySnapshot.empty) {
-      table.innerHTML = '<tr><td colspan="3">No admin users found</td></tr>';
-      return;
-    }
-    
-    querySnapshot.forEach(doc => {
-      const data = doc.data();
-      table.innerHTML += `
-        <tr>
-          <td>${data.email}</td>
-          <td>${new Date(data.createdAt).toLocaleDateString()}</td>
-          <td>
-            <button onclick="deleteAdmin('${doc.id}')" class="danger">Remove</button>
-          </td>
-        </tr>`;
-    });
-  } catch (error) {
-    table.innerHTML = '<tr><td colspan="3">Error loading admins</td></tr>';
-    console.error("Error loading admins:", error);
-  }
-};
-
-// Create new admin
-window.createNewAdmin = async function() {
-  const email = document.getElementById('newAdminEmail').value;
-  const tempPassword = document.getElementById('newAdminPassword').value;
-  
-  if (!email || !tempPassword) {
-    alert("Please enter both email and password");
-    return;
-  }
-  
-  try {
-    // 1. Create auth account
-    const userCredential = await createUserWithEmailAndPassword(auth, email, tempPassword);
-    
-    // 2. Set admin role in Firestore
-    await setDoc(doc(db, "users", userCredential.user.uid), {
-      email: email,
-      role: "admin",
-      createdAt: new Date().toISOString()
-    });
-    
-    // 3. Force password reset
-    await sendPasswordResetEmail(auth, email);
-    
-    // 4. Refresh admin list
-    loadAdmins();
-    
-    // 5. Clear form
-    document.getElementById('newAdminEmail').value = '';
-    document.getElementById('newAdminPassword').value = '';
-    
-    alert(`Admin created successfully! Password reset email sent to ${email}`);
-  } catch (error) {
-    console.error("Error creating admin:", error);
-    alert("Error creating admin: " + error.message);
-  }
-};
-
-// Delete admin
-window.deleteAdmin = async function(userId) {
-  if (!confirm("Are you sure you want to remove this admin's privileges?")) {
-    return;
-  }
-  
-  try {
-    // Don't delete the user, just change their role
-    await setDoc(doc(db, "users", userId), {
-      role: "employer"
-    }, { merge: true });
-    
-    alert("Admin privileges removed successfully");
-    loadAdmins();
-  } catch (error) {
-    console.error("Error removing admin:", error);
-    alert("Error removing admin: " + error.message);
-  }
-};
- }); 
 </script>
 </body>
 </html>

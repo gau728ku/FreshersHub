@@ -672,6 +672,9 @@
   };
 
   window.showDashboard = function(role) {
+    console.log("🔁 showDashboard called with:", role);
+
+
     // Hide all dashboards
     document.getElementById('adminDashboard').style.display = 'none';
     document.getElementById('fresherDashboard').style.display = 'none';
@@ -850,6 +853,9 @@
 
   // Employer Functions
   window.showEmployerSection = function(section) {
+   console.log("📌 Showing Employer Section:", section);
+
+
     // Hide all Employer sections
     document.getElementById('EmployerHomeSection').style.display = 'none';
     document.getElementById('EmployerPostJobSection').style.display = 'none';
@@ -868,6 +874,9 @@
 
   // Fresher Functions
   window.showFresherSection = function(section) {
+   console.log("📌 Showing Fresher Section:", section);
+
+
     // Hide all fresher sections
     document.getElementById('fresherHomeSection').style.display = 'none';
     document.getElementById('fresherJobsSection').style.display = 'none';
@@ -1073,10 +1082,23 @@
     if (snap.exists()) {
       const role = snap.data().role;
       console.log("✅ Logged in role:", role);
-      showDashboard(role); // ✅ Just call it directly
+
+      // Delay execution until DOM is fully ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+          requestAnimationFrame(() => showDashboard(role));
+        });
+      } else {
+        requestAnimationFrame(() => showDashboard(role));
+      }
+    } else {
+      console.warn("⚠️ User document not found in Firestore.");
     }
+  } else {
+    console.log("ℹ️ No user is signed in.");
   }
 });
+
 
 
 

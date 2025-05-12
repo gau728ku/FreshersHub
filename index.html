@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>FreshersHub</title>
+
   <style>
     body {
       margin: 0;
@@ -43,7 +44,7 @@
     button.success { background-color: #28a745; }
     button.success:hover { background-color: #218838; }
 
-    /* Dashboard Cards */
+/* Dashboard Cards */
     .card {
       background: rgba(255,255,255,0.1);
       border-radius: 10px;
@@ -52,7 +53,7 @@
       backdrop-filter: blur(5px);
     }
 
-    /* Tables */
+/* Tables */
     .table-container {
       overflow-x: auto;
       margin: 20px 0;
@@ -83,7 +84,7 @@
       background-color: #f5f5f5;
     }
 
-    /* Menu buttons */
+/* Menu buttons */
     #adminMenuBtn, #fresherMenuBtn, #EmployerMenuBtn {
       position: fixed;
       top: 20px;
@@ -101,7 +102,7 @@
       line-height: 40px;
     }
 
-    /* Side Menus */
+/* Side Menus */
     .sideMenu {
       position: fixed;
       top: 0;
@@ -151,7 +152,7 @@
       cursor: pointer;
     }
 
-    /* Dashboard sections */
+/* Dashboard sections */
     .dashboard-section {
       display: none;
       padding: 20px;
@@ -167,7 +168,7 @@
       margin-bottom: 30px;
     }
     
-     /* New: Horizontal variation (add this) */
+/* New: Horizontal variation (add this) */
     .stats-container.horizontal {
        flex-wrap: nowrap; /* Force horizontal layout */
        overflow-x: auto; /* Enable scrolling if needed */
@@ -188,7 +189,7 @@
       font-size: 2rem;
     }
 
-    /* Responsive adjustments */
+/* Responsive adjustments */
     @media (max-width: 768px) {
       .stats-container {
     flex-direction: row; /* Horizontal scroll on mobile */
@@ -210,11 +211,45 @@
   color: #00c6ff;
 }
 
+/* Admin Management Tabs */
+.admin-management-tabs {
+  display: flex;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+  margin-bottom: 15px;
+}
+
+.tab-button {
+  padding: 10px 20px;
+  background: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: all 0.3s;
+}
+
+.tab-button:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+.tab-button.active {
+  border-bottom: 3px solid #00c6ff;
+  color: #00c6ff;
+}
+
+.admin-tab-content {
+  display: none;
+}
+
+.admin-tab-content.active {
+  display: block;
+}
+
   </style>
 </head>
 <body>
 
-  <!-- LOGIN/SIGNUP SECTION -->
+<!-- LOGIN/SIGNUP SECTION -->
   <div class="container" id="auth-section">
     <h2 id="form-title">FreshersHub - Signup</h2>
     <input type="email" id="email" placeholder="Email" required />
@@ -228,7 +263,7 @@
     <p id="toggle-text">Already have an account? <a id="toggleLink">Login here</a></p>
   </div>
 
-  <!-- ADMIN DASHBOARD -->
+<!-- ADMIN DASHBOARD -->
   <div id="adminDashboard" style="display:none;">
     <div id="adminMenuBtn" onclick="toggleAdminMenu()">☰</div>
 
@@ -242,7 +277,7 @@
 
     <div class="overlay" id="adminOverlay" onclick="toggleAdminMenu()"></div>
 
-    <!-- Admin Home Section -->
+<!-- Admin Home Section -->
     <div class="dashboard-section" id="adminHomeSection">
       <h2>Admin Dashboard</h2>
       
@@ -298,7 +333,7 @@
       </div>
     </div>
     
-    <!-- Manage Users Section -->
+<!-- Manage Users Section -->
     <div class="dashboard-section" id="adminUsersSection">
       <h2>Manage Users</h2>
       <button onclick="showAdminSection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
@@ -319,7 +354,7 @@
       </div>
     </div>
     
-    <!-- Manage Jobs Section -->
+<!-- Manage Jobs Section -->
     <div class="dashboard-section" id="adminJobsSection">
       <h2>Manage Job Listings</h2>
       <button onclick="showAdminSection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
@@ -342,7 +377,7 @@
       </div>
     </div>
     
-    <!-- Settings Section -->
+<!-- Settings Section -->
     <div class="dashboard-section" id="adminSettingsSection">
       <h2>Admin Settings</h2>
       <button onclick="showAdminSection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
@@ -351,11 +386,46 @@
         <h3>System Configuration</h3>
         <p>Settings will be added here</p>
       </div>
+
+  <!-- Add Admin Management Card -->
+    <div class="card">
+    <h3>Admin Management</h3>
+    
+    <div class="admin-management-tabs">
+      <button class="tab-button active" onclick="showAdminTab('addAdmin')">Add Admin</button>
+      <button class="tab-button" onclick="showAdminTab('manageAdmins')">Current Admins</button>
+    </div>
+    
+  <!-- Add Admin Form -->
+    <div id="addAdminTab" class="admin-tab-content" style="display: block;">
+      <form id="addAdminForm">
+        <input type="email" id="adminEmail" placeholder="Admin Email" required>
+        <input type="password" id="adminPassword" placeholder="Temporary Password" required>
+        <button type="submit" class="success">Create Admin</button>
+      </form>
+    </div>
+    
+  <!-- Current Admins Table -->
+    <div id="manageAdminsTab" class="admin-tab-content">
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Email</th>
+              <th>Created At</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="adminsTableBody">
+            <!-- Admin rows will be added here -->
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 
-  <!-- Employer DASHBOARD -->
-  <div id="EmployerDashboard" style="display:none;">
+<!-- Employer DASHBOARD -->
+    <div id="EmployerDashboard" style="display:none;">
     <div id="EmployerMenuBtn" onclick="toggleEmployerMenu()">☰</div>
     
     <div class="sideMenu" id="EmployerSideMenu">
@@ -367,7 +437,7 @@
     
     <div class="overlay" id="EmployerOverlay" onclick="toggleEmployerMenu()"></div>
     
-    <!-- Employer Home Section -->
+  <!-- Employer Home Section -->
     <div class="dashboard-section" id="EmployerHomeSection">
       <h2>Employer Dashboard</h2>
       <div class="card">
@@ -375,7 +445,7 @@
       </div>
     </div>
     
-    <!-- Post Job Section -->
+  <!-- Post Job Section -->
     <div class="dashboard-section" id="EmployerPostJobSection">
       <h2>Post New Job</h2>
       <button onclick="showEmployerSection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
@@ -391,7 +461,7 @@
       </div>
     </div>
     
-    <!-- My Jobs Section -->
+  <!-- My Jobs Section -->
     <div class="dashboard-section" id="EmployerMyJobsSection">
       <h2>My Job Postings</h2>
       <button onclick="showEmployerSection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
@@ -1042,6 +1112,106 @@ function animateValue(element, target, duration = 1000) {
     }
     el.textContent = Math.floor(current);
   }, 16);
+}
+
+// Add these new functions
+window.showAdminTab = function(tabName) {
+  // Hide all tab contents
+  document.querySelectorAll('.admin-tab-content').forEach(tab => {
+    tab.style.display = 'none';
+  });
+  
+  // Deactivate all tab buttons
+  document.querySelectorAll('.tab-button').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  
+  // Show selected tab
+  document.getElementById(`${tabName}Tab`).style.display = 'block';
+  
+  // Activate clicked button
+  event.target.classList.add('active');
+  
+  // Load admins if needed
+  if (tabName === 'manageAdmins') {
+    loadAdminList();
+  }
+};
+
+window.loadAdminList = async function() {
+  const table = document.getElementById('adminsTableBody');
+  table.innerHTML = '<tr><td colspan="3">Loading admins...</td></tr>';
+
+  try {
+    const querySnapshot = await getDocs(query(collection(db, "users"), where("role", "==", "admin")));
+    table.innerHTML = '';
+
+    if (querySnapshot.empty) {
+      table.innerHTML = '<tr><td colspan="3">No admins found</td></tr>';
+      return;
+    }
+
+    const currentUser = auth.currentUser;
+    
+    querySnapshot.forEach(doc => {
+      const data = doc.data();
+      const isCurrentUser = doc.id === currentUser.uid;
+      const row = `
+        <tr>
+          <td>${data.email} ${isCurrentUser ? '(You)' : ''}</td>
+          <td>${new Date(data.createdAt).toLocaleDateString()}</td>
+          <td>
+            ${!isCurrentUser ? `<button onclick="removeAdmin('${doc.id}', '${data.email}')" class="danger">Remove</button>` : 'Primary Admin'}
+          </td>
+        </tr>`;
+      table.innerHTML += row;
+    });
+  } catch (error) {
+    table.innerHTML = '<tr><td colspan="3">Error loading admins</td></tr>';
+    console.error("Error loading admins:", error);
+  }
+};
+
+window.removeAdmin = async function(userId, email) {
+  if (!confirm(`Are you sure you want to remove ${email} as admin?`)) return;
+  
+  try {
+    await deleteDoc(doc(db, "users", userId));
+    alert("Admin removed successfully");
+    loadAdminList();
+  } catch (error) {
+    alert("Error removing admin: " + error.message);
+  }
+};
+
+// Add this form handler to DOMContentLoaded
+const addAdminForm = document.getElementById('addAdminForm');
+if (addAdminForm) {
+  addAdminForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const email = document.getElementById('adminEmail').value;
+    const password = document.getElementById('adminPassword').value;
+    
+    try {
+      // Create user in Firebase Auth
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // Add to Firestore with admin role
+      await setDoc(doc(db, "users", user.uid), { 
+        email, 
+        role: 'admin',
+        createdAt: new Date().toISOString()
+      });
+      
+      alert("Admin created successfully!");
+      addAdminForm.reset();
+      showAdminTab('manageAdmins'); // Switch to admins list
+    } catch (error) {
+      alert("Error creating admin: " + error.message);
+    }
+  });
 }
 
 </script>

@@ -1055,27 +1055,17 @@
     }
 
     // Check auth state
-   onAuthStateChanged(auth, async (user) => {
+  onAuthStateChanged(auth, async (user) => {
   if (user) {
     const snap = await getDoc(doc(db, "users", user.uid));
     if (snap.exists()) {
       const role = snap.data().role;
-      console.log("✅ Logged in role:", role);  // <-- 👈 Add this line
-
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => {
-          showDashboard(role);
-        });
-      } else {
-        showDashboard(role);
-      }
-    } else {
-      console.warn("⚠️ User document not found in Firestore.");
+      console.log("✅ Logged in role:", role);
+      showDashboard(role); // ✅ Just call it directly
     }
-  } else {
-    console.log("ℹ️ No user is signed in.");
   }
 });
+
 
 
 

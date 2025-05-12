@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>FreshersHub</title>
+  <title>freshersHub</title>
 
   <style>
     body {
@@ -211,7 +211,7 @@
   color: #00c6ff;
 }
 
-/* Admin Management Tabs */
+/* admin Management Tabs */
 .admin-management-tabs {
   display: flex;
   border-bottom: 1px solid rgba(255,255,255,0.2);
@@ -251,21 +251,21 @@
 
 <!-- LOGIN/SIGNUP SECTION -->
   <div class="container" id="auth-section">
-    <h2 id="form-title">FreshersHub - Signup</h2>
+    <h2 id="form-title">freshersHub - Signup</h2>
     <input type="email" id="email" placeholder="Email" required />
     <input type="password" id="password" placeholder="Password" required />
     <select id="role">
-      <option value="fresher">Fresher</option>
+      <option value="fresher">fresher</option>
       <option value="Employer">Employer</option>
-      <option value="admin">Admin</option>
+      <option value="admin">admin</option>
     </select>
     <button id="actionBtn" onclick="signup()">Signup</button>
     <p id="toggle-text">Already have an account? <a id="toggleLink">Login here</a></p>
   </div>
 
-<!-- ADMIN DASHBOARD -->
+<!-- admin DASHBOARD -->
   <div id="adminDashboard" style="display:none;">
-    <div id="adminMenuBtn" onclick="toggleAdminMenu()">☰</div>
+    <div id="adminMenuBtn" onclick="toggleadminMenu()">☰</div>
 
     <div class="sideMenu" id="adminSideMenu">
       <a href="#" id="adminMenuHome">Dashboard</a>
@@ -275,16 +275,16 @@
       <a href="#" onclick="logout()">Logout</a>
     </div>
 
-    <div class="overlay" id="adminOverlay" onclick="toggleAdminMenu()"></div>
+    <div class="overlay" id="adminOverlay" onclick="toggleadminMenu()"></div>
 
-<!-- Admin Home Section -->
+<!-- admin Home Section -->
     <div class="dashboard-section" id="adminHomeSection">
-      <h2>Admin Dashboard</h2>
+      <h2>admin Dashboard</h2>
       
       <div class="stats-container horizontal">
         <div class="stat-card">
-          <p>Total Freshers</p>
-          <h3 id="totalFreshers">-</h3>
+          <p>Total freshers</p>
+          <h3 id="totalfreshers">-</h3>
         </div>
         <div class="stat-card">
           <p>Total Employers</p>
@@ -336,7 +336,7 @@
 <!-- Manage Users Section -->
     <div class="dashboard-section" id="adminUsersSection">
       <h2>Manage Users</h2>
-      <button onclick="showAdminSection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
+      <button onclick="showadminSection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
       
       <div class="table-container">
         <table>
@@ -357,7 +357,7 @@
 <!-- Manage Jobs Section -->
     <div class="dashboard-section" id="adminJobsSection">
       <h2>Manage Job Listings</h2>
-      <button onclick="showAdminSection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
+      <button onclick="showadminSection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
       
       <div class="table-container">
         <table>
@@ -379,34 +379,34 @@
     
 <!-- Settings Section -->
     <div class="dashboard-section" id="adminSettingsSection">
-      <h2>Admin Settings</h2>
-      <button onclick="showAdminSection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
+      <h2>admin Settings</h2>
+      <button onclick="showadminSection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
       
       <div class="card">
         <h3>System Configuration</h3>
         <p>Settings will be added here</p>
       </div>
 
-  <!-- Add Admin Management Card -->
+  <!-- Add admin Management Card -->
     <div class="card">
-    <h3>Admin Management</h3>
+    <h3>admin Management</h3>
     
     <div class="admin-management-tabs">
-      <button class="tab-button active" onclick="showAdminTab('addAdmin')">Add Admin</button>
-      <button class="tab-button" onclick="showAdminTab('manageAdmins')">Current Admins</button>
+      <button class="tab-button active" onclick="showadminTab('addadmin')">Add admin</button>
+      <button class="tab-button" onclick="showadminTab('manageadmins')">Current admins</button>
     </div>
     
-  <!-- Add Admin Form -->
-    <div id="addAdminTab" class="admin-tab-content" style="display: block;">
-      <form id="addAdminForm">
-        <input type="email" id="adminEmail" placeholder="Admin Email" required>
+  <!-- Add admin Form -->
+    <div id="addadminTab" class="admin-tab-content" style="display: block;">
+      <form id="addadminForm">
+        <input type="email" id="adminEmail" placeholder="admin Email" required>
         <input type="password" id="adminPassword" placeholder="Temporary Password" required>
-        <button type="submit" class="success">Create Admin</button>
+        <button type="submit" class="success">Create admin</button>
       </form>
     </div>
     
-  <!-- Current Admins Table -->
-    <div id="manageAdminsTab" class="admin-tab-content">
+  <!-- Current admins Table -->
+    <div id="manageadminsTab" class="admin-tab-content">
       <div class="table-container">
         <table>
           <thead>
@@ -417,7 +417,7 @@
             </tr>
           </thead>
           <tbody id="adminsTableBody">
-            <!-- Admin rows will be added here -->
+            <!-- admin rows will be added here -->
           </tbody>
         </table>
       </div>
@@ -428,7 +428,7 @@
     <div id="EmployerDashboard" style="display:none;">
     <div id="EmployerMenuBtn" onclick="toggleEmployerMenu()">☰</div>
     
-    <div class="sideMenu" id="EmployerSideMenu">
+    <div class="sideMenu" id="EmployersideMenu">
       <a href="#" id="EmployerMenuHome">Dashboard</a>
       <a href="#" id="EmployerMenuPostJob">Post Job</a>
       <a href="#" id="EmployerMenuMyJobs">My Jobs</a>
@@ -448,7 +448,7 @@
   <!-- Post Job Section -->
     <div class="dashboard-section" id="EmployerPostJobSection">
       <h2>Post New Job</h2>
-      <button onclick="showEmployerSection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
+      <button onclick="showEmployersection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
       
       <div class="card">
         <form id="postJobForm">
@@ -464,7 +464,7 @@
   <!-- My Jobs Section -->
     <div class="dashboard-section" id="EmployerMyJobsSection">
       <h2>My Job Postings</h2>
-      <button onclick="showEmployerSection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
+      <button onclick="showEmployersection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
       
       <div class="table-container">
         <table>
@@ -484,9 +484,9 @@
     </div>
   </div>
 
-  <!-- FRESHER DASHBOARD -->
+  <!-- fresher DASHBOARD -->
   <div id="fresherDashboard" style="display:none;">
-    <div id="fresherMenuBtn" onclick="toggleFresherMenu()">☰</div>
+    <div id="fresherMenuBtn" onclick="togglefresherMenu()">☰</div>
     
     <div class="sideMenu" id="fresherSideMenu">
       <a href="#" id="fresherMenuHome">Dashboard</a>
@@ -496,11 +496,11 @@
       <a href="#" onclick="logout()">Logout</a>
     </div>
     
-    <div class="overlay" id="fresherOverlay" onclick="toggleFresherMenu()"></div>
+    <div class="overlay" id="fresherOverlay" onclick="togglefresherMenu()"></div>
     
-    <!-- Fresher Home Section -->
+    <!-- fresher Home Section -->
     <div class="dashboard-section" id="fresherHomeSection">
-      <h2>Fresher Dashboard</h2>
+      <h2>fresher Dashboard</h2>
       <div class="card">
         <p>Welcome to your job search dashboard!</p>
       </div>
@@ -509,7 +509,7 @@
     <!-- Browse Jobs Section -->
     <div class="dashboard-section" id="fresherJobsSection">
       <h2>Available Jobs</h2>
-      <button onclick="showFresherSection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
+      <button onclick="showfresherSection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
       
       <div class="table-container">
         <table>
@@ -532,7 +532,7 @@
     <!-- My Applications Section -->
     <div class="dashboard-section" id="fresherApplicationsSection">
       <h2>My Applications</h2>
-      <button onclick="showFresherSection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
+      <button onclick="showfresherSection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
       
       <div class="table-container">
         <table>
@@ -554,7 +554,7 @@
     <!-- Profile Section -->
     <div class="dashboard-section" id="fresherProfileSection">
       <h2>My Profile</h2>
-      <button onclick="showFresherSection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
+      <button onclick="showfresherSection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
       
       <div class="card">
         <form id="fresherProfileForm">
@@ -646,14 +646,14 @@
 
     if (formTitle.textContent.includes('Signup')) {
       // Switch to login mode
-      formTitle.textContent = 'FreshersHub - Login';
+      formTitle.textContent = 'freshersHub - Login';
       actionBtn.textContent = 'Login';
       actionBtn.onclick = login;
       toggleText.innerHTML = `Don't have an account? <a id="toggleLink">Signup here</a>`;
       roleSelect.style.display = 'none';
     } else {
       // Switch to signup mode
-      formTitle.textContent = 'FreshersHub - Signup';
+      formTitle.textContent = 'freshersHub - Signup';
       actionBtn.textContent = 'Signup';
       actionBtn.onclick = signup;
       toggleText.innerHTML = `Already have an account? <a id="toggleLink">Login here</a>`;
@@ -690,34 +690,34 @@
     if (role === 'admin') {
       document.getElementById('adminDashboard').style.display = 'block';
       document.getElementById('adminMenuBtn').style.display = 'block';
-      showAdminSection('home');
-      loadAdminStats();
+      showadminSection('home');
+      loadadminStats();
       loadRecentActivity();
     } else if (role === 'fresher') {
       document.getElementById('fresherDashboard').style.display = 'block';
       document.getElementById('fresherMenuBtn').style.display = 'block';
-      showFresherSection('home');
+      showfresherSection('home');
     } else if (role === 'Employer') {
       document.getElementById('EmployerDashboard').style.display = 'block';
       document.getElementById('EmployerMenuBtn').style.display = 'block';
-      showEmployerSection('home');
+      showEmployersection('home');
     } else {
       alert("Unknown role: " + role);
     }
   };
 
   // Menu Toggle Functions
-  window.toggleAdminMenu = function() {
+  window.toggleadminMenu = function() {
     document.getElementById('adminSideMenu').classList.toggle('open');
     document.getElementById('adminOverlay').classList.toggle('show');
   };
 
   window.toggleEmployerMenu = function() {
-    document.getElementById('EmployerSideMenu').classList.toggle('open');
+    document.getElementById('EmployersideMenu').classList.toggle('open');
     document.getElementById('EmployerOverlay').classList.toggle('show');
   };
 
-  window.toggleFresherMenu = function() {
+  window.togglefresherMenu = function() {
     document.getElementById('fresherSideMenu').classList.toggle('open');
     document.getElementById('fresherOverlay').classList.toggle('show');
   };
@@ -735,8 +735,8 @@
     });
   };
 
-  // Admin Functions
-  window.showAdminSection = function(section) {
+  // admin Functions
+  window.showadminSection = function(section) {
     // Hide all admin sections
     document.getElementById('adminHomeSection').style.display = 'none';
     document.getElementById('adminUsersSection').style.display = 'none';
@@ -846,7 +846,7 @@
   };
 
   // Employer Functions
-  window.showEmployerSection = function(section) {
+  window.showEmployersection = function(section) {
     // Hide all Employer sections
     document.getElementById('EmployerHomeSection').style.display = 'none';
     document.getElementById('EmployerPostJobSection').style.display = 'none';
@@ -863,8 +863,8 @@
     }
   };
 
-  // Fresher Functions
-  window.showFresherSection = function(section) {
+  // fresher Functions
+  window.showfresherSection = function(section) {
     // Hide all fresher sections
     document.getElementById('fresherHomeSection').style.display = 'none';
     document.getElementById('fresherJobsSection').style.display = 'none';
@@ -882,18 +882,18 @@
       loadMyApplications();
     } else if (section === 'profile') {
       document.getElementById('fresherProfileSection').style.display = 'block';
-      loadFresherProfile();
+      loadfresherProfile();
     }
   };
 
   // Stats and Activity Functions
-  async function loadAdminStats() {
+  async function loadadminStats() {
     try {
-      // Count Freshers
+      // Count freshers
       const freshersQuery = query(collection(db, "users"), where("role", "==", "fresher"));
       const freshersSnapshot = await getDocs(freshersQuery);
-      animateValue("totalFreshers", freshersSnapshot.size);
-      document.getElementById('totalFreshers').innerText = freshersSnapshot.size;
+      animateValue("totalfreshers", freshersSnapshot.size);
+      document.getElementById('totalfreshers').innerText = freshersSnapshot.size;
 
       // Count Employers
       const EmployersQuery = query(collection(db, "users"), where("role", "==", "Employer"));
@@ -962,73 +962,73 @@
       toggleForm();
     });
 
-    // Admin menu links
+    // admin menu links
     document.getElementById('adminMenuHome').addEventListener('click', (e) => {
       e.preventDefault();
-      showAdminSection('home');
-      toggleAdminMenu();
+      showadminSection('home');
+      toggleadminMenu();
     });
     
     document.getElementById('adminMenuUsers').addEventListener('click', (e) => {
       e.preventDefault();
-      showAdminSection('users');
-      toggleAdminMenu();
+      showadminSection('users');
+      toggleadminMenu();
     });
     
     document.getElementById('adminMenuJobs').addEventListener('click', (e) => {
       e.preventDefault();
-      showAdminSection('jobs');
-      toggleAdminMenu();
+      showadminSection('jobs');
+      toggleadminMenu();
     });
     
     document.getElementById('adminMenuSettings').addEventListener('click', (e) => {
       e.preventDefault();
-      showAdminSection('settings');
-      toggleAdminMenu();
+      showadminSection('settings');
+      toggleadminMenu();
     });
 
     // Employer menu links
     document.getElementById('EmployerMenuHome').addEventListener('click', (e) => {
       e.preventDefault();
-      showEmployerSection('home');
+      showEmployersection('home');
       toggleEmployerMenu();
     });
     
     document.getElementById('EmployerMenuPostJob').addEventListener('click', (e) => {
       e.preventDefault();
-      showEmployerSection('postJob');
+      showEmployersection('postJob');
       toggleEmployerMenu();
     });
     
     document.getElementById('EmployerMenuMyJobs').addEventListener('click', (e) => {
       e.preventDefault();
-      showEmployerSection('myJobs');
+      showEmployersection('myJobs');
       toggleEmployerMenu();
     });
 
-    // Fresher menu links
+    // fresher menu links
     document.getElementById('fresherMenuHome').addEventListener('click', (e) => {
       e.preventDefault();
-      showFresherSection('home');
-      toggleFresherMenu();
+      showfresherSection('home');
+      togglefresherMenu();
     });
     
     document.getElementById('fresherMenuJobs').addEventListener('click', (e) => {
       e.preventDefault();
-      showFresherSection('jobs');
-      toggleFresherMenu();
+      showfresherSection('jobs');
+      togglefresherMenu();
     });
     
     document.getElementById('fresherMenuApplications').addEventListener('click', (e) => {
       e.preventDefault();
-      showFresherSection('applications');
-      toggleFresherMenu();
+      showfresherSection('applications');
+      togglefresherMenu();
     });
     
     document.getElementById('fresherMenuProfile').addEventListener('click', (e) => {
       e.preventDefault();
-      showFresherSection('profile');
-      toggleFresherMenu();
+      showfresherSection('profile');
+      togglefresherMenu();
     });
 
     // Post Job Form
@@ -1096,7 +1096,7 @@
       </tr>`;
   };
 
-  window.loadFresherProfile = function() {
+  window.loadfresherProfile = function() {
     // Would load profile data here
   };
 
@@ -1118,7 +1118,7 @@ function animateValue(element, target, duration = 1000) {
 }
 
 // Add these new functions
-window.showAdminTab = function(tabName) {
+window.showadminTab = function(tabName) {
   // Hide all tab contents
   document.querySelectorAll('.admin-tab-content').forEach(tab => {
     tab.style.display = 'none';
@@ -1136,12 +1136,12 @@ window.showAdminTab = function(tabName) {
   event.target.classList.add('active');
   
   // Load admins if needed
-  if (tabName === 'manageAdmins') {
-    loadAdminList();
+  if (tabName === 'manageadmins') {
+    loadadminList();
   }
 };
 
-window.loadAdminList = async function() {
+window.loadadminList = async function() {
   const table = document.getElementById('adminsTableBody');
   table.innerHTML = '<tr><td colspan="3">Loading admins...</td></tr>';
 
@@ -1164,7 +1164,7 @@ window.loadAdminList = async function() {
           <td>${data.email} ${isCurrentUser ? '(You)' : ''}</td>
           <td>${new Date(data.createdAt).toLocaleDateString()}</td>
           <td>
-            ${!isCurrentUser ? `<button onclick="removeAdmin('${doc.id}', '${data.email}')" class="danger">Remove</button>` : 'Primary Admin'}
+            ${!isCurrentUser ? `<button onclick="removeadmin('${doc.id}', '${data.email}')" class="danger">Remove</button>` : 'Primary admin'}
           </td>
         </tr>`;
       table.innerHTML += row;
@@ -1175,22 +1175,22 @@ window.loadAdminList = async function() {
   }
 };
 
-window.removeAdmin = async function(userId, email) {
+window.removeadmin = async function(userId, email) {
   if (!confirm(`Are you sure you want to remove ${email} as admin?`)) return;
   
   try {
     await deleteDoc(doc(db, "users", userId));
-    alert("Admin removed successfully");
-    loadAdminList();
+    alert("admin removed successfully");
+    loadadminList();
   } catch (error) {
     alert("Error removing admin: " + error.message);
   }
 };
 
 // Add this form handler to DOMContentLoaded
-const addAdminForm = document.getElementById('addAdminForm');
-if (addAdminForm) {
-  addAdminForm.addEventListener('submit', async (e) => {
+const addadminForm = document.getElementById('addadminForm');
+if (addadminForm) {
+  addadminForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     
     const email = document.getElementById('adminEmail').value;
@@ -1208,9 +1208,9 @@ if (addAdminForm) {
         createdAt: new Date().toISOString()
       });
       
-      alert("Admin created successfully!");
-      addAdminForm.reset();
-      showAdminTab('manageAdmins'); // Switch to admins list
+      alert("admin created successfully!");
+      addadminForm.reset();
+      showadminTab('manageadmins'); // Switch to admins list
     } catch (error) {
       alert("Error creating admin: " + error.message);
     }

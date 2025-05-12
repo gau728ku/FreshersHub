@@ -589,14 +589,6 @@
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  // TEMPORARY DEBUG CODE - Add this:
-onAuthStateChanged(auth, (user) => {
-  console.log("Auth State Changed:", user ? user.email : "No user");
-  if (!user) {
-    document.getElementById('auth-section').style.display = 'block'; 
-  }
-});
-
 
   // Auth Functions
   window.signup = async function() {
@@ -1190,14 +1182,26 @@ window.deleteAdmin = async function(userId) {
 
     // Check auth state
     onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        const snap = await getDoc(doc(db, "users", user.uid));
-        if (snap.exists()) {
-          showDashboard(snap.data().role);
-        }
+  console.log("AUTH STATE:", user ? user.email : "NO USER"); // Debug line
+  
+  if (user) {
+    try {
+      const snap = await getDoc(doc(db, "users", user.uid));
+      console.log("USER DOC:", snap.exists()); // Debug line
+      
+      if (snap.exists()) {
+        showDashboard(snap.data().role);
+      } else {
+        document.getElementById('auth-section').style.display = 'block'; // Show form if user doc missing
       }
-    });
-  });
+    } catch (error) {
+      console.error("Error checking user:", error);
+      document.getElementById('auth-section').style.display = 'block'; // Show form on error
+    }
+  } else {
+    document.getElementById('auth-section').style.display = 'block'; // Show form if logged out
+  }
+});
 
   // Placeholder functions for future implementation
   window.loadEmployerJobs = function() {

@@ -239,24 +239,13 @@
   font-size: 1.5em;
 }
 
-/* TEMPORARY DEBUG STYLES - REMOVE LATER */
-#fresherDashboard {
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  width: 100vw !important;
-  height: 100vh !important;
-  z-index: 99999 !important;
-  background: black !important;
-}
-
 
   </style>
 </head>
 <body>
 
   <!-- LOGIN/SIGNUP SECTION -->
-  <div class="container" id="auth-section" style="display: block;">
+  <div class="container" id="auth-section">
     <h2 id="form-title">FreshersHub - Signup</h2>
     <input type="email" id="email" placeholder="Email" required />
     <input type="password" id="password" placeholder="Password" required />
@@ -575,9 +564,6 @@
     </div>
   </div>
 
-// TEMPORARY FIX - REMOVE LATER
-document.getElementById('auth-section').style.display = 'block';
-
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
   import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
@@ -602,7 +588,6 @@ document.getElementById('auth-section').style.display = 'block';
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
-
 
   // Auth Functions
   window.signup = async function() {
@@ -682,39 +667,38 @@ document.getElementById('auth-section').style.display = 'block';
 };
 
   window.showDashboard = function(role) {
-  console.log("Attempting to show dashboard for:", role); // Debug line
-  console.log("Fresher Dashboard Element:", document.getElementById('fresherDashboard'));
-console.log("Fresher Menu Button:", document.getElementById('fresherMenuBtn'));
-  // Hide all dashboards first
-  document.getElementById('adminDashboard').style.display = 'none';
-  document.getElementById('fresherDashboard').style.display = 'none';
-  document.getElementById('EmployerDashboard').style.display = 'none';
-  
-  // Hide auth section
-  document.getElementById('auth-section').style.display = 'none';
+    // Hide all dashboards
+    document.getElementById('adminDashboard').style.display = 'none';
+    document.getElementById('fresherDashboard').style.display = 'none';
+    document.getElementById('EmployerDashboard').style.display = 'none';
+    
+    // Hide all menu buttons
+    document.getElementById('adminMenuBtn').style.display = 'none';
+    document.getElementById('EmployerMenuBtn').style.display = 'none';
+    document.getElementById('fresherMenuBtn').style.display = 'none';
+    
+    // Hide auth
+    document.getElementById('auth-section').style.display = 'none';
 
-  // Show correct dashboard
-  if (role === 'admin') {
-    document.getElementById('adminDashboard').style.display = 'block';
-    document.getElementById('adminMenuBtn').style.display = 'block';
-    showAdminSection('home');
-  } 
-  else if (role === 'fresher') {
-    document.getElementById('fresherDashboard').style.display = 'block';
-    document.getElementById('fresherMenuBtn').style.display = 'block';
-    showFresherSection('home');
-  } 
-  else if (role === 'Employer') {
-    document.getElementById('EmployerDashboard').style.display = 'block';
-    document.getElementById('EmployerMenuBtn').style.display = 'block';
-    showEmployerSection('home');
-  }
-  else {
-    console.error("Unknown role:", role);
-    // Fallback: Show login form
-    document.getElementById('auth-section').style.display = 'block';
-  }
-};
+    // Show relevant dashboard + menu
+    if (role === 'admin') {
+      document.getElementById('adminDashboard').style.display = 'block';
+      document.getElementById('adminMenuBtn').style.display = 'block';
+      showAdminSection('home');
+      loadAdminStats();
+      loadRecentActivity();
+    } else if (role === 'fresher') {
+      document.getElementById('fresherDashboard').style.display = 'block';
+      document.getElementById('fresherMenuBtn').style.display = 'block';
+      showFresherSection('home');
+    } else if (role === 'Employer') {
+      document.getElementById('EmployerDashboard').style.display = 'block';
+      document.getElementById('EmployerMenuBtn').style.display = 'block';
+      showEmployerSection('home');
+    } else {
+      alert("Unknown role: " + role);
+    }
+  };
 
   // Menu Toggle Functions
   window.toggleAdminMenu = function() {
@@ -982,39 +966,21 @@ window.createNewAdmin = async function() {
 
 // Delete admin
 window.deleteAdmin = async function(userId) {
-  // 1. Verify permissions
-  const currentUser = auth.currentUser;
-  if (!currentUser) return alert("Not authenticated");
-  
-  const currentUserDoc = await getDoc(doc(db, "users", currentUser.uid));
-  if (!currentUserDoc.data().isOriginalAdmin) {
-    return alert("Only original admin can remove admins");
+  if (!confirm("Are you sure you want to remove this admin's privileges?")) {
+    return;
   }
-
-  // 2. Confirmation dialog
-  if (!confirm(`Demote ${userId} to regular user?`)) return;
-
-  // 3. Execute demotion
+  
   try {
+    // Don't delete the user, just change their role
     await setDoc(doc(db, "users", userId), {
-      role: "employer",
-      isOriginalAdmin: false 
+      role: "employer"
     }, { merge: true });
-
-    // 4. Log the action
-    await addDoc(collection(db, "audit_logs"), {
-      action: "admin_demoted",
-      target: userId,
-      by: currentUser.email,
-      timestamp: new Date()
-    });
-
-    // 5. Refresh UI
-    alert("Admin privileges removed");
+    
+    alert("Admin privileges removed successfully");
     loadAdmins();
   } catch (error) {
-    console.error("Demotion failed:", error);
-    alert("Error: " + error.message);
+    console.error("Error removing admin:", error);
+    alert("Error removing admin: " + error.message);
   }
 };
 
@@ -1197,26 +1163,14 @@ window.deleteAdmin = async function(userId) {
 
     // Check auth state
     onAuthStateChanged(auth, async (user) => {
-  console.log("AUTH STATE:", user ? user.email : "NO USER"); // Debug line
-  
-  if (user) {
-    try {
-      const snap = await getDoc(doc(db, "users", user.uid));
-      console.log("USER DOC:", snap.exists()); // Debug line
-      
-      if (snap.exists()) {
-        showDashboard(snap.data().role);
-      } else {
-        document.getElementById('auth-section').style.display = 'block'; // Show form if user doc missing
+      if (user) {
+        const snap = await getDoc(doc(db, "users", user.uid));
+        if (snap.exists()) {
+          showDashboard(snap.data().role);
+        }
       }
-    } catch (error) {
-      console.error("Error checking user:", error);
-      document.getElementById('auth-section').style.display = 'block'; // Show form on error
-    }
-  } else {
-    document.getElementById('auth-section').style.display = 'block'; // Show form if logged out
-  }
-});
+    });
+  });
 
   // Placeholder functions for future implementation
   window.loadEmployerJobs = function() {
@@ -1261,60 +1215,6 @@ function animateValue(element, target, duration = 1000) {
   }, 16);
 }
 
-
-// Audit Logging System
-async function logAdminAction(action, target) {
-  try {
-    const user = auth.currentUser;
-    if (!user) return;
-    
-    const userDoc = await getDoc(doc(db, "users", user.uid));
-    
-    await addDoc(collection(db, "audit_logs"), {
-      adminEmail: user.email,
-      adminId: user.uid,
-      isOriginalAdmin: userDoc.data().isOriginalAdmin || false,
-      action: action,
-      target: target,
-      timestamp: new Date(),
-      ipAddress: await fetch('https://api.ipify.org?format=json')
-        .then(r => r.json())
-        .then(data => data.ip)
-        .catch(() => 'unknown')
-    });
-  } catch (error) {
-    console.error("Failed to log action:", error);
-  }
-}
-
-// Initialize audit log for critical actions
-window.deleteUser = async function(userId) {
-  if (!confirm("Are you sure?")) return;
-  
-  try {
-    await deleteDoc(doc(db, "users", userId));
-    await logAdminAction("user_deleted", userId);
-    alert("User deleted");
-    loadAllUsers();
-  } catch (error) {
-    alert("Error: " + error.message);
-  }
-};
-
-window.deleteJob = async function(jobId) {
-  if (!confirm("Are you sure?")) return;
-  
-  try {
-    await deleteDoc(doc(db, "jobs", jobId));
-    await logAdminAction("job_deleted", jobId);
-    alert("Job deleted");
-    loadAllJobs();
-  } catch (error) {
-    alert("Error: " + error.message);
-  }
-};
-
-}); // Add this to close any open functions
 </script>
 </body>
 </html>

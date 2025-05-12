@@ -245,7 +245,7 @@
 <body>
 
   <!-- LOGIN/SIGNUP SECTION -->
-  <div class="container" id="auth-section">
+  <div class="container" id="auth-section" style="display: block;">
     <h2 id="form-title">FreshersHub - Signup</h2>
     <input type="email" id="email" placeholder="Email" required />
     <input type="password" id="password" placeholder="Password" required />
@@ -588,6 +588,15 @@
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
+
+  // TEMPORARY DEBUG CODE - Add this:
+onAuthStateChanged(auth, (user) => {
+  console.log("Auth State Changed:", user ? user.email : "No user");
+  if (!user) {
+    document.getElementById('auth-section').style.display = 'block'; 
+  }
+});
+
 
   // Auth Functions
   window.signup = async function() {
@@ -966,21 +975,39 @@ window.createNewAdmin = async function() {
 
 // Delete admin
 window.deleteAdmin = async function(userId) {
-  if (!confirm("Are you sure you want to remove this admin's privileges?")) {
-    return;
-  }
+  // 1. Verify permissions
+  const currentUser = auth.currentUser;
+  if (!currentUser) return alert("Not authenticated");
   
+  const currentUserDoc = await getDoc(doc(db, "users", currentUser.uid));
+  if (!currentUserDoc.data().isOriginalAdmin) {
+    return alert("Only original admin can remove admins");
+  }
+
+  // 2. Confirmation dialog
+  if (!confirm(`Demote ${userId} to regular user?`)) return;
+
+  // 3. Execute demotion
   try {
-    // Don't delete the user, just change their role
     await setDoc(doc(db, "users", userId), {
-      role: "employer"
+      role: "employer",
+      isOriginalAdmin: false 
     }, { merge: true });
-    
-    alert("Admin privileges removed successfully");
+
+    // 4. Log the action
+    await addDoc(collection(db, "audit_logs"), {
+      action: "admin_demoted",
+      target: userId,
+      by: currentUser.email,
+      timestamp: new Date()
+    });
+
+    // 5. Refresh UI
+    alert("Admin privileges removed");
     loadAdmins();
   } catch (error) {
-    console.error("Error removing admin:", error);
-    alert("Error removing admin: " + error.message);
+    console.error("Demotion failed:", error);
+    alert("Error: " + error.message);
   }
 };
 
@@ -1214,6 +1241,60 @@ function animateValue(element, target, duration = 1000) {
     el.textContent = Math.floor(current);
   }, 16);
 }
+
+
+// ===== PASTE THIS RIGHT BEFORE THE CLOSING </script> TAG =====
+// Audit Logging System
+async function logAdminAction(action, target) {
+  try {
+    const user = auth.currentUser;
+    if (!user) return;
+    
+    const userDoc = await getDoc(doc(db, "users", user.uid));
+    
+    await addDoc(collection(db, "audit_logs"), {
+      adminEmail: user.email,
+      adminId: user.uid,
+      isOriginalAdmin: userDoc.data().isOriginalAdmin || false,
+      action: action,
+      target: target,
+      timestamp: new Date(),
+      ipAddress: await fetch('https://api.ipify.org?format=json')
+        .then(r => r.json())
+        .then(data => data.ip)
+        .catch(() => 'unknown')
+    });
+  } catch (error) {
+    console.error("Failed to log action:", error);
+  }
+}
+
+// Initialize audit log for critical actions
+window.deleteUser = async function(userId) {
+  if (!confirm("Are you sure?")) return;
+  
+  try {
+    await deleteDoc(doc(db, "users", userId));
+    await logAdminAction("user_deleted", userId);
+    alert("User deleted");
+    loadAllUsers();
+  } catch (error) {
+    alert("Error: " + error.message);
+  }
+};
+
+window.deleteJob = async function(jobId) {
+  if (!confirm("Are you sure?")) return;
+  
+  try {
+    await deleteDoc(doc(db, "jobs", jobId));
+    await logAdminAction("job_deleted", jobId);
+    alert("Job deleted");
+    loadAllJobs();
+  } catch (error) {
+    alert("Error: " + error.message);
+  }
+};
 
 </script>
 </body>

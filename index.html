@@ -210,6 +210,27 @@
   color: #00c6ff;
 }
 
+/* Style for the profile circle */
+.profile-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #4CAF50; /* You can change this color */
+  color: white;
+  text-align: center;
+  line-height: 40px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+/* Style for the full name text */
+.profile-name {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+}
+
+
   </style>
 </head>
 <body>
@@ -217,6 +238,7 @@
   <!-- LOGIN/SIGNUP SECTION -->
   <div class="container" id="auth-section">
     <h2 id="form-title">FreshersHub - Signup</h2>
+    <input type="text" name="name" placeholder="Your Name" required>
     <input type="email" id="email" placeholder="Email" required />
     <input type="password" id="password" placeholder="Password" required />
     <select id="role">
@@ -359,6 +381,8 @@
     <div id="EmployerMenuBtn" onclick="toggleEmployerMenu()">☰</div>
     
     <div class="sideMenu" id="EmployerSideMenu">
+      <div id="profileBox" class="profile-box"></div> <!-- Profile Circle -->
+      <div id="profileName" class="profile-name"></div> <!-- Full Name -->
       <a href="#" id="EmployerMenuHome">Dashboard</a>
       <a href="#" id="EmployerMenuPostJob">Post Job</a>
       <a href="#" id="EmployerMenuMyJobs">My Jobs</a>
@@ -525,6 +549,7 @@
 
   // Auth Functions
   window.signup = async function() {
+    const name = document.getElementById('name').value;
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
     const role = document.getElementById('role').value;
@@ -534,6 +559,7 @@
       const user = userCredential.user;
 
       await setDoc(doc(db, "users", user.uid), { 
+        name,
         email, 
         role,
         createdAt: new Date().toISOString()
@@ -553,6 +579,10 @@
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
+      await updateProfile(user, {
+  displayName: name
+});
+
 
       const docRef = doc(db, "users", user.uid);
       const docSnap = await getDoc(docRef);
@@ -1043,6 +1073,42 @@ function animateValue(element, target, duration = 1000) {
     el.textContent = Math.floor(current);
   }, 16);
 }
+
+// Step 1: Fetch user name from Firestore
+async function fetchUserName(userId) {
+  try {
+    const userDocRef = doc(db, "users", userId); // Reference to user in Firestore
+    const userDoc = await getDoc(userDocRef); // Get user document
+    
+    if (userDoc.exists()) {
+      return userDoc.data().name; // Return name from Firestore
+    } else {
+      console.log("No such user document!");
+      return null;
+    }
+  } catch (error) {
+    console.error("Error fetching user data: ", error);
+    return null;
+  }
+}
+
+// Step 2: Display the profile information (name)
+async function displayProfile() {
+  const userName = await fetchUserName(user.uid); // Fetch name using user.uid
+  
+  if (userName) {
+    // Update profile display (name and circle)
+    const profileBox = document.getElementById("profileBox");
+    const profileName = document.getElementById("profileName");
+
+    // Display profile circle with first letter of name
+    profileBox.innerHTML = `<div class="profile-circle">${userName[0]}</div>`; 
+    profileName.textContent = userName; // Display full name below circle
+  }
+}
+
+// Call displayProfile function when the page loads or when the user logs in
+displayProfile();
 
 </script>
 </body>

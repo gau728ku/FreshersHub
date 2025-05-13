@@ -1,10 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- 
+    =============================================
+    HTML HEAD SECTION - METADATA AND STYLES
+    =============================================
+    Contains page metadata, title, and CSS styles
+  -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>FreshersHub</title>
+  <title>FreshersHub - Job Portal</title>
+  
   <style>
+    /* 
+      =============================================
+      CSS STYLES SECTION
+      =============================================
+      All visual styling for the application
+    */
+    
+    /* Base styles */
     body {
       margin: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -15,6 +30,7 @@
       color: white;
     }
 
+    /* Login/Signup container */
     .container {
       max-width: 400px;
       margin: 5% auto;
@@ -24,13 +40,14 @@
       box-shadow: 0 0 15px rgba(0,0,0,0.3);
     }
 
+    /* Form elements */
     h2 { text-align: center; margin-bottom: 1.5rem; }
-
     input, select, button {
       width: 100%; padding: 12px; margin: 8px 0;
       border: none; border-radius: 8px; font-size: 1rem;
     }
 
+    /* Button styles */
     button { 
       background-color: #00c6ff; 
       color: white; 
@@ -43,7 +60,7 @@
     button.success { background-color: #28a745; }
     button.success:hover { background-color: #218838; }
 
-    /* Dashboard Cards */
+    /* Dashboard components */
     .card {
       background: rgba(255,255,255,0.1);
       border-radius: 10px;
@@ -52,7 +69,7 @@
       backdrop-filter: blur(5px);
     }
 
-    /* Tables */
+    /* Table styles */
     .table-container {
       overflow-x: auto;
       margin: 20px 0;
@@ -83,7 +100,7 @@
       background-color: #f5f5f5;
     }
 
-    /* Menu buttons */
+    /* Navigation menu styles */
     #adminMenuBtn, #fresherMenuBtn, #EmployerMenuBtn {
       position: fixed;
       top: 20px;
@@ -101,7 +118,7 @@
       line-height: 40px;
     }
 
-    /* Side Menus */
+    /* Side menu styles */
     .sideMenu {
       position: fixed;
       top: 0;
@@ -131,6 +148,7 @@
       border-left: 4px solid #00c6ff;
     }
 
+    /* Overlay styles */
     .overlay {
       position: fixed;
       top: 0;
@@ -144,6 +162,7 @@
     
     .overlay.show { display: block; }
 
+    /* Link styles */
     #toggle-text a {
       color: #00aeff; 
       font-weight: bold;
@@ -159,6 +178,7 @@
       margin: 0 auto;
     }
     
+    /* Stats container */
     .stats-container {
       display: flex;
       gap: 20px;
@@ -167,13 +187,14 @@
       margin-bottom: 30px;
     }
     
-     /* New: Horizontal variation (add this) */
+    /* Horizontal stats variation */
     .stats-container.horizontal {
-       flex-wrap: nowrap; /* Force horizontal layout */
-       overflow-x: auto; /* Enable scrolling if needed */
-       padding-bottom: 10px; /* Space for scrollbar */
+       flex-wrap: nowrap;
+       overflow-x: auto;
+       padding-bottom: 10px;
     }
 
+    /* Stat card styles */
     .stat-card {
       background: rgba(255,255,255,0.1);
       padding: 20px;
@@ -186,35 +207,34 @@
     .stat-card h3 {
       margin-top: 10px;
       font-size: 2rem;
+      transition: transform 0.3s ease;
+    }
+
+    .stat-card:hover h3 {
+      transform: scale(1.1);
+      color: #00c6ff;
     }
 
     /* Responsive adjustments */
     @media (max-width: 768px) {
       .stats-container {
-    flex-direction: row; /* Horizontal scroll on mobile */
-    justify-content: flex-start; /* Align cards to start */
+        flex-direction: row;
+        justify-content: flex-start;
+      }
+      .stat-card {
+        min-width: 180px;
+      }
     }
-     .stat-card {
-      min-width: 180px; /* Better for scrolling */
-     }
-     }
-
-  .stat-card h3 {
-  margin-top: 10px;
-  font-size: 2rem;
-  transition: transform 0.3s ease;
-}
-
-.stat-card:hover h3 {
-  transform: scale(1.1);
-  color: #00c6ff;
-}
-
   </style>
 </head>
 <body>
 
-  <!-- LOGIN/SIGNUP SECTION -->
+  <!-- 
+    =============================================
+    AUTHENTICATION SECTION (LOGIN/SIGNUP)
+    =============================================
+    Handles user authentication with role selection
+  -->
   <div class="container" id="auth-section">
     <h2 id="form-title">FreshersHub - Signup</h2>
     <input type="email" id="email" placeholder="Email" required />
@@ -228,10 +248,20 @@
     <p id="toggle-text">Already have an account? <a id="toggleLink">Login here</a></p>
   </div>
 
-  <!-- ADMIN DASHBOARD -->
+  <!-- 
+    =============================================
+    ADMIN DASHBOARD SECTION
+    =============================================
+    Contains all admin-specific functionality including:
+    - User management
+    - Job management
+    - System settings
+  -->
   <div id="adminDashboard" style="display:none;">
+    <!-- Admin menu button -->
     <div id="adminMenuBtn" onclick="toggleAdminMenu()">☰</div>
 
+    <!-- Admin side menu -->
     <div class="sideMenu" id="adminSideMenu">
       <a href="#" id="adminMenuHome">Dashboard</a>
       <a href="#" id="adminMenuUsers">Manage Users</a>
@@ -313,7 +343,7 @@
             </tr>
           </thead>
           <tbody id="usersTableBody">
-            <!-- Rows will be added here -->
+            <!-- User data will be dynamically inserted here -->
           </tbody>
         </table>
       </div>
@@ -336,7 +366,7 @@
             </tr>
           </thead>
           <tbody id="jobsTableBody">
-            <!-- Job rows will be added here -->
+            <!-- Job data will be dynamically inserted here -->
           </tbody>
         </table>
       </div>
@@ -354,7 +384,14 @@
     </div>
   </div>
 
-  <!-- Employer DASHBOARD -->
+  <!-- 
+    =============================================
+    EMPLOYER DASHBOARD SECTION
+    =============================================
+    Contains employer-specific functionality including:
+    - Job posting
+    - Job management
+  -->
   <div id="EmployerDashboard" style="display:none;">
     <div id="EmployerMenuBtn" onclick="toggleEmployerMenu()">☰</div>
     
@@ -414,7 +451,15 @@
     </div>
   </div>
 
-  <!-- FRESHER DASHBOARD -->
+  <!-- 
+    =============================================
+    FRESHER DASHBOARD SECTION
+    =============================================
+    Contains fresher-specific functionality including:
+    - Job browsing
+    - Applications management
+    - Profile management
+  -->
   <div id="fresherDashboard" style="display:none;">
     <div id="fresherMenuBtn" onclick="toggleFresherMenu()">☰</div>
     
@@ -499,6 +544,18 @@
   </div>
 
 <script type="module">
+  /*
+    =============================================
+    JAVASCRIPT MODULE - APPLICATION LOGIC
+    =============================================
+    Contains all the application functionality including:
+    - Firebase initialization
+    - Authentication
+    - Data management
+    - UI interactions
+  */
+
+  // Import Firebase modules
   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
   import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
   import { getFirestore, setDoc, doc, getDoc, collection, where, getDocs, query, addDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
@@ -510,6 +567,12 @@
   window.getDocs = getDocs;
   window.deleteDoc = deleteDoc;
 
+  /*
+    =============================================
+    FIREBASE CONFIGURATION
+    =============================================
+    Configuration object for Firebase services
+  */
   const firebaseConfig = {
     apiKey: "AIzaSyDrrAYywpFdd9iIzSSp2m6XcrGkGUgYY3Y",
     authDomain: "freshershub-33de8.firebaseapp.com",
@@ -519,11 +582,22 @@
     appId: "1:126389629687:web:9b9fb43e488f60ac3159f2"
   };
 
+  // Initialize Firebase
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  // Auth Functions
+  /*
+    =============================================
+    AUTHENTICATION FUNCTIONS
+    =============================================
+    Handles user signup, login, and role management
+  */
+
+  /**
+   * Handles user signup with email/password and role selection
+   * Creates user in Firebase Auth and stores additional data in Firestore
+   */
   window.signup = async function() {
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
@@ -546,6 +620,10 @@
     }
   };
 
+  /**
+   * Handles user login with email/password
+   * Retrieves user role from Firestore and shows appropriate dashboard
+   */
   window.login = async function() {
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
@@ -568,6 +646,10 @@
     }
   };
 
+  /**
+   * Toggles between login and signup forms
+   * Adjusts form fields and button actions accordingly
+   */
   window.toggleForm = function() {
     const formTitle = document.getElementById('form-title');
     const actionBtn = document.getElementById('actionBtn');
@@ -589,7 +671,7 @@
       toggleText.innerHTML = `Already have an account? <a id="toggleLink">Login here</a>`;
       roleSelect.style.display = 'block';
     } 
-      // ✅ Re-attach the toggle link listener every time
+      // Re-attach the toggle link listener every time
       const toggleLink = document.getElementById('toggleLink');
     if (toggleLink) {
       toggleLink.addEventListener('click', (e) => {
@@ -599,6 +681,17 @@
     }
   };
 
+  /*
+    =============================================
+    DASHBOARD MANAGEMENT FUNCTIONS
+    =============================================
+    Controls dashboard visibility and navigation
+  */
+
+  /**
+   * Shows the appropriate dashboard based on user role
+   * @param {string} role - User role (admin, fresher, or Employer)
+   */
   window.showDashboard = function(role) {
     // Hide all dashboards
     document.getElementById('adminDashboard').style.display = 'none';
@@ -610,7 +703,7 @@
     document.getElementById('EmployerMenuBtn').style.display = 'none';
     document.getElementById('fresherMenuBtn').style.display = 'none';
     
-    // Hide auth
+    // Hide auth section
     document.getElementById('auth-section').style.display = 'none';
 
     // Show relevant dashboard + menu
@@ -633,23 +726,39 @@
     }
   };
 
-  // Menu Toggle Functions
+  /*
+    =============================================
+    MENU TOGGLE FUNCTIONS
+    =============================================
+    Handles side menu visibility for different user roles
+  */
+
+  /** Toggles admin side menu visibility */
   window.toggleAdminMenu = function() {
     document.getElementById('adminSideMenu').classList.toggle('open');
     document.getElementById('adminOverlay').classList.toggle('show');
   };
 
+  /** Toggles employer side menu visibility */
   window.toggleEmployerMenu = function() {
     document.getElementById('EmployerSideMenu').classList.toggle('open');
     document.getElementById('EmployerOverlay').classList.toggle('show');
   };
 
+  /** Toggles fresher side menu visibility */
   window.toggleFresherMenu = function() {
     document.getElementById('fresherSideMenu').classList.toggle('open');
     document.getElementById('fresherOverlay').classList.toggle('show');
   };
 
-  // Logout Function
+  /*
+    =============================================
+    USER MANAGEMENT FUNCTIONS
+    =============================================
+    Handles logout and session management
+  */
+
+  /** Logs out the current user and returns to auth screen */
   window.logout = function() {
     signOut(auth).then(() => {
       document.getElementById('auth-section').style.display = 'block';
@@ -662,7 +771,17 @@
     });
   };
 
-  // Admin Functions
+  /*
+    =============================================
+    ADMIN DASHBOARD FUNCTIONS
+    =============================================
+    Specific functionality for admin dashboard sections
+  */
+
+  /**
+   * Shows the specified admin dashboard section
+   * @param {string} section - Section to show (home, users, jobs, settings)
+   */
   window.showAdminSection = function(section) {
     // Hide all admin sections
     document.getElementById('adminHomeSection').style.display = 'none';
@@ -670,7 +789,7 @@
     document.getElementById('adminJobsSection').style.display = 'none';
     document.getElementById('adminSettingsSection').style.display = 'none';
 
-    // Show the requested one
+    // Show the requested section
     if (section === 'home') {
       document.getElementById('adminHomeSection').style.display = 'block';
     } else if (section === 'users') {
@@ -684,6 +803,9 @@
     }
   };
 
+  /**
+   * Loads all users from Firestore and displays them in a table
+   */
   window.loadAllUsers = async function() {
     const table = document.getElementById('usersTableBody');
     table.innerHTML = '<tr><td colspan="3">Loading users...</td></tr>';
@@ -715,6 +837,9 @@
     }
   };
 
+  /**
+   * Loads all jobs from Firestore and displays them in a table
+   */
   window.loadAllJobs = async function() {
     const table = document.getElementById('jobsTableBody');
     table.innerHTML = '<tr><td colspan="5">Loading jobs...</td></tr>';
@@ -748,6 +873,10 @@
     }
   };
 
+  /**
+   * Deletes a user from Firestore
+   * @param {string} userId - ID of the user to delete
+   */
   window.deleteUser = async function(userId) {
     if (!confirm("Are you sure you want to delete this user?")) return;
     
@@ -760,6 +889,10 @@
     }
   };
 
+  /**
+   * Deletes a job from Firestore
+   * @param {string} jobId - ID of the job to delete
+   */
   window.deleteJob = async function(jobId) {
     if (!confirm("Are you sure you want to delete this job?")) return;
     
@@ -772,14 +905,24 @@
     }
   };
 
-  // Employer Functions
+  /*
+    =============================================
+    EMPLOYER DASHBOARD FUNCTIONS
+    =============================================
+    Specific functionality for employer dashboard sections
+  */
+
+  /**
+   * Shows the specified employer dashboard section
+   * @param {string} section - Section to show (home, postJob, myJobs)
+   */
   window.showEmployerSection = function(section) {
     // Hide all Employer sections
     document.getElementById('EmployerHomeSection').style.display = 'none';
     document.getElementById('EmployerPostJobSection').style.display = 'none';
     document.getElementById('EmployerMyJobsSection').style.display = 'none';
 
-    // Show the requested one
+    // Show the requested section
     if (section === 'home') {
       document.getElementById('EmployerHomeSection').style.display = 'block';
     } else if (section === 'postJob') {
@@ -790,7 +933,17 @@
     }
   };
 
-  // Fresher Functions
+  /*
+    =============================================
+    FRESHER DASHBOARD FUNCTIONS
+    =============================================
+    Specific functionality for fresher dashboard sections
+  */
+
+  /**
+   * Shows the specified fresher dashboard section
+   * @param {string} section - Section to show (home, jobs, applications, profile)
+   */
   window.showFresherSection = function(section) {
     // Hide all fresher sections
     document.getElementById('fresherHomeSection').style.display = 'none';
@@ -798,7 +951,7 @@
     document.getElementById('fresherApplicationsSection').style.display = 'none';
     document.getElementById('fresherProfileSection').style.display = 'none';
 
-    // Show the requested one
+    // Show the requested section
     if (section === 'home') {
       document.getElementById('fresherHomeSection').style.display = 'block';
     } else if (section === 'jobs') {
@@ -813,7 +966,16 @@
     }
   };
 
-  // Stats and Activity Functions
+  /*
+    =============================================
+    STATS AND ACTIVITY FUNCTIONS
+    =============================================
+    Handles dashboard statistics and recent activity
+  */
+
+  /**
+   * Loads admin dashboard statistics (freshers, employers, jobs counts)
+   */
   async function loadAdminStats() {
     try {
       // Count Freshers
@@ -837,6 +999,9 @@
     }
   }
 
+  /**
+   * Loads recent user and job activity for admin dashboard
+   */
   async function loadRecentActivity() {
     try {
       // Recent Users
@@ -860,190 +1025,211 @@
       const jobsSnapshot = await getDocs(collection(db, "jobs"));
       const jobsData = [];
       jobsSnapshot.forEach(doc => jobsData.push({ id: doc.id, ...doc.data() }));
-      
-      // Sort by creation date (newest first)
-      jobsData.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-      const last5Jobs = jobsData.slice(0, 5);
-      
-      const jobsTable = document.getElementById('recentJobsTable');
-      jobsTable.innerHTML = "";
-      last5Jobs.forEach(job => {
-        jobsTable.innerHTML += `
-          <tr>
-            <td>${job.Title || 'N/A'}</td>
-            <td>${job.Employer || 'N/A'}</td>
-            <td>${job.location || 'N/A'}</td>
-          </tr>`;
-      });
-    } catch (error) {
-      console.error("Error loading recent activity:", error);
-    }
-  }
 
-  // Initialize Event Listeners
-  document.addEventListener('DOMContentLoaded', () => {
-    // Toggle between login/signup
-    const toggleLink = document.getElementById('toggleLink');
-    toggleLink.addEventListener('click', (e) => {
-      e.preventDefault();
-      toggleForm();
-    });
-
-    // Admin menu links
-    document.getElementById('adminMenuHome').addEventListener('click', (e) => {
-      e.preventDefault();
-      showAdminSection('home');
-      toggleAdminMenu();
-    });
-    
-    document.getElementById('adminMenuUsers').addEventListener('click', (e) => {
-      e.preventDefault();
-      showAdminSection('users');
-      toggleAdminMenu();
-    });
-    
-    document.getElementById('adminMenuJobs').addEventListener('click', (e) => {
-      e.preventDefault();
-      showAdminSection('jobs');
-      toggleAdminMenu();
-    });
-    
-    document.getElementById('adminMenuSettings').addEventListener('click', (e) => {
-      e.preventDefault();
-      showAdminSection('settings');
-      toggleAdminMenu();
-    });
-
-    // Employer menu links
-    document.getElementById('EmployerMenuHome').addEventListener('click', (e) => {
-      e.preventDefault();
-      showEmployerSection('home');
-      toggleEmployerMenu();
-    });
-    
-    document.getElementById('EmployerMenuPostJob').addEventListener('click', (e) => {
-      e.preventDefault();
-      showEmployerSection('postJob');
-      toggleEmployerMenu();
-    });
-    
-    document.getElementById('EmployerMenuMyJobs').addEventListener('click', (e) => {
-      e.preventDefault();
-      showEmployerSection('myJobs');
-      toggleEmployerMenu();
-    });
-
-    // Fresher menu links
-    document.getElementById('fresherMenuHome').addEventListener('click', (e) => {
-      e.preventDefault();
-      showFresherSection('home');
-      toggleFresherMenu();
-    });
-    
-    document.getElementById('fresherMenuJobs').addEventListener('click', (e) => {
-      e.preventDefault();
-      showFresherSection('jobs');
-      toggleFresherMenu();
-    });
-    
-    document.getElementById('fresherMenuApplications').addEventListener('click', (e) => {
-      e.preventDefault();
-      showFresherSection('applications');
-      toggleFresherMenu();
-    });
-    
-    document.getElementById('fresherMenuProfile').addEventListener('click', (e) => {
-      e.preventDefault();
-      showFresherSection('profile');
-      toggleFresherMenu();
-    });
-
-    // Post Job Form
-    const postJobForm = document.getElementById('postJobForm');
-    if (postJobForm) {
-      postJobForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        const title = document.getElementById('jobTitle').value;
-        const description = document.getElementById('jobDescription').value;
-        const location = document.getElementById('jobLocation').value;
-        const salary = document.getElementById('jobSalary').value;
-        
-        try {
-          const user = auth.currentUser;
-          if (!user) throw new Error("Not authenticated");
-          
-          await addDoc(collection(db, "jobs"), {
-            Title: title,
-            description: description,
-            location: location,
-            salary: salary,
-            Employer: user.email,
-            createdAt: new Date().toISOString()
-          });
-          
-          alert("Job posted successfully!");
-          postJobForm.reset();
-        } catch (error) {
-          alert("Error posting job: " + error.message);
-        }
-      });
-    }
-
-    // Check auth state
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        const snap = await getDoc(doc(db, "users", user.uid));
-        if (snap.exists()) {
-          showDashboard(snap.data().role);
-        }
-      }
-    });
-  });
-
-  // Placeholder functions for future implementation
-  window.loadEmployerJobs = function() {
-    document.getElementById('EmployerJobsTable').innerHTML = `
-      <tr>
-        <td colspan="4">Job listings will appear here</td>
-      </tr>`;
-  };
-
-  window.loadAvailableJobs = function() {
-    document.getElementById('availableJobsTable').innerHTML = `
-      <tr>
-        <td colspan="5">Available jobs will appear here</td>
-      </tr>`;
-  };
-
-  window.loadMyApplications = function() {
-    document.getElementById('myApplicationsTable').innerHTML = `
-      <tr>
-        <td colspan="4">Your applications will appear here</td>
-      </tr>`;
-  };
-
-  window.loadFresherProfile = function() {
-    // Would load profile data here
-  };
-
-  // Number counting animation
-function animateValue(element, target, duration = 1000) {
-  const start = 0;
-  const increment = target / (duration / 16); // 60fps
-  let current = start;
-  const el = document.getElementById(element);
+       // Sort by creation date (newest first)
+  jobsData.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  const last5Jobs = jobsData.slice(0, 5);
   
-  const timer = setInterval(() => {
-    current += increment;
-    if (current >= target) {
-      clearInterval(timer);
-      current = target;
-    }
-    el.textContent = Math.floor(current);
-  }, 16);
+  const jobsTable = document.getElementById('recentJobsTable');
+  jobsTable.innerHTML = "";
+  last5Jobs.forEach(job => {
+    jobsTable.innerHTML += `
+      <tr>
+        <td>${job.Title || 'N/A'}</td>
+        <td>${job.Employer || 'N/A'}</td>
+        <td>${job.location || 'N/A'}</td>
+      </tr>`;
+  });
+} catch (error) {
+  console.error("Error loading recent activity:", error);
+}
 }
 
+/*
+=============================================
+EVENT LISTENERS
+=============================================
+Sets up all event handlers when DOM is loaded
+*/
+
+document.addEventListener('DOMContentLoaded', () => {
+// Toggle between login/signup forms
+const toggleLink = document.getElementById('toggleLink');
+toggleLink.addEventListener('click', (e) => {
+e.preventDefault();
+toggleForm();
+});
+
+    // Admin menu navigation
+document.getElementById('adminMenuHome').addEventListener('click', (e) => {
+  e.preventDefault();
+  showAdminSection('home');
+  toggleAdminMenu();
+});
+
+document.getElementById('adminMenuUsers').addEventListener('click', (e) => {
+  e.preventDefault();
+  showAdminSection('users');
+  toggleAdminMenu();
+});
+
+document.getElementById('adminMenuJobs').addEventListener('click', (e) => {
+  e.preventDefault();
+  showAdminSection('jobs');
+  toggleAdminMenu();
+});
+
+document.getElementById('adminMenuSettings').addEventListener('click', (e) => {
+  e.preventDefault();
+  showAdminSection('settings');
+  toggleAdminMenu();
+});
+
+// Employer menu navigation
+document.getElementById('EmployerMenuHome').addEventListener('click', (e) => {
+  e.preventDefault();
+  showEmployerSection('home');
+  toggleEmployerMenu();
+});
+
+document.getElementById('EmployerMenuPostJob').addEventListener('click', (e) => {
+  e.preventDefault();
+  showEmployerSection('postJob');
+  toggleEmployerMenu();
+});
+
+document.getElementById('EmployerMenuMyJobs').addEventListener('click', (e) => {
+  e.preventDefault();
+  showEmployerSection('myJobs');
+  toggleEmployerMenu();
+});
+
+// Fresher menu navigation
+document.getElementById('fresherMenuHome').addEventListener('click', (e) => {
+  e.preventDefault();
+  showFresherSection('home');
+  toggleFresherMenu();
+});
+
+document.getElementById('fresherMenuJobs').addEventListener('click', (e) => {
+  e.preventDefault();
+  showFresherSection('jobs');
+  toggleFresherMenu();
+});
+
+document.getElementById('fresherMenuApplications').addEventListener('click', (e) => {
+  e.preventDefault();
+  showFresherSection('applications');
+  toggleFresherMenu();
+});
+
+document.getElementById('fresherMenuProfile').addEventListener('click', (e) => {
+  e.preventDefault();
+  showFresherSection('profile');
+  toggleFresherMenu();
+});
+
+// Post Job Form submission handler
+const postJobForm = document.getElementById('postJobForm');
+if (postJobForm) {
+  postJobForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const title = document.getElementById('jobTitle').value;
+    const description = document.getElementById('jobDescription').value;
+    const location = document.getElementById('jobLocation').value;
+    const salary = document.getElementById('jobSalary').value;
+    
+    try {
+      const user = auth.currentUser;
+      if (!user) throw new Error("Not authenticated");
+      
+      await addDoc(collection(db, "jobs"), {
+        Title: title,
+        description: description,
+        location: location,
+        salary: salary,
+        Employer: user.email,
+        createdAt: new Date().toISOString()
+      });
+      
+      alert("Job posted successfully!");
+      postJobForm.reset();
+    } catch (error) {
+      alert("Error posting job: " + error.message);
+    }
+  });
+}
+
+// Auth state change handler
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    const snap = await getDoc(doc(db, "users", user.uid));
+    if (snap.exists()) {
+      showDashboard(snap.data().role);
+    }
+  }
+});
+  });
+
+/*
+=============================================
+PLACEHOLDER FUNCTIONS
+=============================================
+Temporary implementations for future features
+*/
+
+/** Loads employer's job listings (placeholder) */
+window.loadEmployerJobs = function() {
+document.getElementById('EmployerJobsTable').innerHTML = <tr> <td colspan="4">Job listings will appear here</td> </tr>;
+};
+
+/** Loads available jobs for freshers (placeholder) */
+window.loadAvailableJobs = function() {
+document.getElementById('availableJobsTable').innerHTML = <tr> <td colspan="5">Available jobs will appear here</td> </tr>;
+};
+
+/** Loads fresher's job applications (placeholder) */
+window.loadMyApplications = function() {
+document.getElementById('myApplicationsTable').innerHTML = <tr> <td colspan="4">Your applications will appear here</td> </tr>;
+};
+
+/** Loads fresher profile data (placeholder) */
+window.loadFresherProfile = function() {
+// Would load profile data here
+};
+
+/*
+=============================================
+UTILITY FUNCTIONS
+=============================================
+Helper functions used throughout the application
+*/
+
+/**
+
+Animates a number counting up to a target value
+
+@param {string} element - ID of the element to animate
+
+@param {number} target - Target value to count to
+
+@param {number} duration - Animation duration in ms (default: 1000)
+*/
+function animateValue(element, target, duration = 1000) {
+const start = 0;
+const increment = target / (duration / 16); // 60fps
+let current = start;
+const el = document.getElementById(element);
+  const timer = setInterval(() => {
+      current += increment;
+  if (current >= target) {
+    clearInterval(timer);
+    current = target;
+  }
+  el.textContent = Math.floor(current);
+}, 16);
+  }
 </script>
-</body>
-</html>
+
+</body> </html>

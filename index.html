@@ -389,6 +389,8 @@
     <tbody id="adminTableBody"></tbody>
   </table>
 
+  <!-- 👇 Wrap this part in its own container -->
+    <div id="promoteFormSection">
   <h3>Promote User to Admin</h3>
   <input type="email" id="promoteEmail" placeholder="Enter user email">
   <button onclick="promoteToAdmin()">Promote</button>
@@ -1096,6 +1098,32 @@ window.loadStatsAndRecentActivity = async function() {
   }
 };
 
+//load admin management
+
+window.loadAdminManagement = async function () {
+  const promoteForm = document.getElementById('promoteFormSection');
+  const currentUser = auth.currentUser;
+
+  if (!currentUser) return;
+
+  try {
+    const docSnap = await getDoc(doc(db, "users", currentUser.uid));
+    const userData = docSnap.data();
+
+    // ✅ Only show the promote section if original admin
+    if (userData.isOriginalAdmin === true) {
+      promoteForm.style.display = 'block';
+    } else {
+      promoteForm.style.display = 'none';
+    }
+
+    // ✅ Load the current admin list
+    loadAdmins();
+
+  } catch (err) {
+    console.error("Error loading admin management:", err);
+  }
+};
 
 
 

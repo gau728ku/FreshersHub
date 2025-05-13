@@ -381,19 +381,14 @@
         <h3>System Configuration</h3>
         <h2>Admin Management</h2>
 <div id="adminSection">
-  
-  <!-- Always shown -->
-   <div>
   <h3>Current Admins</h3>
   <table id="adminTable">
     <thead>
-      <tr><th>Email</th><th>role/th><th>Action</th></tr>
+      <tr><th>Email</th><th>Action</th></tr>
     </thead>
     <tbody id="adminTableBody"></tbody>
   </table>
 
-  <!-- Only shown if original admin -->
-<div id="addAdminSection" style="display: none;">
   <h3>Promote User to Admin</h3>
   <input type="email" id="promoteEmail" placeholder="Enter user email">
   <button onclick="promoteToAdmin()">Promote</button>
@@ -1020,46 +1015,6 @@ window.revokeAdmin = async function(userId) {
   }
 };
 
-//loadadmin settings
-
-window.loadAdminSettings = async function() {
-  const userRef = doc(db, "users", auth.currentUser.uid);
-  const userSnap = await getDoc(userRef);
-
-  if (userSnap.exists()) {
-    const currentUser = userSnap.data();
-
-    // Show Add Admin form only if original admin
-    if (currentUser.isOriginalAdmin === true) {
-      document.getElementById("addAdminSection").style.display = "block";
-    } else {
-      document.getElementById("addAdminSection").style.display = "none";
-    }
-
-    // Load current admins into the table
-    const querySnapshot = await getDocs(collection(db, "users"));
-    const tableBody = document.getElementById("adminTableBody");
-    tableBody.innerHTML = "";
-
-    querySnapshot.forEach(docSnap => {
-      const data = docSnap.data();
-      if (data.role === "admin") {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td>${data.email}</td>
-          <td>${data.role}</td>
-          <td>
-            ${currentUser.isOriginalAdmin === true && data.isOriginalAdmin !== true
-              ? `<button onclick="removeAdmin('${docSnap.id}')">Remove</button>`
-              : ""}
-          </td>`;
-        tableBody.appendChild(row);
-      }
-    });
-  }
-};
-
-
 
 
   /*
@@ -1389,4 +1344,5 @@ const el = document.getElementById(element);
   }
 </script>
 
-</body> </html>
+</body> 
+</html>

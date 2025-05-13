@@ -634,7 +634,7 @@ import { getFirestore, setDoc, doc, getDoc, collection, where, getDocs, query, a
   }
 };
 
-
+let currentUserRole = null;
   /**
    * Handles user login with email/password
    * Retrieves user role from Firestore and shows appropriate dashboard
@@ -651,18 +651,23 @@ import { getFirestore, setDoc, doc, getDoc, collection, where, getDocs, query, a
 
       if (docSnap.exists()) {
         const userData = docSnap.data();
-        const initialRole = userData.role;
-      
-      showDashboard(initialRole);
 
-      // 🔁 Start listening for role changes
+        // ⬅️ Store initial role in global variable
+      currentUserRole = userData.role;
+      
+        // ✅ Start listening for real-time role changes
       onSnapshot(docRef, (snapshot) => {
-        const updatedRole = snapshot.data().role;
-        if (updatedRole !== initialRole) {
-          alert("Your role has changed. You will be logged out for security reasons.");
-          signOut(auth).then(() => {
-            window.location.href = "/login.html"; // or your login page
-          });
+        const newRole = snapshot.data().role;
+
+        if (currentUserRole !== newRole) {
+          alert(`Your role has changed to '${newRole}'. Reloading your dashboard.`);
+          // Option 1: Refresh the page
+          location.reload();
+
+          // Option 2 (alternate): Sign out and redirect
+          // signOut(auth).then(() => {
+          //   window.location.href = "/login.html";
+          // });
         }
       });
 

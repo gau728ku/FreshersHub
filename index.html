@@ -380,8 +380,21 @@
       
       <div class="card">
         <h3>System Configuration</h3>
-        <p>Settings will be added here</p>
-      </div>
+        <h2>Admin Management</h2>
+<div id="adminSection">
+  <h3>Current Admins</h3>
+  <table id="adminTable">
+    <thead>
+      <tr><th>Email</th><th>Action</th></tr>
+    </thead>
+    <tbody id="adminTableBody"></tbody>
+  </table>
+
+  <h3>Promote User to Admin</h3>
+  <input type="email" id="promoteEmail" placeholder="Enter user email">
+  <button onclick="promoteToAdmin()">Promote</button>
+    </div>
+    </div>
     </div>
   </div>
 
@@ -925,6 +938,85 @@ import { getFirestore, setDoc, doc, getDoc, collection, where, getDocs, query, a
       alert("Error deleting job: " + error.message);
     }
   };
+
+  // promote to Admin function
+   
+  window.promoteToAdmin = async function() {
+  const email = document.getElementById('promoteEmail').value.trim();
+  if (!email) return alert("Please enter a valid email");
+
+  try {
+    const usersSnapshot = await getDocs(collection(db, "users"));
+    let found = false;
+
+    usersSnapshot.forEach(async (docSnap) => {
+      const data = docSnap.data();
+      if (data.email === email && !data.isOriginalAdmin) {
+        found = true;
+        await updateDoc(doc(db, "users", docSnap.id), {
+          role: "admin"
+        });
+        alert("User promoted to admin");
+        loadAdmins();
+      }
+    });
+
+    if (!found) {
+      alert("User not found or cannot promote this user");
+    }
+
+  } catch (err) {
+    console.error(err);
+    alert("Error promoting user.");
+  }
+};
+
+// Load Admin List function
+
+window.loadAdmins = async function() {
+  const table = document.getElementById('adminTableBody');
+  table.innerHTML = '<tr><td colspan="2">Loading...</td></tr>';
+
+  try {
+    const currentUser = auth.currentUser;
+    const snapshot = await getDocs(collection(db, "users"));
+    table.innerHTML = '';
+
+    snapshot.forEach(docSnap => {
+      const data = docSnap.data();
+      if (data.role === "admin" && !data.isOriginalAdmin && docSnap.id !== currentUser.uid) {
+        const row = `
+          <tr>
+            <td>${data.email}</td>
+            <td><button onclick="revokeAdmin('${docSnap.id}')">Revoke</button></td>
+          </tr>`;
+        table.innerHTML += row;
+      }
+    });
+  } catch (err) {
+    table.innerHTML = '<tr><td colspan="2">Error loading admins</td></tr>';
+    console.error("Error loading admins:", err);
+  }
+};
+
+//revoke Admin function
+
+window.revokeAdmin = async function(userId) {
+  if (!confirm("Are you sure you want to revoke admin rights?")) return;
+
+  try {
+    await updateDoc(doc(db, "users", userId), {
+      role: "fresher" // or whatever default you prefer
+    });
+    alert("Admin rights revoked");
+    loadAdmins();
+  } catch (err) {
+    console.error(err);
+    alert("Error revoking admin rights");
+  }
+};
+
+
 
   /*
     =============================================

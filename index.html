@@ -988,22 +988,29 @@ window.login = async function () {
 
 // Load Admin List function
 
-window.loadAdmins = async function() {
+window.loadAdmins = async function () {
   const table = document.getElementById('adminTableBody');
   table.innerHTML = '<tr><td colspan="2">Loading...</td></tr>';
 
   try {
     const currentUser = auth.currentUser;
+    const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+    const isOriginalAdmin = userDoc.exists() && userDoc.data().isOriginalAdmin;
+
     const snapshot = await getDocs(collection(db, "users"));
     table.innerHTML = '';
 
     snapshot.forEach(docSnap => {
       const data = docSnap.data();
-      if (data.role === "admin" && !data.isOriginalAdmin && docSnap.id !== currentUser.uid) {
+
+      // Only show users with admin role (excluding self)
+      if (data.role === "admin" && docSnap.id !== currentUser.uid) {
+        const showRevoke = isOriginalAdmin && !data.isOriginalAdmin;
+
         const row = `
           <tr>
             <td>${data.email}</td>
-            <td><button onclick="revokeAdmin('${docSnap.id}')">Revoke</button></td>
+            <td>${showRevoke ? `<button onclick="revokeAdmin('${docSnap.id}')">Revoke</button>` : '-'}</td>
           </tr>`;
         table.innerHTML += row;
       }
@@ -1013,6 +1020,7 @@ window.loadAdmins = async function() {
     console.error("Error loading admins:", err);
   }
 };
+
 
 //revoke Admin function
 
@@ -1107,23 +1115,22 @@ window.loadAdminManagement = async function () {
   if (!currentUser) return;
 
   try {
-    const docSnap = await getDoc(doc(db, "users", currentUser.uid));
-    const userData = docSnap.data();
+    const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+    const userData = userDoc.data();
 
-    // ✅ Only show the promote section if original admin
-    if (userData.isOriginalAdmin === true) {
+    // Hide or show the promote form based on isOriginalAdmin
+    if (userData?.isOriginalAdmin) {
       promoteForm.style.display = 'block';
     } else {
       promoteForm.style.display = 'none';
     }
 
-    // ✅ Load the current admin list
-    loadAdmins();
-
+    window.loadAdmins(); // Now call this always
   } catch (err) {
-    console.error("Error loading admin management:", err);
+    console.error("Error loading admin section:", err);
   }
 };
+
 
 // For example in your dashboard or settings load:
 window.showSettings = function () {

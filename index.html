@@ -646,20 +646,33 @@ import { getFirestore, setDoc, doc, getDoc, collection, where, getDocs, query, a
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
-
       const docRef = doc(db, "users", user.uid);
       const docSnap = await getDoc(docRef);
 
       if (docSnap.exists()) {
         const userData = docSnap.data();
-        showDashboard(userData.role);
-      } else {
-        alert("User data not found.");
-      }
-    } catch (err) {
-      alert(err.message);
+        const initialRole = userData.role;
+      
+      showDashboard(initialRole);
+
+      // 🔁 Start listening for role changes
+      onSnapshot(docRef, (snapshot) => {
+        const updatedRole = snapshot.data().role;
+        if (updatedRole !== initialRole) {
+          alert("Your role has changed. You will be logged out for security reasons.");
+          signOut(auth).then(() => {
+            window.location.href = "/login.html"; // or your login page
+          });
+        }
+      });
+
+    } else {
+      alert("User data not found.");
     }
-  };
+  } catch (err) {
+    alert(err.message);
+  }
+};
 
   /**
    * Toggles between login and signup forms
@@ -1342,6 +1355,8 @@ const el = document.getElementById(element);
   el.textContent = Math.floor(current);
 }, 16);
   }
+
+
 </script>
 
 </body> 

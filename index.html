@@ -1072,6 +1072,43 @@ window.loadDashboard = async function() {
   }
 };
 
+//load stats and recent activity
+window.loadStatsAndRecentActivity = async function() {
+  const user = auth.currentUser;
+  const docRef = doc(db, "users", user.uid);
+  const docSnap = await getDoc(docRef);
+
+  if (docSnap.exists()) {
+    const userData = docSnap.data();
+    const isOriginalAdmin = userData.isOriginalAdmin;
+    const isPromotedAdmin = userData.role === "admin" && !isOriginalAdmin;
+
+    if (isOriginalAdmin || isPromotedAdmin) {
+      // Load stats
+      try {
+        const statsSnap = await getDocs(collection(db, "stats"));
+        // Process stats data here
+        console.log("Stats:", statsSnap.docs);
+      } catch (error) {
+        console.error("Error loading stats:", error);
+      }
+
+      // Load recent activity
+      try {
+        const activitySnap = await getDocs(collection(db, "recentActivity"));
+        // Process recent activity data here
+        console.log("Recent Activity:", activitySnap.docs);
+      } catch (error) {
+        console.error("Error loading recent activity:", error);
+      }
+    } else {
+      console.log("You do not have permission to view stats and activity.");
+    }
+  }
+};
+
+
+
 
   /*
     =============================================

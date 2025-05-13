@@ -647,43 +647,39 @@ import { getFirestore, setDoc, doc, getDoc, collection, where, getDocs, query, a
 let unsubscribeRoleListener = null;
 
 window.login = async function () {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
 
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
-    const userRef = doc(db, "users", user.uid);
+    const docRef = doc(db, "users", user.uid);
+    const docSnap = await getDoc(docRef);
 
-    console.log("✅ Logged in, setting up snapshot listener...");
-
-    onSnapshot(userRef, (docSnap) => {
-      if (!docSnap.exists()) {
-        console.warn("⚠️ User document missing. Logging out...");
-        signOut(auth).then(() => (window.location.href = "/login.html"));
-        return;
-      }
-
+    if (docSnap.exists()) {
       const userData = docSnap.data();
-      const newRole = userData.role;
-      const storedRole = sessionStorage.getItem("userRole");
+      const initialRole = userData.role;
 
-      console.log("📡 Snapshot triggered. Current role:", newRole, "Stored:", storedRole);
+      showDashboard(initialRole); // ✅ Show dashboard based on current role
 
-      if (!storedRole) {
-        sessionStorage.setItem("userRole", newRole);
-        console.log("🚀 First login, showing dashboard...");
-        showDashboard(newRole);
-      } else if (storedRole !== newRole) {
-        console.warn("🔁 Role changed! Logging out...");
-        sessionStorage.removeItem("userRole");
-        signOut(auth).then(() => {
-          window.location.href = "/login.html";
-        });
-      }
-    });
+      // 👀 Listen for role change
+      onSnapshot(docRef, (snapshot) => {
+        const newRole = snapshot.data()?.role;
+         console.log("Role changed:", newRole);
+        if (newRole !== initialRole) {
+          alert("Your role has changed. You'll be logged out.");
+          signOut(auth).then(() => {
+            window.location.href = "/login.html"; // redirect to login
+          });
+        }
+      });
+
+    } else {
+      alert("User data not found.");
+    }
+
   } catch (err) {
-    console.error("❌ Login error:", err);
+    console.error("Login error:", err);
     alert(err.message);
   }
 };

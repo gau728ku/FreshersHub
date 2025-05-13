@@ -642,7 +642,11 @@ import { getFirestore, setDoc, doc, getDoc, collection, where, getDocs, query, a
    * Handles user login with email/password
    * Retrieves user role from Firestore and shows appropriate dashboard
    */
-  window.login = async function () {
+
+
+let unsubscribeRoleListener = null;
+
+window.login = async function () {
   const email = document.getElementById('email').value;
   const password = document.getElementById('password').value;
 
@@ -650,30 +654,29 @@ import { getFirestore, setDoc, doc, getDoc, collection, where, getDocs, query, a
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
 
-    const docRef = doc(db, "users", user.uid);
-    const docSnap = await getDoc(docRef);
+    const userRef = doc(db, "users", user.uid);
+    const docSnap = await getDoc(userRef);
 
     if (docSnap.exists()) {
       const userData = docSnap.data();
-      currentUserRole = userData.role;
+      const currentRole = userData.role;
 
-      // ⬅️ Load dashboard initially
-      showDashboard(currentUserRole);
+      // Show dashboard first
+      showDashboard(currentRole);
 
-      // ✅ Setup real-time listener for role changes
-      onSnapshot(docRef, (snapshot) => {
-        const newRole = snapshot.data().role;
+      // Set up real-time listener to role
+      if (unsubscribeRoleListener) unsubscribeRoleListener(); // Prevent duplicate listeners
 
-        // Check if role has changed
-        if (newRole !== currentUserRole) {
-          // Prevent multiple reloads
-          currentUserRole = newRole;
+      unsubscribeRoleListener = onSnapshot(userRef, (snapshot) => {
+        const updatedRole = snapshot.data().role;
 
-          alert("Your role has changed. Reloading to update your access.");
-          window.location.reload();  // ✅ FORCES a page reload
+        if (updatedRole !== currentRole) {
+          alert("Your role has changed. You will be logged out.");
+          signOut(auth).then(() => {
+            window.location.href = "login.html"; // Redirect to login
+          });
         }
       });
-
     } else {
       alert("User data not found.");
     }
@@ -681,6 +684,8 @@ import { getFirestore, setDoc, doc, getDoc, collection, where, getDocs, query, a
     alert(err.message);
   }
 };
+
+
 
   /**
    * Toggles between login and signup forms

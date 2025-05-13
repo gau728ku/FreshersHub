@@ -655,26 +655,27 @@ window.login = async function () {
     const user = userCredential.user;
     const userRef = doc(db, "users", user.uid);
 
-    // 👇 Setup snapshot first — no premature role logic
+    console.log("✅ Logged in, setting up snapshot listener...");
+
     onSnapshot(userRef, (docSnap) => {
       if (!docSnap.exists()) {
-        alert("Your user data was deleted. Logging out.");
+        console.warn("⚠️ User document missing. Logging out...");
         signOut(auth).then(() => (window.location.href = "/login.html"));
         return;
       }
 
       const userData = docSnap.data();
       const newRole = userData.role;
-
-      // 🔒 First time: store role
       const storedRole = sessionStorage.getItem("userRole");
+
+      console.log("📡 Snapshot triggered. Current role:", newRole, "Stored:", storedRole);
 
       if (!storedRole) {
         sessionStorage.setItem("userRole", newRole);
-        showDashboard(newRole); // First-time login
+        console.log("🚀 First login, showing dashboard...");
+        showDashboard(newRole);
       } else if (storedRole !== newRole) {
-        // 🔁 Role has changed — force logout
-        alert("Your role has changed. Logging out for security.");
+        console.warn("🔁 Role changed! Logging out...");
         sessionStorage.removeItem("userRole");
         signOut(auth).then(() => {
           window.location.href = "/login.html";
@@ -682,11 +683,10 @@ window.login = async function () {
       }
     });
   } catch (err) {
+    console.error("❌ Login error:", err);
     alert(err.message);
   }
 };
-
-
 
 
 

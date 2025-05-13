@@ -600,26 +600,28 @@ import { getFirestore, setDoc, doc, getDoc, collection, where, getDocs, query, a
    * Creates user in Firebase Auth and stores additional data in Firestore
    */
   window.signup = async function() {
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-    const role = document.getElementById('role').value;
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+  const role = document.getElementById('role').value;
 
-    try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
 
-      await setDoc(doc(db, "users", user.uid), { 
-        email, 
-        role,
-        createdAt: new Date().toISOString()
-      });
+    await setDoc(doc(db, "users", user.uid), { 
+      email, 
+      role,
+      createdAt: new Date().toISOString(),
+      isOriginalAdmin: email === "gauravku7409@gmail.com" // ✅ Only true for you
+    });
 
-      alert("Signup successful!");
-      showDashboard(role);
-    } catch (err) {
-      alert(err.message);
-    }
-  };
+    alert("Signup successful!");
+    showDashboard(role);
+  } catch (err) {
+    alert(err.message);
+  }
+};
+
 
   /**
    * Handles user login with email/password
@@ -808,19 +810,29 @@ import { getFirestore, setDoc, doc, getDoc, collection, where, getDocs, query, a
    * Loads all users from Firestore and displays them in a table
    */
   window.loadAllUsers = async function() {
-    const table = document.getElementById('usersTableBody');
-    table.innerHTML = '<tr><td colspan="3">Loading users...</td></tr>';
+  const table = document.getElementById('usersTableBody');
+  table.innerHTML = '<tr><td colspan="3">Loading users...</td></tr>';
 
-    try {
-      const querySnapshot = await getDocs(collection(db, "users"));
-      table.innerHTML = '';
+  try {
+    const currentUser = auth.currentUser;
+    if (!currentUser) {
+      table.innerHTML = '<tr><td colspan="3">User not authenticated</td></tr>';
+      return;
+    }
 
-      if (querySnapshot.empty) {
-        table.innerHTML = '<tr><td colspan="3">No users found</td></tr>';
-        return;
-      }
+    const currentUserId = currentUser.uid;
+    const querySnapshot = await getDocs(collection(db, "users"));
+    table.innerHTML = '';
 
-      querySnapshot.forEach(doc => {
+    if (querySnapshot.empty) {
+      table.innerHTML = '<tr><td colspan="3">No users found</td></tr>';
+      return;
+    }
+
+    let userCount = 0;
+
+    querySnapshot.forEach(doc => {
+      if (doc.id !== currentUserId) {
         const data = doc.data();
         const row = `
           <tr>
@@ -831,12 +843,20 @@ import { getFirestore, setDoc, doc, getDoc, collection, where, getDocs, query, a
             </td>
           </tr>`;
         table.innerHTML += row;
-      });
-    } catch (error) {
-      table.innerHTML = '<tr><td colspan="3">Error loading users</td></tr>';
-      console.error("Error loading users:", error);
+        userCount++;
+      }
+    });
+
+    if (userCount === 0) {
+      table.innerHTML = '<tr><td colspan="3">No users to display</td></tr>';
     }
-  };
+
+  } catch (error) {
+    table.innerHTML = '<tr><td colspan="3">Error loading users</td></tr>';
+    console.error("Error loading users:", error);
+  }
+};
+
 
   /**
    * Loads all jobs from Firestore and displays them in a table

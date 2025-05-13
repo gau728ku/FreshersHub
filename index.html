@@ -647,43 +647,48 @@ import { getFirestore, setDoc, doc, getDoc, collection, where, getDocs, query, a
 let unsubscribeRoleListener = null;
 
 window.login = async function () {
-  const email = document.getElementById('email').value;
-  const password = document.getElementById('password').value;
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
 
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
 
     const userRef = doc(db, "users", user.uid);
-    const docSnap = await getDoc(userRef);
 
-    if (docSnap.exists()) {
+    // 👇 Live listener for real-time role changes
+    if (unsubscribeRoleListener) unsubscribeRoleListener(); // cleanup if already exists
+
+    unsubscribeRoleListener = onSnapshot(userRef, (docSnap) => {
+      if (!docSnap.exists()) {
+        alert("Your user data was deleted. Logging out.");
+        signOut(auth).then(() => (window.location.href = "/login.html"));
+        return;
+      }
+
       const userData = docSnap.data();
       const currentRole = userData.role;
 
-      // Show dashboard first
-      showDashboard(currentRole);
+      // 🧠 Save current role in session/local storage to detect changes
+      const storedRole = sessionStorage.getItem("userRole");
 
-      // Set up real-time listener to role
-      if (unsubscribeRoleListener) unsubscribeRoleListener(); // Prevent duplicate listeners
-
-      unsubscribeRoleListener = onSnapshot(userRef, (snapshot) => {
-        const updatedRole = snapshot.data().role;
-
-        if (updatedRole !== currentRole) {
-          alert("Your role has changed. You will be logged out.");
-          signOut(auth).then(() => {
-            window.location.href = "login.html"; // Redirect to login
-          });
-        }
-      });
-    } else {
-      alert("User data not found.");
-    }
+      if (!storedRole) {
+        // First load
+        sessionStorage.setItem("userRole", currentRole);
+        showDashboard(currentRole); // Call this only once
+      } else if (storedRole !== currentRole) {
+        alert("Your role has changed. You will be logged out.");
+        sessionStorage.removeItem("userRole");
+        signOut(auth).then(() => {
+          window.location.href = "/login.html";
+        });
+      }
+    });
   } catch (err) {
     alert(err.message);
   }
 };
+
 
 
 

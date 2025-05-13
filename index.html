@@ -557,6 +557,10 @@
   </div>
 
 <script type="module">
+  
+  // ✅ Global scope variable to track current role
+let currentUserRole = null;
+  
   /*
     =============================================
     JAVASCRIPT MODULE - APPLICATION LOGIC
@@ -634,40 +638,39 @@ import { getFirestore, setDoc, doc, getDoc, collection, where, getDocs, query, a
   }
 };
 
-let currentUserRole = null;
   /**
    * Handles user login with email/password
    * Retrieves user role from Firestore and shows appropriate dashboard
    */
-  window.login = async function() {
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
+  window.login = async function () {
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
 
-    try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-      const docRef = doc(db, "users", user.uid);
-      const docSnap = await getDoc(docRef);
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
 
-      if (docSnap.exists()) {
-        const userData = docSnap.data();
+    const docRef = doc(db, "users", user.uid);
+    const docSnap = await getDoc(docRef);
 
-        // ⬅️ Store initial role in global variable
+    if (docSnap.exists()) {
+      const userData = docSnap.data();
       currentUserRole = userData.role;
-      
-        // ✅ Start listening for real-time role changes
+
+      // ⬅️ Load dashboard initially
+      showDashboard(currentUserRole);
+
+      // ✅ Setup real-time listener for role changes
       onSnapshot(docRef, (snapshot) => {
         const newRole = snapshot.data().role;
 
-        if (currentUserRole !== newRole) {
-          alert(`Your role has changed to '${newRole}'. Reloading your dashboard.`);
-          // Option 1: Refresh the page
-          location.reload();
+        // Check if role has changed
+        if (newRole !== currentUserRole) {
+          // Prevent multiple reloads
+          currentUserRole = newRole;
 
-          // Option 2 (alternate): Sign out and redirect
-          // signOut(auth).then(() => {
-          //   window.location.href = "/login.html";
-          // });
+          alert("Your role has changed. Reloading to update your access.");
+          window.location.reload();  // ✅ FORCES a page reload
         }
       });
 

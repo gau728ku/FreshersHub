@@ -1040,6 +1040,37 @@ window.revokeAdmin = async function(userId) {
   }
 };
 
+//loaddashboard
+
+window.loadDashboard = async function() {
+  const user = auth.currentUser; // Get the current logged-in user
+  const docRef = doc(db, "users", user.uid);
+  const docSnap = await getDoc(docRef);
+
+  if (docSnap.exists()) {
+    const userData = docSnap.data();
+    const role = userData.role;
+    const isOriginalAdmin = userData.isOriginalAdmin;
+
+    // Show specific sections based on role
+    if (isOriginalAdmin) {
+      // Show all admin options for the original admin
+      document.getElementById("adminSettings").style.display = "block"; // For the original admin
+      document.getElementById("manageUsers").style.display = "block";   // Manage users
+      document.getElementById("manageJobs").style.display = "block";    // Manage jobs
+    } else if (role === "admin") {
+      // Show promoted admin options, but hide top-level admin settings
+      document.getElementById("adminSettings").style.display = "none"; // Hide settings
+      document.getElementById("manageUsers").style.display = "block";  // Manage users
+      document.getElementById("manageJobs").style.display = "block";   // Manage jobs
+    } else {
+      // Hide everything for regular users (fresher/employer)
+      document.getElementById("adminSettings").style.display = "none";
+      document.getElementById("manageUsers").style.display = "none";
+      document.getElementById("manageJobs").style.display = "none";
+    }
+  }
+};
 
 
   /*

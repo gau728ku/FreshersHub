@@ -206,7 +206,16 @@
   <div class="container" id="auth-section">
     <h2 id="form-title">FreshersHub - Signup</h2>
     <input type="email" id="email" placeholder="Email" required />
+    <div style="position: relative;">
     <input type="password" id="password" placeholder="Password" required />
+     <i class="toggle-password" style="
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #00c6ff;
+  ">👁️</i>
     <select id="role">
       <option value="fresher">Fresher</option>
       <option value="Employer">Employer</option>
@@ -1219,6 +1228,17 @@
       }
     });
   });
+
+ // Add this to your existing JavaScript (around line 1200)
+  document.querySelector('.toggle-password').addEventListener('click', function() {
+    const passwordInput = document.getElementById('password');
+    if (passwordInput.type === 'password') {
+      passwordInput.type = 'text';
+    } else {
+      passwordInput.type = 'password';
+    }
+  });
+
 </script>
 </body>
 </html>

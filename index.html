@@ -381,13 +381,18 @@
         <h3>System Configuration</h3>
         <h2>Admin Management</h2>
 <div id="adminSection">
+   <!-- Always shown -->
+<div>
   <h3>Current Admins</h3>
   <table id="adminTable">
     <thead>
-      <tr><th>Email</th><th>Action</th></tr>
+      <tr><th>Email</th><th>Role</th><th>Action</th></tr>
     </thead>
-    <tbody id="adminTableBody"></tbody>
+    <tbody id="adminTableBody">
+      <!-- Loaded by JS -->
+    </tbody>
   </table>
+</div>
 
 <div id="addAdminSection" style="display: none;"></div>
   <h3>Promote User to Admin</h3>

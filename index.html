@@ -380,34 +380,34 @@
       <div class="card">
         <h3>System Configuration</h3>
         <h2>Admin Management</h2>
-<div id="adminSection">
-  <h3>Current Admins</h3>
-  <table id="adminTable">
-    <thead>
-      <tr><th>Email</th><th>Action</th></tr>
-    </thead>
-    <tbody id="adminTableBody"></tbody>
-  </table>
+        <div id="adminSection">
+          <h3>Current Admins</h3>
+          <table id="adminTable">
+            <thead>
+              <tr><th>Email</th><th>Action</th></tr>
+            </thead>
+            <tbody id="adminTableBody"></tbody>
+          </table>
 
-<div id="addAdminSection" style="display: none;"></div>
-  <h3>Promote User to Admin</h3>
-  <input type="email" id="promoteEmail" placeholder="Enter user email">
-  <button onclick="promoteToAdmin()">Promote</button>
-    </div>
-    
-    <!-- Always shown -->
-<div>
-  <h3>Current Admins</h3>
-  <table id="adminTable">
-    <thead>
-      <tr><th>Email</th><th>Role</th><th>Action</th></tr>
-    </thead>
-    <tbody id="adminTableBody">
-      <!-- Loaded by JS -->
-    </tbody>
-  </table>
-</div>
-    </div>
+          <div id="addAdminSection" style="display: none;"></div>
+          <h3>Promote User to Admin</h3>
+          <input type="email" id="promoteEmail" placeholder="Enter user email">
+          <button onclick="promoteToAdmin()">Promote</button>
+        </div>
+        
+        <!-- Always shown -->
+        <div>
+          <h3>Current Admins</h3>
+          <table id="adminTable">
+            <thead>
+              <tr><th>Email</th><th>Role</th><th>Action</th></tr>
+            </thead>
+            <tbody id="adminTableBody">
+              <!-- Loaded by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -677,7 +677,7 @@ window.login = async function () {
       showDashboard(initialRole); // ✅ Show dashboard based on current role
 
       // 👀 Listen for role change
-      onSnapshot(docRef, (snapshot) => {
+      unsubscribeRoleListener = onSnapshot(docRef, (snapshot) => {
         const newRole = snapshot.data()?.role;
          console.log("Role changed:", newRole);
         if (newRole !== initialRole) {
@@ -698,9 +698,7 @@ window.login = async function () {
   }
 };
 
-
-
-  /**
+   /**
    * Toggles between login and signup forms
    * Adjusts form fields and button actions accordingly
    */
@@ -725,13 +723,14 @@ window.login = async function () {
       toggleText.innerHTML = `Already have an account? <a id="toggleLink">Login here</a>`;
       roleSelect.style.display = 'block';
     } 
-      // Re-attach the toggle link listener every time
-      const toggleLink = document.getElementById('toggleLink');
+    
+    // Re-attach the toggle link listener every time
+    const toggleLink = document.getElementById('toggleLink');
     if (toggleLink) {
       toggleLink.addEventListener('click', (e) => {
-      e.preventDefault();
-      toggleForm();
-    });
+        e.preventDefault();
+        toggleForm();
+      });
     }
   };
 
@@ -767,6 +766,7 @@ window.login = async function () {
       showAdminSection('home');
       loadAdminStats();
       loadRecentActivity();
+      loadAdmins(); // Load admin list when showing admin dashboard
     } else if (role === 'fresher') {
       document.getElementById('fresherDashboard').style.display = 'block';
       document.getElementById('fresherMenuBtn').style.display = 'block';
@@ -814,6 +814,9 @@ window.login = async function () {
 
   /** Logs out the current user and returns to auth screen */
   window.logout = function() {
+    if (unsubscribeRoleListener) {
+      unsubscribeRoleListener(); // Clean up the role listener
+    }
     signOut(auth).then(() => {
       document.getElementById('auth-section').style.display = 'block';
       document.getElementById('adminDashboard').style.display = 'none';
@@ -854,6 +857,7 @@ window.login = async function () {
       loadAllJobs();
     } else if (section === 'settings') {
       document.getElementById('adminSettingsSection').style.display = 'block';
+      loadAdminSettings();
     }
   };
 
@@ -861,42 +865,40 @@ window.login = async function () {
    * Loads all users from Firestore and displays them in a table
    */
   window.loadAllUsers = async function() {
-  const table = document.getElementById('usersTableBody');
-  table.innerHTML = '<tr><td colspan="3">Loading users...</td></tr>';
+    const table = document.getElementById('usersTableBody');
+    table.innerHTML = '<tr><td colspan="3">Loading users...</td></tr>';
 
-  try {
-    const querySnapshot = await getDocs(collection(db, "users"));
-    table.innerHTML = '';
+    try {
+      const querySnapshot = await getDocs(collection(db, "users"));
+      table.innerHTML = '';
 
-    if (querySnapshot.empty) {
-      table.innerHTML = '<tr><td colspan="3">No users found</td></tr>';
-      return;
+      if (querySnapshot.empty) {
+        table.innerHTML = '<tr><td colspan="3">No users found</td></tr>';
+        return;
+      }
+
+      querySnapshot.forEach(doc => {
+        const data = doc.data();
+        const isOriginalAdmin = data.isOriginalAdmin;
+        
+        // Show the delete button only if the user is not the original admin
+        const deleteButton = isOriginalAdmin ? '' : `<button onclick="deleteUser('${doc.id}')" class="danger">Delete</button>`;
+
+        const row = `
+          <tr>
+            <td>${data.email}</td>
+            <td>${data.role}</td>
+            <td>
+              ${deleteButton}
+            </td>
+          </tr>`;
+        table.innerHTML += row;
+      });
+    } catch (error) {
+      table.innerHTML = '<tr><td colspan="3">Error loading users</td></tr>';
+      console.error("Error loading users:", error);
     }
-
-    querySnapshot.forEach(doc => {
-      const data = doc.data();
-      const isOriginalAdmin = data.isOriginalAdmin;
-      
-      // Show the delete button only if the user is not the original admin
-      const deleteButton = isOriginalAdmin ? '' : `<button onclick="deleteUser('${doc.id}')" class="danger">Delete</button>`;
-
-      const row = `
-        <tr>
-          <td>${data.email}</td>
-          <td>${data.role}</td>
-          <td>
-            ${deleteButton}
-          </td>
-        </tr>`;
-      table.innerHTML += row;
-    });
-  } catch (error) {
-    table.innerHTML = '<tr><td colspan="3">Error loading users</td></tr>';
-    console.error("Error loading users:", error);
-  }
-};
-
-
+  };
 
   /**
    * Loads all jobs from Firestore and displays them in a table
@@ -967,189 +969,119 @@ window.login = async function () {
   };
 
   // promote to Admin function
-   
   window.promoteToAdmin = async function() {
-  const email = document.getElementById('promoteEmail').value.trim();
-  if (!email) return alert("Please enter a valid email");
+    const email = document.getElementById('promoteEmail').value.trim();
+    if (!email) return alert("Please enter a valid email");
 
-  try {
-    const usersSnapshot = await getDocs(collection(db, "users"));
-    let found = false;
+    try {
+      const usersSnapshot = await getDocs(collection(db, "users"));
+      let found = false;
 
-    usersSnapshot.forEach(async (docSnap) => {
-      const data = docSnap.data();
-      if (data.email === email && !data.isOriginalAdmin) {
-        found = true;
-        await updateDoc(doc(db, "users", docSnap.id), {
-          role: "admin"
-        });
-        alert("User promoted to admin");
-        loadAdmins();
+      for (const docSnap of usersSnapshot.docs) {
+        const data = docSnap.data();
+        if (data.email === email && !data.isOriginalAdmin) {
+          found = true;
+          await updateDoc(doc(db, "users", docSnap.id), {
+            role: "admin"
+          });
+          alert("User promoted to admin");
+          loadAdmins();
+          document.getElementById('promoteEmail').value = ''; // Clear the input
+          break;
+        }
       }
-    });
 
-    if (!found) {
-      alert("User not found or cannot promote this user");
+      if (!found) {
+        alert("User not found or cannot promote this user");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error promoting user.");
     }
+  };
 
-  } catch (err) {
-    console.error(err);
-    alert("Error promoting user.");
-  }
-};
+  // Load Admin List function
+  window.loadAdmins = async function() {
+    const table = document.getElementById('adminTableBody');
+    table.innerHTML = '<tr><td colspan="3">Loading...</td></tr>';
 
-// Load Admin List function
+    try {
+      const currentUser = auth.currentUser;
+      if (!currentUser) return;
+      
+      const currentUserDoc = await getDoc(doc(db, "users", currentUser.uid));
+      if (!currentUserDoc.exists()) return;
+      
+      const currentUserData = currentUserDoc.data();
+      const isOriginalAdmin = currentUserData.isOriginalAdmin;
 
-window.loadAdmins = async function() {
-  const table = document.getElementById('adminTableBody');
-  table.innerHTML = '<tr><td colspan="2">Loading...</td></tr>';
+      const snapshot = await getDocs(collection(db, "users"));
+      table.innerHTML = '';
 
-  try {
-    const currentUser = auth.currentUser;
-    const snapshot = await getDocs(collection(db, "users"));
-    table.innerHTML = '';
-
-    snapshot.forEach(docSnap => {
-      const data = docSnap.data();
-      if (data.role === "admin" && !data.isOriginalAdmin && docSnap.id !== currentUser.uid) {
-        const row = `
-          <tr>
-            <td>${data.email}</td>
-            <td><button onclick="revokeAdmin('${docSnap.id}')">Revoke</button></td>
-          </tr>`;
-        table.innerHTML += row;
-      }
-    });
-  } catch (err) {
-    table.innerHTML = '<tr><td colspan="2">Error loading admins</td></tr>';
-    console.error("Error loading admins:", err);
-  }
-};
-
-//revoke Admin function
-
-window.revokeAdmin = async function(userId) {
-  if (!confirm("Are you sure you want to revoke admin rights?")) return;
-
-  try {
-    await updateDoc(doc(db, "users", userId), {
-      role: "fresher" // or whatever default you prefer
-    });
-    alert("Admin rights revoked");
-    loadAdmins();
-  } catch (err) {
-    console.error(err);
-    alert("Error revoking admin rights");
-  }
-};
-
-//loaddashboard
-
-window.loadDashboard = async function() {
-  const user = auth.currentUser; // Get the current logged-in user
-  const docRef = doc(db, "users", user.uid);
-  const docSnap = await getDoc(docRef);
-
-  if (docSnap.exists()) {
-    const userData = docSnap.data();
-    const role = userData.role;
-    const isOriginalAdmin = userData.isOriginalAdmin;
-
-    // Show specific sections based on role
-    if (isOriginalAdmin) {
-      // Show all admin options for the original admin
-      document.getElementById("adminSettings").style.display = "block"; // For the original admin
-      document.getElementById("manageUsers").style.display = "block";   // Manage users
-      document.getElementById("manageJobs").style.display = "block";    // Manage jobs
-    } else if (role === "admin") {
-      // Show promoted admin options, but hide top-level admin settings
-      document.getElementById("adminSettings").style.display = "none"; // Hide settings
-      document.getElementById("manageUsers").style.display = "block";  // Manage users
-      document.getElementById("manageJobs").style.display = "block";   // Manage jobs
-    } else {
-      // Hide everything for regular users (fresher/employer)
-      document.getElementById("adminSettings").style.display = "none";
-      document.getElementById("manageUsers").style.display = "none";
-      document.getElementById("manageJobs").style.display = "none";
+      snapshot.forEach(docSnap => {
+        const data = docSnap.data();
+        if (data.role === "admin") {
+          const row = `
+            <tr>
+              <td>${data.email}</td>
+              <td>${data.role}</td>
+              <td>
+                ${isOriginalAdmin && !data.isOriginalAdmin 
+                  ? `<button onclick="revokeAdmin('${docSnap.id}')" class="danger">Revoke</button>`
+                  : ''}
+              </td>
+            </tr>`;
+          table.innerHTML += row;
+        }
+      });
+    } catch (err) {
+      table.innerHTML = '<tr><td colspan="3">Error loading admins</td></tr>';
+      console.error("Error loading admins:", err);
     }
-  }
-};
+  };
 
-//load stats and recent activity
-window.loadStatsAndRecentActivity = async function() {
-  const user = auth.currentUser;
-  const docRef = doc(db, "users", user.uid);
-  const docSnap = await getDoc(docRef);
+  // revoke Admin function
+  window.revokeAdmin = async function(userId) {
+    if (!confirm("Are you sure you want to revoke admin rights?")) return;
 
-  if (docSnap.exists()) {
-    const userData = docSnap.data();
-    const isOriginalAdmin = userData.isOriginalAdmin;
-    const isPromotedAdmin = userData.role === "admin" && !isOriginalAdmin;
-
-    if (isOriginalAdmin || isPromotedAdmin) {
-      // Load stats
-      try {
-        const statsSnap = await getDocs(collection(db, "stats"));
-        // Process stats data here
-        console.log("Stats:", statsSnap.docs);
-      } catch (error) {
-        console.error("Error loading stats:", error);
-      }
-
-      // Load recent activity
-      try {
-        const activitySnap = await getDocs(collection(db, "recentActivity"));
-        // Process recent activity data here
-        console.log("Recent Activity:", activitySnap.docs);
-      } catch (error) {
-        console.error("Error loading recent activity:", error);
-      }
-    } else {
-      console.log("You do not have permission to view stats and activity.");
+    try {
+      await updateDoc(doc(db, "users", userId), {
+        role: "fresher" // or whatever default you prefer
+      });
+      alert("Admin rights revoked");
+      loadAdmins();
+    } catch (err) {
+      console.error(err);
+      alert("Error revoking admin rights");
     }
-  }
-};
+  };
 
-//loadadmin settings()
+  // load admin settings
+  window.loadAdminSettings = async function() {
+    try {
+      const user = auth.currentUser;
+      if (!user) return;
+      
+      const userDoc = await getDoc(doc(db, "users", user.uid));
+      if (!userDoc.exists()) return;
+      
+      const userData = userDoc.data();
+      const isOriginalAdmin = userData.isOriginalAdmin;
 
-window.loadAdminSettings = async function() {
-  const userRef = doc(db, "users", auth.currentUser.uid);
-  const userSnap = await getDoc(userRef);
-
-  if (userSnap.exists()) {
-    const currentUser = userSnap.data();
-
-    // Show Add Admin form only if original admin
-    if (currentUser.isOriginalAdmin === true) {
-      document.getElementById("addAdminSection").style.display = "block";
-    } else {
-      document.getElementById("addAdminSection").style.display = "none";
-    }
-
-    // Load current admins into the table
-    const querySnapshot = await getDocs(collection(db, "users"));
-    const tableBody = document.getElementById("adminTableBody");
-    tableBody.innerHTML = "";
-
-    querySnapshot.forEach(docSnap => {
-      const data = docSnap.data();
-      if (data.role === "admin") {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td>${data.email}</td>
-          <td>${data.role}</td>
-          <td>
-            ${currentUser.isOriginalAdmin === true && data.isOriginalAdmin !== true
-              ? `<button onclick="removeAdmin('${docSnap.id}')">Remove</button>`
-              : ""}
-          </td>`;
-        tableBody.appendChild(row);
+      // Show/hide admin promotion section based on original admin status
+      const addAdminSection = document.getElementById('addAdminSection');
+      if (isOriginalAdmin) {
+        addAdminSection.style.display = 'block';
+      } else {
+        addAdminSection.style.display = 'none';
       }
-    });
-  }
-};
 
-
+      // Load current admins
+      loadAdmins();
+    } catch (error) {
+      console.error("Error loading admin settings:", error);
+    }
+  };
 
   /*
     =============================================
@@ -1272,213 +1204,207 @@ window.loadAdminSettings = async function() {
       const jobsData = [];
       jobsSnapshot.forEach(doc => jobsData.push({ id: doc.id, ...doc.data() }));
 
-       // Sort by creation date (newest first)
-  jobsData.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-  const last5Jobs = jobsData.slice(0, 5);
-  
-  const jobsTable = document.getElementById('recentJobsTable');
-  jobsTable.innerHTML = "";
-  last5Jobs.forEach(job => {
-    jobsTable.innerHTML += `
-      <tr>
-        <td>${job.Title || 'N/A'}</td>
-        <td>${job.Employer || 'N/A'}</td>
-        <td>${job.location || 'N/A'}</td>
-      </tr>`;
-  });
-} catch (error) {
-  console.error("Error loading recent activity:", error);
-}
-}
+      // Sort by creation date (newest first)
+      jobsData.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      const last5Jobs = jobsData.slice(0, 5);
+      
+      const jobsTable = document.getElementById('recentJobsTable');
+      jobsTable.innerHTML = "";
+      last5Jobs.forEach(job => {
+        jobsTable.innerHTML += `
+          <tr>
+            <td>${job.Title || 'N/A'}</td>
+            <td>${job.Employer || 'N/A'}</td>
+            <td>${job.location || 'N/A'}</td>
+          </tr>`;
+      });
+    } catch (error) {
+      console.error("Error loading recent activity:", error);
+    }
+  }
 
-/*
-=============================================
-EVENT LISTENERS
-=============================================
-Sets up all event handlers when DOM is loaded
-*/
+  /*
+  =============================================
+  EVENT LISTENERS
+  =============================================
+  Sets up all event handlers when DOM is loaded
+  */
 
-document.addEventListener('DOMContentLoaded', () => {
-// Toggle between login/signup forms
-const toggleLink = document.getElementById('toggleLink');
-toggleLink.addEventListener('click', (e) => {
-e.preventDefault();
-toggleForm();
-});
+  document.addEventListener('DOMContentLoaded', () => {
+    // Toggle between login/signup forms
+    const toggleLink = document.getElementById('toggleLink');
+    toggleLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      toggleForm();
+    });
 
     // Admin menu navigation
-document.getElementById('adminMenuHome').addEventListener('click', (e) => {
-  e.preventDefault();
-  showAdminSection('home');
-  toggleAdminMenu();
-});
+    document.getElementById('adminMenuHome').addEventListener('click', (e) => {
+      e.preventDefault();
+      showAdminSection('home');
+      toggleAdminMenu();
+    });
 
-document.getElementById('adminMenuUsers').addEventListener('click', (e) => {
-  e.preventDefault();
-  showAdminSection('users');
-  toggleAdminMenu();
-});
+    document.getElementById('adminMenuUsers').addEventListener('click', (e) => {
+      e.preventDefault();
+      showAdminSection('users');
+      toggleAdminMenu();
+    });
 
-document.getElementById('adminMenuJobs').addEventListener('click', (e) => {
-  e.preventDefault();
-  showAdminSection('jobs');
-  toggleAdminMenu();
-});
+    document.getElementById('adminMenuJobs').addEventListener('click', (e) => {
+      e.preventDefault();
+      showAdminSection('jobs');
+      toggleAdminMenu();
+    });
 
-document.getElementById('adminMenuSettings').addEventListener('click', (e) => {
-  e.preventDefault();
-  showAdminSection('settings');
-  toggleAdminMenu();
-});
+    document.getElementById('adminMenuSettings').addEventListener('click', (e) => {
+      e.preventDefault();
+      showAdminSection('settings');
+      toggleAdminMenu();
+    });
 
-// Employer menu navigation
-document.getElementById('EmployerMenuHome').addEventListener('click', (e) => {
-  e.preventDefault();
-  showEmployerSection('home');
-  toggleEmployerMenu();
-});
+    // Employer menu navigation
+    document.getElementById('EmployerMenuHome').addEventListener('click', (e) => {
+      e.preventDefault();
+      showEmployerSection('home');
+      toggleEmployerMenu();
+    });
 
-document.getElementById('EmployerMenuPostJob').addEventListener('click', (e) => {
-  e.preventDefault();
-  showEmployerSection('postJob');
-  toggleEmployerMenu();
-});
+    document.getElementById('EmployerMenuPostJob').addEventListener('click', (e) => {
+      e.preventDefault();
+      showEmployerSection('postJob');
+      toggleEmployerMenu();
+    });
 
-document.getElementById('EmployerMenuMyJobs').addEventListener('click', (e) => {
-  e.preventDefault();
-  showEmployerSection('myJobs');
-  toggleEmployerMenu();
-});
+    document.getElementById('EmployerMenuMyJobs').addEventListener('click', (e) => {
+      e.preventDefault();
+      showEmployerSection('myJobs');
+      toggleEmployerMenu();
+    });
 
-// Fresher menu navigation
-document.getElementById('fresherMenuHome').addEventListener('click', (e) => {
-  e.preventDefault();
-  showFresherSection('home');
-  toggleFresherMenu();
-});
+    // Fresher menu navigation
+    document.getElementById('fresherMenuHome').addEventListener('click', (e) => {
+      e.preventDefault();
+      showFresherSection('home');
+      toggleFresherMenu();
+    });
 
-document.getElementById('fresherMenuJobs').addEventListener('click', (e) => {
-  e.preventDefault();
-  showFresherSection('jobs');
-  toggleFresherMenu();
-});
+    document.getElementById('fresherMenuJobs').addEventListener('click', (e) => {
+      e.preventDefault();
+      showFresherSection('jobs');
+      toggleFresherMenu();
+    });
 
-document.getElementById('fresherMenuApplications').addEventListener('click', (e) => {
-  e.preventDefault();
-  showFresherSection('applications');
-  toggleFresherMenu();
-});
+    document.getElementById('fresherMenuApplications').addEventListener('click', (e) => {
+      e.preventDefault();
+      showFresherSection('applications');
+      toggleFresherMenu();
+    });
 
-document.getElementById('fresherMenuProfile').addEventListener('click', (e) => {
-  e.preventDefault();
-  showFresherSection('profile');
-  toggleFresherMenu();
-});
+    document.getElementById('fresherMenuProfile').addEventListener('click', (e) => {
+      e.preventDefault();
+      showFresherSection('profile');
+      toggleFresherMenu();
+    });
 
-// Post Job Form submission handler
-const postJobForm = document.getElementById('postJobForm');
-if (postJobForm) {
-  postJobForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    const title = document.getElementById('jobTitle').value;
-    const description = document.getElementById('jobDescription').value;
-    const location = document.getElementById('jobLocation').value;
-    const salary = document.getElementById('jobSalary').value;
-    
-    try {
-      const user = auth.currentUser;
-      if (!user) throw new Error("Not authenticated");
-      
-      await addDoc(collection(db, "jobs"), {
-        Title: title,
-        description: description,
-        location: location,
-        salary: salary,
-        Employer: user.email,
-        createdAt: new Date().toISOString()
+    // Post Job Form submission handler
+    const postJobForm = document.getElementById('postJobForm');
+    if (postJobForm) {
+      postJobForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const title = document.getElementById('jobTitle').value;
+        const description = document.getElementById('jobDescription').value;
+        const location = document.getElementById('jobLocation').value;
+        const salary = document.getElementById('jobSalary').value;
+        
+        try {
+          const user = auth.currentUser;
+          if (!user) throw new Error("Not authenticated");
+          
+          await addDoc(collection(db, "jobs"), {
+            Title: title,
+            description: description,
+            location: location,
+            salary: salary,
+            Employer: user.email,
+            createdAt: new Date().toISOString()
+          });
+          
+          alert("Job posted successfully!");
+          postJobForm.reset();
+        } catch (error) {
+          alert("Error posting job: " + error.message);
+        }
       });
-      
-      alert("Job posted successfully!");
-      postJobForm.reset();
-    } catch (error) {
-      alert("Error posting job: " + error.message);
     }
-  });
-}
 
-// Auth state change handler
-onAuthStateChanged(auth, async (user) => {
-  if (user) {
-    const snap = await getDoc(doc(db, "users", user.uid));
-    if (snap.exists()) {
-      showDashboard(snap.data().role);
-    }
-  }
-});
+    // Auth state change handler
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const snap = await getDoc(doc(db, "users", user.uid));
+        if (snap.exists()) {
+          showDashboard(snap.data().role);
+        }
+      }
+    });
   });
 
-/*
-=============================================
-PLACEHOLDER FUNCTIONS
-=============================================
-Temporary implementations for future features
-*/
+  /*
+  =============================================
+  PLACEHOLDER FUNCTIONS
+  =============================================
+  Temporary implementations for future features
+  */
 
-/** Loads employer's job listings (placeholder) */
-window.loadEmployerJobs = function() {
-  document.getElementById('EmployerJobsTable').innerHTML = `<tr><td colspan="4">Job listings will appear here</td></tr>`;
-};
+  /** Loads employer's job listings (placeholder) */
+  window.loadEmployerJobs = function() {
+    document.getElementById('EmployerJobsTable').innerHTML = `<tr><td colspan="4">Job listings will appear here</td></tr>`;
+  };
 
-/** Loads available jobs for freshers (placeholder) */
-window.loadAvailableJobs = function() {
-  document.getElementById('availableJobsTable').innerHTML = `<tr><td colspan="5">Available jobs will appear here</td></tr>`;
-};
+  /** Loads available jobs for freshers (placeholder) */
+  window.loadAvailableJobs = function() {
+    document.getElementById('availableJobsTable').innerHTML = `<tr><td colspan="5">Available jobs will appear here</td></tr>`;
+  };
 
-/** Loads fresher's job applications (placeholder) */
-window.loadMyApplications = function() {
-  document.getElementById('myApplicationsTable').innerHTML = `<tr><td colspan="4">Your applications will appear here</td></tr>`;
-};
+  /** Loads fresher's job applications (placeholder) */
+  window.loadMyApplications = function() {
+    document.getElementById('myApplicationsTable').innerHTML = `<tr><td colspan="4">Your applications will appear here</td></tr>`;
+  };
 
-/** Loads fresher profile data (placeholder) */
-window.loadFresherProfile = function() {
-// Would load profile data here
-};
+  /** Loads fresher profile data (placeholder) */
+  window.loadFresherProfile = function() {
+    // Would load profile data here
+  };
 
-/*
-=============================================
-UTILITY FUNCTIONS
-=============================================
-Helper functions used throughout the application
-*/
+  /*
+  =============================================
+  UTILITY FUNCTIONS
+  =============================================
+  Helper functions used throughout the application
+  */
 
-/**
-
-Animates a number counting up to a target value
-
-@param {string} element - ID of the element to animate
-
-@param {number} target - Target value to count to
-
-@param {number} duration - Animation duration in ms (default: 1000)
-*/
-function animateValue(element, target, duration = 1000) {
-const start = 0;
-const increment = target / (duration / 16); // 60fps
-let current = start;
-const el = document.getElementById(element);
-  const timer = setInterval(() => {
+  /**
+   * Animates a number counting up to a target value
+   * @param {string} element - ID of the element to animate
+   * @param {number} target - Target value to count to
+   * @param {number} duration - Animation duration in ms (default: 1000)
+   */
+  function animateValue(element, target, duration = 1000) {
+    const start = 0;
+    const increment = target / (duration / 16); // 60fps
+    let current = start;
+    const el = document.getElementById(element);
+    const timer = setInterval(() => {
       current += increment;
-  if (current >= target) {
-    clearInterval(timer);
-    current = target;
+      if (current >= target) {
+        clearInterval(timer);
+        current = target;
+      }
+      el.textContent = Math.floor(current);
+    }, 16);
   }
-  el.textContent = Math.floor(current);
-}, 16);
-  }
-
-
 </script>
 
-</body> 
-</html>
+</body>
+</html> 

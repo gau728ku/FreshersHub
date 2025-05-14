@@ -661,29 +661,24 @@ window.login = async function () {
       const userData = docSnap.data();
       const initialRole = userData.role;
 
-      showDashboard(initialRole); // ✅ Show dashboard based on current role
+      showDashboard(initialRole); // ✅ Correct dashboard on login
 
-      // 👀 Listen for role change
+      // ✅ Watch for role change to auto-logout
       onSnapshot(docRef, (snapshot) => {
-        const newRole = snapshot.data()?.role;
-         console.log("Role changed:", newRole);
-        if (newRole !== initialRole) {
-          alert("Your role has changed. You'll be logged out.");
-          signOut(auth).then(() => {
-            window.location.href = "/index.html"; // redirect to login
-          });
+        const updatedRole = snapshot.data()?.role;
+        if (updatedRole !== initialRole) {
+          alert("Your role has changed. You will be logged out.");
+          signOut(auth).then(() => location.reload());
         }
       });
-
     } else {
       alert("User data not found.");
     }
-
   } catch (err) {
-    console.error("Login error:", err);
-    alert(err.message);
+    alert("Login error: " + err.message);
   }
 };
+
 
 
 
@@ -1444,32 +1439,31 @@ if (postJobForm) {
 // Auth state change handler
 
 onAuthStateChanged(auth, async (user) => {
-  if (user) {
-    const userRef = doc(db, "users", user.uid);
-    const userSnap = await getDoc(userRef);
+  if (!user) {
+    document.getElementById('auth-section').style.display = 'block';
+    return;
+  }
 
-    if (userSnap.exists()) {
-      const userData = userSnap.data();
-      const initialRole = userData.role;
+  const userRef = doc(db, "users", user.uid);
+  const userSnap = await getDoc(userRef);
 
-      showDashboard(initialRole);
+  if (userSnap.exists()) {
+    const userData = userSnap.data();
+    const initialRole = userData.role;
 
-      // ✅ Listen for real-time role changes and logout
-      onSnapshot(userRef, (docSnap) => {
-        const updatedData = docSnap.data();
-        if (!updatedData) return;
+    showDashboard(initialRole); // ⬅ Ensures correct dashboard after login
 
-        const newRole = updatedData.role;
-        if (newRole !== initialRole) {
-          alert("Your role has changed. You will be logged out.");
-          signOut(auth).then(() => {
-            window.location.href = "/";
-          });
-        }
-      });
-    }
+    // Listen for role changes
+    onSnapshot(userRef, (snapshot) => {
+      const updatedRole = snapshot.data()?.role;
+      if (updatedRole !== initialRole) {
+        alert("Your role has changed. Logging out...");
+        signOut(auth).then(() => location.reload());
+      }
+    });
   }
 });
+
 
 
 

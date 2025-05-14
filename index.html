@@ -389,8 +389,6 @@
     <tbody id="adminTableBody"></tbody>
   </table>
 
-  <!-- 👇 Wrap this part in its own container -->
-    <div id="promoteFormSection" style="display: none;">
   <h3>Promote User to Admin</h3>
   <input type="email" id="promoteEmail" placeholder="Enter user email">
   <button onclick="promoteToAdmin()">Promote</button>
@@ -662,28 +660,29 @@ window.login = async function () {
       const userData = docSnap.data();
       const initialRole = userData.role;
 
-      showDashboard(userData.role); // ✅ Show dashboard based on current role
+      showDashboard(initialRole); // ✅ Show dashboard based on current role
 
-      // Real-time listener
-onSnapshot(docRef, (docSnap) => {
-  if (docSnap.exists()) {
-    const userData = docSnap.data();
+      // 👀 Listen for role change
+      onSnapshot(docRef, (snapshot) => {
+        const newRole = snapshot.data()?.role;
+         console.log("Role changed:", newRole);
+        if (newRole !== initialRole) {
+          alert("Your role has changed. You'll be logged out.");
+          signOut(auth).then(() => {
+            window.location.href = "/index.html"; // redirect to login
+          });
+        }
+      });
 
-    // Check if role is missing or invalid
-    const allowedRoles = ["admin", "employer", "fresher"];
-    if (!allowedRoles.includes(userData.role)) {
-      alert("Unauthorized role change detected. Logging out.");
-      signOut(auth);
-      return;
+    } else {
+      alert("User data not found.");
     }
 
-    // Optional: if current view is no longer allowed, redirect or refresh
-    showDashboard(userData.role);
-  } else {
-    alert("User data deleted. Logging out.");
-    signOut(auth);
+  } catch (err) {
+    console.error("Login error:", err);
+    alert(err.message);
   }
-});
+};
 
 
 
@@ -987,48 +986,31 @@ onSnapshot(docRef, (docSnap) => {
 
 // Load Admin List function
 
-window.loadAdmins = async function () {
+window.loadAdmins = async function() {
   const table = document.getElementById('adminTableBody');
   table.innerHTML = '<tr><td colspan="2">Loading...</td></tr>';
 
   try {
     const currentUser = auth.currentUser;
-    const currentUserDoc = await getDoc(doc(db, "users", currentUser.uid));
-    const isRootAdmin = currentUserDoc.exists() && currentUserDoc.data().isOriginalAdmin;
-
     const snapshot = await getDocs(collection(db, "users"));
     table.innerHTML = '';
 
     snapshot.forEach(docSnap => {
       const data = docSnap.data();
-
-      if (data.role === "admin") {
-        const isTargetOriginalAdmin = data.isOriginalAdmin === true;
-        const isSelf = docSnap.id === currentUser.uid;
-
-        let actionCell = "-";
-        if (isRootAdmin && !isTargetOriginalAdmin && !isSelf) {
-          actionCell = `<button onclick="revokeAdmin('${docSnap.id}')">Revoke</button>`;
-        }
-
-        table.innerHTML += `
+      if (data.role === "admin" && !data.isOriginalAdmin && docSnap.id !== currentUser.uid) {
+        const row = `
           <tr>
             <td>${data.email}</td>
-            <td>${actionCell}</td>
+            <td><button onclick="revokeAdmin('${docSnap.id}')">Revoke</button></td>
           </tr>`;
+        table.innerHTML += row;
       }
     });
-
-    if (table.innerHTML === '') {
-      table.innerHTML = '<tr><td colspan="2">No current admins found</td></tr>';
-    }
   } catch (err) {
-    console.error("Error loading admins:", err);
     table.innerHTML = '<tr><td colspan="2">Error loading admins</td></tr>';
+    console.error("Error loading admins:", err);
   }
 };
-
-
 
 //revoke Admin function
 
@@ -1114,38 +1096,6 @@ window.loadStatsAndRecentActivity = async function() {
   }
 };
 
-//load admin management
-
-window.loadAdminManagement = async function () {
-  const promoteForm = document.getElementById('promoteFormSection');
-  const currentUser = auth.currentUser;
-  const isRoot = await isOriginalAdmin();
-  
-  if (!currentUser) return;
-
-  try {
-    const userDoc = await getDoc(doc(db, "users", currentUser.uid));
-    const userData = userDoc.data();
-
-    // Hide or show the promote form based on isOriginalAdmin
-    if (userData?.isOriginalAdmin) {
-      promoteForm.style.display = 'block';
-      promoteForm.style.display = isRoot ? "block" : "none";
-    } else {
-      promoteForm.style.display = 'none';
-    }
-
-    window.loadAdmins(); // Now call this always
-  } catch (err) {
-    console.error("Error loading admin section:", err);
-  }
-};
-
-
-// For example in your dashboard or settings load:
-window.showSettings = function () {
-  loadAdminManagement();
-};
 
 
 
@@ -1412,9 +1362,6 @@ onAuthStateChanged(auth, async (user) => {
     if (snap.exists()) {
       showDashboard(snap.data().role);
     }
-     if (user) {
-    await window.loadAdminManagement(); // safe call after auth
-  }
   }
 });
   });
@@ -1477,37 +1424,6 @@ const el = document.getElementById(element);
   el.textContent = Math.floor(current);
 }, 16);
   }
-
-
-async function isOriginalAdmin() {
-  const currentUser = auth.currentUser;
-  if (!currentUser) return false;
-
-  const userDoc = await getDoc(doc(db, "users", currentUser.uid));
-  return userDoc.exists() && userDoc.data().isOriginalAdmin === true;
-}
-
-
-function listenToUserRoleChanges(uid) {
-  const docRef = doc(db, "users", uid);
-
-  onSnapshot(docRef, (docSnap) => {
-    if (docSnap.exists()) {
-      const userData = docSnap.data();
-
-      if (!["admin", "employer", "fresher"].includes(userData.role)) {
-        alert("Unauthorized role. Logging out.");
-        signOut(auth);
-      } else {
-        // Optionally refresh dashboard
-        showDashboard(userData.role);
-      }
-    } else {
-      alert("User deleted. Logging out.");
-      signOut(auth);
-    }
-  });
-}
 
 
 </script>

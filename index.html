@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta charset="UTF-8">
   <!-- 
     =============================================
     HTML HEAD SECTION - METADATA AND STYLES
     =============================================
     Contains page metadata, title, and CSS styles
   -->
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>FreshersHub - Job Portal</title>
   
@@ -379,7 +380,6 @@
       <div class="card">
         <h3>System Configuration</h3>
         <h2>Admin Management</h2>
-
 <div id="adminSection">
   <h3>Current Admins</h3>
   <table id="adminTable">
@@ -650,39 +650,40 @@ let unsubscribeRoleListener = null;
 window.login = async function () {
   const email = document.getElementById('email').value;
   const password = document.getElementById('password').value;
-console.log("Login called");
 
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
-    console.log("Signed in:", user.email);
     const docRef = doc(db, "users", user.uid);
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
       const userData = docSnap.data();
-      console.log("User role from Firestore:", userData.role);
       const initialRole = userData.role;
 
-      showDashboard(initialRole); // ✅ Correct dashboard on login
-      
+      showDashboard(initialRole); // ✅ Show dashboard based on current role
 
-      // ✅ Watch for role change to auto-logout
+      // 👀 Listen for role change
       onSnapshot(docRef, (snapshot) => {
-        const updatedRole = snapshot.data()?.role;
-        if (updatedRole !== initialRole) {
-          alert("Your role has changed. You will be logged out.");
-          signOut(auth).then(() => location.reload());
+        const newRole = snapshot.data()?.role;
+         console.log("Role changed:", newRole);
+        if (newRole !== initialRole) {
+          alert("Your role has changed. You'll be logged out.");
+          signOut(auth).then(() => {
+            window.location.href = "/index.html"; // redirect to login
+          });
         }
       });
+
     } else {
       alert("User data not found.");
     }
+
   } catch (err) {
-    alert("Login error: " + err.message);
+    console.error("Login error:", err);
+    alert(err.message);
   }
 };
-
 
 
 
@@ -733,9 +734,7 @@ console.log("Login called");
    * @param {string} role - User role (admin, fresher, or Employer)
    */
   window.showDashboard = function(role) {
-  console.log("showDashboard called with role:", role);
     // Hide all dashboards
-    document.getElementById('auth-section').style.display = 'none';
     document.getElementById('adminDashboard').style.display = 'none';
     document.getElementById('fresherDashboard').style.display = 'none';
     document.getElementById('EmployerDashboard').style.display = 'none';
@@ -750,19 +749,16 @@ console.log("Login called");
 
     // Show relevant dashboard + menu
     if (role === 'admin') {
-     console.log("→ Showing admin dashboard");
       document.getElementById('adminDashboard').style.display = 'block';
       document.getElementById('adminMenuBtn').style.display = 'block';
       showAdminSection('home');
       loadAdminStats();
       loadRecentActivity();
     } else if (role === 'fresher') {
-     console.log("→ Showing fresher dashboard");
       document.getElementById('fresherDashboard').style.display = 'block';
       document.getElementById('fresherMenuBtn').style.display = 'block';
       showFresherSection('home');
     } else if (role === 'Employer') {
-    console.log("→ Showing employer dashboard");
       document.getElementById('EmployerDashboard').style.display = 'block';
       document.getElementById('EmployerMenuBtn').style.display = 'block';
       showEmployerSection('home');
@@ -959,37 +955,35 @@ console.log("Login called");
 
   // promote to Admin function
    
-  window.promoteToAdmin = async function () {
+  window.promoteToAdmin = async function() {
   const email = document.getElementById('promoteEmail').value.trim();
-
-  if (!email) {
-    alert("Enter a valid email.");
-    return;
-  }
+  if (!email) return alert("Please enter a valid email");
 
   try {
-    const snapshot = await getDocs(query(collection(db, "users"), where("email", "==", email)));
+    const usersSnapshot = await getDocs(collection(db, "users"));
+    let found = false;
 
-    if (snapshot.empty) {
-      alert("User not found.");
-      return;
+    usersSnapshot.forEach(async (docSnap) => {
+      const data = docSnap.data();
+      if (data.email === email && !data.isOriginalAdmin) {
+        found = true;
+        await updateDoc(doc(db, "users", docSnap.id), {
+          role: "admin"
+        });
+        alert("User promoted to admin");
+        loadAdmins();
+      }
+    });
+
+    if (!found) {
+      alert("User not found or cannot promote this user");
     }
 
-    const userDoc = snapshot.docs[0];
-    await updateDoc(userDoc.ref, { role: "admin" });
-
-    alert("User promoted to admin!");
-
-    document.getElementById("promoteEmail").value = "";
-
-    // ✅ This reloads the admins list and shows the Revoke button
-    await loadAdminManagement();
-
   } catch (err) {
-    alert("Error promoting admin: " + err.message);
+    console.error(err);
+    alert("Error promoting user.");
   }
 };
-
 
 // Load Admin List function
 
@@ -1045,7 +1039,6 @@ window.revokeAdmin = async function(userId) {
       role: "fresher" // or whatever default you prefer
     });
     alert("Admin rights revoked");
-    await loadAdminManagement(); // Refresh admin table and form visibility
     loadAdmins();
   } catch (err) {
     console.error(err);
@@ -1171,21 +1164,18 @@ window.loadAdminManagement = async function () {
     const userDoc = await getDoc(doc(db, "users", currentUser.uid));
     const userData = userDoc.data();
     const isOriginalAdmin = userData?.isOriginalAdmin === true;
-    const isAdmin = userData?.role === "admin";
 
-    // ✅ Show/hide form only for original admin
-    addAdminForm.style.display = isOriginalAdmin ? "block" : "none";
+   
+  // ✅ Show/hide Add Admin section
+  addAdminForm.style.display = isOriginalAdmin ? "block" : "none";
 
-    // ✅ Load admins only if allowed
-    if (isOriginalAdmin || isAdmin) {
-      await loadAdmins(isOriginalAdmin);
-    }
+  // ✅ Load current admins table with revoke buttons if original admin
+  loadAdmins(isOriginalAdmin);
 
-  } catch (err) {
-    console.error("Error loading admin management:", err);
-  }
+} catch (err) {
+  console.error("Error loading admin settings:", err);
+}
 };
-
 
 
 
@@ -1451,37 +1441,32 @@ if (postJobForm) {
 // Auth state change handler
 
 onAuthStateChanged(auth, async (user) => {
-  if (!user) {
-  console.log("No user signed in");
-    document.getElementById('auth-section').style.display = 'block';
-    return;
-  }
+  if (user) {
+    const userRef = doc(db, "users", user.uid);
+    const userSnap = await getDoc(userRef);
 
-console.log("Auth state changed:", user.email);
+    if (userSnap.exists()) {
+      const userData = userSnap.data();
+      const initialRole = userData.role;
 
-  const userRef = doc(db, "users", user.uid);
-  const userSnap = await getDoc(userRef);
+      showDashboard(initialRole);
 
-  if (userSnap.exists()) {
-    const userData = userSnap.data();
-    console.log("Loaded user data:", userData);
-    const initialRole = userData.role;
+      // ✅ Listen for real-time role changes and logout
+      onSnapshot(userRef, (docSnap) => {
+        const updatedData = docSnap.data();
+        if (!updatedData) return;
 
-    showDashboard(initialRole); // ⬅ Ensures correct dashboard after login
-    loadAdminManagement(); // Ensure settings updated if admin
-    
-
-    // Listen for role changes
-    onSnapshot(userRef, (snapshot) => {
-      const updatedRole = snapshot.data()?.role;
-      if (updatedRole !== initialRole) {
-        alert("Your role has changed. Logging out...");
-        signOut(auth).then(() => location.reload());
-      }
-    });
+        const newRole = updatedData.role;
+        if (newRole !== initialRole) {
+          alert("Your role has changed. You will be logged out.");
+          signOut(auth).then(() => {
+            window.location.href = "/";
+          });
+        }
+      });
+    }
   }
 });
-
 
 
 

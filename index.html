@@ -198,6 +198,23 @@
         min-width: 180px;
       }
     }
+
+    /* Add this to your existing <style> block */
+.password-wrapper {
+  position: relative;
+}
+
+.toggle-password-btn {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #00c6ff;
+  user-select: none;
+}
+  
+
   </style>
 </head>
 <body>
@@ -206,7 +223,10 @@
   <div class="container" id="auth-section">
     <h2 id="form-title">FreshersHub - Signup</h2>
     <input type="email" id="email" placeholder="Email" required />
-    <input type="password" id="password" placeholder="Password" required />
+    <div class="password-wrapper">
+  <input type="password" id="password" placeholder="Password" required />
+  <span id="togglePasswordBtn" class="toggle-password-btn">👁️</span>
+</div>
     <select id="role">
       <option value="fresher">Fresher</option>
       <option value="Employer">Employer</option>

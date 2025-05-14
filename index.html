@@ -987,7 +987,7 @@ window.login = async function () {
 
 // Load Admin List function
 
-window.loadAdmins = async function() {
+window.loadAdmins = async function (isOriginalAdmin = false) {
   const table = document.getElementById('adminTableBody');
   table.innerHTML = '<tr><td colspan="2">Loading...</td></tr>';
 
@@ -998,20 +998,36 @@ window.loadAdmins = async function() {
 
     snapshot.forEach(docSnap => {
       const data = docSnap.data();
-      if (data.role === "admin" && !data.isOriginalAdmin && docSnap.id !== currentUser.uid) {
-        const row = `
+
+      if (data.role === "admin") {
+        const isTargetOriginalAdmin = data.isOriginalAdmin === true;
+        const isSelf = docSnap.id === currentUser.uid;
+
+        // ✅ Only original admin can revoke others (not self or original admins)
+        let actionCell = "-";
+        if (isOriginalAdmin && !isTargetOriginalAdmin && !isSelf) {
+          actionCell = `<button onclick="revokeAdmin('${docSnap.id}')">Revoke</button>`;
+        }
+
+        table.innerHTML += `
           <tr>
             <td>${data.email}</td>
-            <td><button onclick="revokeAdmin('${docSnap.id}')">Revoke</button></td>
+            <td>${actionCell}</td>
           </tr>`;
-        table.innerHTML += row;
       }
     });
+
+    if (table.innerHTML === '') {
+      table.innerHTML = '<tr><td colspan="2">No admins found</td></tr>';
+    }
+
   } catch (err) {
-    table.innerHTML = '<tr><td colspan="2">Error loading admins</td></tr>';
     console.error("Error loading admins:", err);
+    table.innerHTML = '<tr><td colspan="2">Error loading admins</td></tr>';
   }
 };
+
+
 
 //revoke Admin function
 
@@ -1135,6 +1151,32 @@ window.loadAdminSettings = async function() {
     });
   }
 };
+
+//loadadminmanagement
+
+window.loadAdminManagement = async function () {
+  const addAdminForm = document.getElementById('addAdminSection');
+  const currentUser = auth.currentUser;
+
+  if (!currentUser) return;
+
+  try {
+    const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+    const userData = userDoc.data();
+
+    const isOriginalAdmin = userData?.isOriginalAdmin === true;
+
+    // ✅ Show/hide Add Admin section
+    addAdminForm.style.display = isOriginalAdmin ? "block" : "none";
+
+    // ✅ Load current admins table with control over revoke buttons
+    loadAdmins(isOriginalAdmin);
+
+  } catch (err) {
+    console.error("Error loading admin settings:", err);
+  }
+};
+
 
 
 

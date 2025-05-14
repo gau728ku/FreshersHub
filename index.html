@@ -662,29 +662,28 @@ window.login = async function () {
       const userData = docSnap.data();
       const initialRole = userData.role;
 
-      showDashboard(initialRole); // ✅ Show dashboard based on current role
+      showDashboard(userData.role); // ✅ Show dashboard based on current role
 
-      // 👀 Listen for role change
-      onSnapshot(docRef, (snapshot) => {
-        const newRole = snapshot.data()?.role;
-         console.log("Role changed:", newRole);
-        if (newRole !== initialRole) {
-          alert("Your role has changed. You'll be logged out.");
-          signOut(auth).then(() => {
-            window.location.href = "/index.html"; // redirect to login
-          });
-        }
-      });
+      // Real-time listener
+onSnapshot(docRef, (docSnap) => {
+  if (docSnap.exists()) {
+    const userData = docSnap.data();
 
-    } else {
-      alert("User data not found.");
+    // Check if role is missing or invalid
+    const allowedRoles = ["admin", "employer", "fresher"];
+    if (!allowedRoles.includes(userData.role)) {
+      alert("Unauthorized role change detected. Logging out.");
+      signOut(auth);
+      return;
     }
 
-  } catch (err) {
-    console.error("Login error:", err);
-    alert(err.message);
+    // Optional: if current view is no longer allowed, redirect or refresh
+    showDashboard(userData.role);
+  } else {
+    alert("User data deleted. Logging out.");
+    signOut(auth);
   }
-};
+});
 
 
 
@@ -1486,6 +1485,28 @@ async function isOriginalAdmin() {
 
   const userDoc = await getDoc(doc(db, "users", currentUser.uid));
   return userDoc.exists() && userDoc.data().isOriginalAdmin === true;
+}
+
+
+function listenToUserRoleChanges(uid) {
+  const docRef = doc(db, "users", uid);
+
+  onSnapshot(docRef, (docSnap) => {
+    if (docSnap.exists()) {
+      const userData = docSnap.data();
+
+      if (!["admin", "employer", "fresher"].includes(userData.role)) {
+        alert("Unauthorized role. Logging out.");
+        signOut(auth);
+      } else {
+        // Optionally refresh dashboard
+        showDashboard(userData.role);
+      }
+    } else {
+      alert("User deleted. Logging out.");
+      signOut(auth);
+    }
+  });
 }
 
 

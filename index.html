@@ -1,14 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
   <!-- 
     =============================================
     HTML HEAD SECTION - METADATA AND STYLES
     =============================================
     Contains page metadata, title, and CSS styles
   -->
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>FreshersHub - Job Portal</title>
   
@@ -380,6 +379,7 @@
       <div class="card">
         <h3>System Configuration</h3>
         <h2>Admin Management</h2>
+
 <div id="adminSection">
   <h3>Current Admins</h3>
   <table id="adminTable">
@@ -665,6 +665,7 @@ console.log("Login called");
       const initialRole = userData.role;
 
       showDashboard(initialRole); // ✅ Correct dashboard on login
+      
 
       // ✅ Watch for role change to auto-logout
       onSnapshot(docRef, (snapshot) => {
@@ -1044,6 +1045,7 @@ window.revokeAdmin = async function(userId) {
       role: "fresher" // or whatever default you prefer
     });
     alert("Admin rights revoked");
+    await loadAdminManagement(); // Refresh admin table and form visibility
     loadAdmins();
   } catch (err) {
     console.error(err);
@@ -1463,6 +1465,8 @@ console.log("Auth state changed:", user.email);
     const initialRole = userData.role;
 
     showDashboard(initialRole); // ⬅ Ensures correct dashboard after login
+    loadAdminManagement(); // Ensure settings updated if admin
+    loadDashboard();       // Ensure permissions and settings load
 
     // Listen for role changes
     onSnapshot(userRef, (snapshot) => {

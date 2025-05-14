@@ -199,7 +199,7 @@
       }
     }
 
-    /* Add this to your existing <style> block */
+   /* Password Toggle */
 .password-wrapper {
   position: relative;
 }
@@ -212,6 +212,15 @@
   cursor: pointer;
   color: #00c6ff;
   user-select: none;
+}
+
+/* Search Inputs */
+.search-input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  margin-bottom: 15px;
 }
   
 
@@ -308,6 +317,15 @@
       <h2>Manage Users</h2>
       <button onclick="showAdminSection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
       
+    <!-- Add search bar ABOVE the table -->
+   <input 
+      type="text" 
+      class="search-input" 
+      data-table-target="usersTableBody" 
+       placeholder="Search users by email or role..."
+    >
+
+
       <div class="table-container">
         <table>
           <thead>
@@ -327,6 +345,14 @@
       <h2>Manage Job Listings</h2>
       <button onclick="showAdminSection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
       
+    <!-- Add search bar ABOVE the table -->
+      <input 
+      type="text" 
+      class="search-input" 
+      data-table-target="jobsTableBody" 
+      placeholder="Search jobs by title, employer..."
+     >
+
       <div class="table-container">
         <table>
           <thead>
@@ -1239,6 +1265,33 @@
       }
     });
   });
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Password Toggle
+  const toggleBtn = document.getElementById('togglePasswordBtn');
+  if (toggleBtn) {
+    toggleBtn.addEventListener('click', () => {
+      const passwordInput = document.getElementById('password');
+      if (passwordInput) {
+        passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
+      }
+    });
+  }
+
+  // Search Tables
+  document.addEventListener('input', (e) => {
+    if (e.target?.classList?.contains('search-input')) {
+      const searchTerm = e.target.value.toLowerCase();
+      const tableId = e.target.getAttribute('data-table-target');
+      const rows = document.querySelectorAll(`#${tableId} tr`);
+      
+      rows?.forEach(row => {
+        row.style.display = row.textContent.toLowerCase().includes(searchTerm) ? '' : 'none';
+      });
+    }
+  });
+});
+
 </script>
 </body>
 </html>

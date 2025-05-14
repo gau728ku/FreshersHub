@@ -1155,8 +1155,8 @@ window.loadAdminSettings = async function() {
 //loadadminmanagement
 
 window.loadAdminManagement = async function () {
-  const addAdminForm = document.getElementById('addAdminSection');
   const currentUser = auth.currentUser;
+  const addAdminForm = document.getElementById('addAdminSection');
 
   if (!currentUser) return;
 
@@ -1166,16 +1166,21 @@ window.loadAdminManagement = async function () {
 
     const isOriginalAdmin = userData?.isOriginalAdmin === true;
 
-    // ✅ Show/hide Add Admin section
-    addAdminForm.style.display = isOriginalAdmin ? "block" : "none";
+    // ✅ Show form ONLY for original admin
+    if (isOriginalAdmin) {
+      addAdminForm.style.display = "block";
+    } else {
+      addAdminForm.style.display = "none";
+    }
 
-    // ✅ Load current admins table with control over revoke buttons
+    // ✅ Load admin list (with or without revoke)
     loadAdmins(isOriginalAdmin);
 
   } catch (err) {
-    console.error("Error loading admin settings:", err);
+    console.error("Error in loadAdminManagement:", err);
   }
 };
+
 
 
 

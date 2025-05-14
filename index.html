@@ -1292,7 +1292,7 @@ toggleLink.addEventListener('click', (e) => {
 e.preventDefault();
 toggleForm();
 });
-
+});
     // Admin menu navigation
 document.getElementById('adminMenuHome').addEventListener('click', (e) => {
   e.preventDefault();
@@ -1395,15 +1395,36 @@ if (postJobForm) {
 }
 
 // Auth state change handler
+
 onAuthStateChanged(auth, async (user) => {
   if (user) {
-    const snap = await getDoc(doc(db, "users", user.uid));
-    if (snap.exists()) {
-      showDashboard(snap.data().role);
+    const userRef = doc(db, "users", user.uid);
+    const userSnap = await getDoc(userRef);
+
+    if (userSnap.exists()) {
+      const userData = userSnap.data();
+      const initialRole = userData.role;
+
+      showDashboard(initialRole);
+
+      // ✅ Listen for real-time role changes and logout
+      onSnapshot(userRef, (docSnap) => {
+        const updatedData = docSnap.data();
+        if (!updatedData) return;
+
+        const newRole = updatedData.role;
+        if (newRole !== initialRole) {
+          alert("Your role has changed. You will be logged out.");
+          signOut(auth).then(() => {
+            window.location.href = "/";
+          });
+        }
+      });
     }
   }
 });
-  });
+
+
 
 /*
 =============================================

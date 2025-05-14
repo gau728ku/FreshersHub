@@ -735,6 +735,7 @@ window.login = async function () {
    */
   window.showDashboard = function(role) {
     // Hide all dashboards
+    document.getElementById('auth-section').style.display = 'none';
     document.getElementById('adminDashboard').style.display = 'none';
     document.getElementById('fresherDashboard').style.display = 'none';
     document.getElementById('EmployerDashboard').style.display = 'none';
@@ -955,35 +956,37 @@ window.login = async function () {
 
   // promote to Admin function
    
-  window.promoteToAdmin = async function() {
+  window.promoteToAdmin = async function () {
   const email = document.getElementById('promoteEmail').value.trim();
-  if (!email) return alert("Please enter a valid email");
+
+  if (!email) {
+    alert("Enter a valid email.");
+    return;
+  }
 
   try {
-    const usersSnapshot = await getDocs(collection(db, "users"));
-    let found = false;
+    const snapshot = await getDocs(query(collection(db, "users"), where("email", "==", email)));
 
-    usersSnapshot.forEach(async (docSnap) => {
-      const data = docSnap.data();
-      if (data.email === email && !data.isOriginalAdmin) {
-        found = true;
-        await updateDoc(doc(db, "users", docSnap.id), {
-          role: "admin"
-        });
-        alert("User promoted to admin");
-        loadAdmins();
-      }
-    });
-
-    if (!found) {
-      alert("User not found or cannot promote this user");
+    if (snapshot.empty) {
+      alert("User not found.");
+      return;
     }
 
+    const userDoc = snapshot.docs[0];
+    await updateDoc(userDoc.ref, { role: "admin" });
+
+    alert("User promoted to admin!");
+
+    document.getElementById("promoteEmail").value = "";
+
+    // ✅ This reloads the admins list and shows the Revoke button
+    await loadAdminManagement();
+
   } catch (err) {
-    console.error(err);
-    alert("Error promoting user.");
+    alert("Error promoting admin: " + err.message);
   }
 };
+
 
 // Load Admin List function
 

@@ -389,7 +389,7 @@
     <tbody id="adminTableBody"></tbody>
   </table>
 
-<div id="addAdminSection" style="display: none;"></div>
+<div id="addAdminSection" style="display: none;">
   <h3>Promote User to Admin</h3>
   <input type="email" id="promoteEmail" placeholder="Enter user email">
   <button onclick="promoteToAdmin()">Promote</button>
@@ -1163,22 +1163,18 @@ window.loadAdminManagement = async function () {
   try {
     const userDoc = await getDoc(doc(db, "users", currentUser.uid));
     const userData = userDoc.data();
-
     const isOriginalAdmin = userData?.isOriginalAdmin === true;
 
-    // ✅ Show form ONLY for original admin
-    if (isOriginalAdmin) {
-      addAdminForm.style.display = "block";
-    } else {
-      addAdminForm.style.display = "none";
-    }
+   
+  // ✅ Show/hide Add Admin section
+  addAdminForm.style.display = isOriginalAdmin ? "block" : "none";
 
-    // ✅ Load admin list (with or without revoke)
-    loadAdmins(isOriginalAdmin);
+  // ✅ Load current admins table with revoke buttons if original admin
+  loadAdmins(isOriginalAdmin);
 
-  } catch (err) {
-    console.error("Error in loadAdminManagement:", err);
-  }
+} catch (err) {
+  console.error("Error loading admin settings:", err);
+}
 };
 
 

@@ -664,21 +664,17 @@ window.login = async function () {
 
       showDashboard(initialRole); // ✅ Show dashboard based on current role
 
-    // 🔁 Start listening for role changes
-onSnapshot(docRef, (snapshot) => {
-  const updatedRole = snapshot.data().role;
-  if (updatedRole !== initialRole) {
-    alert("Your role has changed. You will be logged out for security reasons.");
-    signOut(auth).then(() => {
-      window.location.href = "/"; // or your login page or simply: location.reload();
-    });
-  }
-});
-
-// ✅ Load admin-specific sections only if needed
-if (userData.role === "admin" || userData.isOriginalAdmin === true) {
-  loadAdminDashboardStuff(); // see Step 2 below
-}
+      // 👀 Listen for role change
+      onSnapshot(docRef, (snapshot) => {
+        const newRole = snapshot.data()?.role;
+         console.log("Role changed:", newRole);
+        if (newRole !== initialRole) {
+          alert("Your role has changed. You'll be logged out.");
+          signOut(auth).then(() => {
+            window.location.href = "/index.html"; // redirect to login
+          });
+        }
+      });
 
     } else {
       alert("User data not found.");
@@ -994,13 +990,6 @@ if (userData.role === "admin" || userData.isOriginalAdmin === true) {
 
 window.loadAdmins = async function () {
   const table = document.getElementById('adminTableBody');
-  const userDoc = await getDoc(doc(db, "users", auth.currentUser.uid));
-const data = userDoc.data();
-if (data.role !== "admin" && !data.isOriginalAdmin) {
-  table.innerHTML = "<tr><td colspan='2'>Access denied</td></tr>";
-  return;
-}
-
   table.innerHTML = '<tr><td colspan="2">Loading...</td></tr>';
 
   try {
@@ -1498,22 +1487,6 @@ async function isOriginalAdmin() {
   const userDoc = await getDoc(doc(db, "users", currentUser.uid));
   return userDoc.exists() && userDoc.data().isOriginalAdmin === true;
 }
-
-//load admin dashboard stuff
-async function loadAdminDashboardStuff() {
-  const user = auth.currentUser;
-  if (!user) return;
-
-  const userDoc = await getDoc(doc(db, "users", user.uid));
-  const data = userDoc.data();
-
-  if (data.role === "admin" || data.isOriginalAdmin === true) {
-    loadAdmins();
-    loadAdminStats();
-    loadRecentActivity();
-  }
-}
-
 
 
 </script>

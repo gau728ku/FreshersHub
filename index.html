@@ -734,42 +734,38 @@ console.log("Login called");
    */
   window.showDashboard = function(role) {
   console.log("showDashboard called with role:", role);
-    // Hide all dashboards
-    document.getElementById('auth-section').style.display = 'none';
-    document.getElementById('adminDashboard').style.display = 'none';
-    document.getElementById('fresherDashboard').style.display = 'none';
-    document.getElementById('EmployerDashboard').style.display = 'none';
-    
-    // Hide all menu buttons
-    document.getElementById('adminMenuBtn').style.display = 'none';
-    document.getElementById('EmployerMenuBtn').style.display = 'none';
-    document.getElementById('fresherMenuBtn').style.display = 'none';
-    
-    // Hide auth section
-    document.getElementById('auth-section').style.display = 'none';
 
-    // Show relevant dashboard + menu
-    if (role === 'admin') {
-     console.log("→ Showing admin dashboard");
-      document.getElementById('adminDashboard').style.display = 'block';
-      document.getElementById('adminMenuBtn').style.display = 'block';
-      showAdminSection('home');
-      loadAdminStats();
-      loadRecentActivity();
-    } else if (role === 'fresher') {
-     console.log("→ Showing fresher dashboard");
-      document.getElementById('fresherDashboard').style.display = 'block';
-      document.getElementById('fresherMenuBtn').style.display = 'block';
-      showFresherSection('home');
-    } else if (role === 'Employer') {
+  // Hide all dashboards
+  document.getElementById('adminDashboard').style.display = 'none';
+  document.getElementById('EmployerDashboard').style.display = 'none';
+  document.getElementById('fresherDashboard').style.display = 'none';
+
+  // Hide all menu buttons
+  document.getElementById('adminMenuBtn').style.display = 'none';
+  document.getElementById('EmployerMenuBtn').style.display = 'none';
+  document.getElementById('fresherMenuBtn').style.display = 'none';
+
+  // Show relevant dashboard
+  if (role === 'admin') {
+    console.log("→ Showing admin dashboard");
+    document.getElementById('adminDashboard').style.display = 'block';
+    document.getElementById('adminMenuBtn').style.display = 'block';
+    showAdminSection('home');
+  } else if (role === 'Employer') {
     console.log("→ Showing employer dashboard");
-      document.getElementById('EmployerDashboard').style.display = 'block';
-      document.getElementById('EmployerMenuBtn').style.display = 'block';
-      showEmployerSection('home');
-    } else {
-      alert("Unknown role: " + role);
-    }
-  };
+    document.getElementById('EmployerDashboard').style.display = 'block';
+    document.getElementById('EmployerMenuBtn').style.display = 'block';
+    showEmployerSection('home');
+  } else if (role === 'fresher') {
+    console.log("→ Showing fresher dashboard");
+    document.getElementById('fresherDashboard').style.display = 'block';
+    document.getElementById('fresherMenuBtn').style.display = 'block';
+    showFresherSection('home');
+  } else {
+    alert("Unknown role: " + role);
+  }
+};
+
 
   /*
     =============================================

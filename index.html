@@ -1171,18 +1171,21 @@ window.loadAdminManagement = async function () {
     const userDoc = await getDoc(doc(db, "users", currentUser.uid));
     const userData = userDoc.data();
     const isOriginalAdmin = userData?.isOriginalAdmin === true;
+    const isAdmin = userData?.role === "admin";
 
-   
-  // ✅ Show/hide Add Admin section
-  addAdminForm.style.display = isOriginalAdmin ? "block" : "none";
+    // ✅ Show/hide form only for original admin
+    addAdminForm.style.display = isOriginalAdmin ? "block" : "none";
 
-  // ✅ Load current admins table with revoke buttons if original admin
-  loadAdmins(isOriginalAdmin);
+    // ✅ Load admins only if allowed
+    if (isOriginalAdmin || isAdmin) {
+      await loadAdmins(isOriginalAdmin);
+    }
 
-} catch (err) {
-  console.error("Error loading admin settings:", err);
-}
+  } catch (err) {
+    console.error("Error loading admin management:", err);
+  }
 };
+
 
 
 
@@ -1466,7 +1469,7 @@ console.log("Auth state changed:", user.email);
 
     showDashboard(initialRole); // ⬅ Ensures correct dashboard after login
     loadAdminManagement(); // Ensure settings updated if admin
-    loadDashboard();       // Ensure permissions and settings load
+    
 
     // Listen for role changes
     onSnapshot(userRef, (snapshot) => {

@@ -650,15 +650,18 @@ let unsubscribeRoleListener = null;
 window.login = async function () {
   const email = document.getElementById('email').value;
   const password = document.getElementById('password').value;
+console.log("Login called");
 
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
+    console.log("Signed in:", user.email);
     const docRef = doc(db, "users", user.uid);
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
       const userData = docSnap.data();
+      console.log("User role from Firestore:", userData.role);
       const initialRole = userData.role;
 
       showDashboard(initialRole); // ✅ Correct dashboard on login
@@ -729,6 +732,7 @@ window.login = async function () {
    * @param {string} role - User role (admin, fresher, or Employer)
    */
   window.showDashboard = function(role) {
+  console.log("showDashboard called with role:", role);
     // Hide all dashboards
     document.getElementById('auth-section').style.display = 'none';
     document.getElementById('adminDashboard').style.display = 'none';
@@ -745,16 +749,19 @@ window.login = async function () {
 
     // Show relevant dashboard + menu
     if (role === 'admin') {
+     console.log("→ Showing admin dashboard");
       document.getElementById('adminDashboard').style.display = 'block';
       document.getElementById('adminMenuBtn').style.display = 'block';
       showAdminSection('home');
       loadAdminStats();
       loadRecentActivity();
     } else if (role === 'fresher') {
+     console.log("→ Showing fresher dashboard");
       document.getElementById('fresherDashboard').style.display = 'block';
       document.getElementById('fresherMenuBtn').style.display = 'block';
       showFresherSection('home');
     } else if (role === 'Employer') {
+    console.log("→ Showing employer dashboard");
       document.getElementById('EmployerDashboard').style.display = 'block';
       document.getElementById('EmployerMenuBtn').style.display = 'block';
       showEmployerSection('home');
@@ -1440,15 +1447,19 @@ if (postJobForm) {
 
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
+  console.log("No user signed in");
     document.getElementById('auth-section').style.display = 'block';
     return;
   }
+
+console.log("Auth state changed:", user.email);
 
   const userRef = doc(db, "users", user.uid);
   const userSnap = await getDoc(userRef);
 
   if (userSnap.exists()) {
     const userData = userSnap.data();
+    console.log("Loaded user data:", userData);
     const initialRole = userData.role;
 
     showDashboard(initialRole); // ⬅ Ensures correct dashboard after login

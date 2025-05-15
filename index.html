@@ -1100,11 +1100,6 @@ window.banUser = async function() {
   }
 };
 
-// Helper function to validate email format
-function validateEmail(email) {
-  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return re.test(email);
-}
 
 function showBanFeedback(message, isError = false) {
   const feedbackDiv = document.getElementById('banUserFeedback');

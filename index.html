@@ -223,6 +223,29 @@
   margin-bottom: 15px;
 }
   
+.quick-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-bottom: 20px;
+  justify-content: space-between;
+}
+
+.quick-action {
+  flex: 1;
+  min-width: 250px;
+}
+
+.announcement-textarea {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 1rem;
+  margin: 8px 0;
+  resize: vertical;
+}
+
+
 
   </style>
 </head>
@@ -263,22 +286,24 @@
     <div class="dashboard-section" id="adminHomeSection">
       <h2>Admin Dashboard</h2>
 
-    <!-- ✅ NEW Quick Actions Card -->
-<div class="card" style="display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 20px;">
+   <!-- ✅ START: Quick Actions Card -->
+<div class="card quick-actions">
   <!-- Ban User -->
-  <div style="flex: 1; min-width: 250px;">
+  <div class="quick-action">
     <h4>Ban User</h4>
     <input type="email" id="banUserEmail" placeholder="Enter user email" />
     <button class="danger" onclick="banUser()">Ban</button>
   </div>
 
   <!-- Post Announcement -->
-  <div style="flex: 2; min-width: 300px;">
+  <div class="quick-action">
     <h4>Post Announcement</h4>
-    <textarea id="announcementText" placeholder="Write announcement..." style="width:100%; padding:10px; border-radius:8px;"></textarea>
+    <textarea id="announcementText" placeholder="Write announcement..." class="announcement-textarea"></textarea>
     <button class="success" onclick="postAnnouncement()">Post</button>
   </div>
 </div>
+<!-- ✅ END: Quick Actions Card -->
+
 
   
 

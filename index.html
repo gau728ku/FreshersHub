@@ -801,12 +801,21 @@
 
         // Set up role change listener
         roleChangeUnsubscribe = onSnapshot(docRef, (snapshot) => {
-          const newRole = snapshot.data()?.role;
-          if (newRole !== initialRole) {
-            alert("Your role has changed. You'll be logged out.");
-            logout();
-          }
-        });
+          const data = snapshot.data();
+
+    if (data?.banned) {
+     alert("You have been banned. You are now logged out.");
+      logout();
+       return;
+  }
+
+  const newRole = data?.role;
+  if (newRole !== initialRole) {
+    alert("Your role has changed. You'll be logged out.");
+    logout();
+  }
+});
+
       } else {
         alert("User data not found.");
       }
@@ -1651,7 +1660,7 @@ async function loadBannedUsers() {
           await signOut(auth);
           return;
            }
-           
+
           showDashboard(userData.role);
 
           // Set up role change listener

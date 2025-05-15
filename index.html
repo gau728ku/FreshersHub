@@ -223,29 +223,45 @@
   margin-bottom: 15px;
 }
   
+/* Quick Actions */
 .quick-actions {
   display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
+  gap: 10px;
   margin-bottom: 20px;
-  justify-content: space-between;
+  flex-wrap: wrap;
 }
 
-.quick-action {
-  flex: 1;
-  min-width: 250px;
-}
-
-.announcement-textarea {
-  width: 100%;
-  padding: 12px;
+.quick-actions input {
+  padding: 10px;
   border-radius: 8px;
-  font-size: 1rem;
-  margin: 8px 0;
-  resize: vertical;
+  border: none;
+  flex: 1;
+  min-width: 200px;
 }
 
+/* Bulk Actions */
+.bulk-actions {
+  margin-top: 10px;
+}
 
+.table-checkbox {
+  margin: 0;
+  width: 18px;
+  height: 18px;
+}
+
+/* Metric Alerts */
+.metric-alerts {
+  background: rgba(255, 50, 50, 0.2);
+  border-left: 4px solid #dc3545;
+  padding: 15px;
+  margin-top: 20px;
+}
+
+.metric-alerts div {
+  margin: 5px 0;
+  font-weight: bold;
+}
 
   </style>
 </head>
@@ -287,21 +303,14 @@
       <h2>Admin Dashboard</h2>
 
    <!-- ✅ START: Quick Actions Card -->
-<div class="card quick-actions">
-  <!-- Ban User -->
-  <div class="quick-action">
-    <h4>Ban User</h4>
-    <input type="email" id="banUserEmail" placeholder="Enter user email" />
-    <button class="danger" onclick="banUser()">Ban</button>
-  </div>
 
-  <!-- Post Announcement -->
-  <div class="quick-action">
-    <h4>Post Announcement</h4>
-    <textarea id="announcementText" placeholder="Write announcement..." class="announcement-textarea"></textarea>
-    <button class="success" onclick="postAnnouncement()">Post</button>
-  </div>
+  <!-- Ban User -->
+  <div class="quick-actions">
+  <input type="email" id="banUserEmail" placeholder="Enter email to ban">
+  <button onclick="banUser()" class="danger">Ban User</button>
+  <button onclick="showAnnouncementModal()">Post Announcement</button>
 </div>
+
 <!-- ✅ END: Quick Actions Card -->
 
 
@@ -322,6 +331,11 @@
           <h3 id="totalJobs">-</h3>
         </div>
       </div>
+
+      <!-- Metric Alerts (add this) -->
+<div id="metricAlerts" class="metric-alerts card">
+  <!-- Alerts will appear here automatically -->
+</div>
 
       <div class="card">
         <h3 style="text-align: center;">Recent Activity</h3>
@@ -385,7 +399,10 @@
         </table>
       </div>
     </div>
-    
+    <div class="bulk-actions">
+  <button onclick="deleteSelectedUsers()" class="danger">Delete Selected Users</button>
+</div>
+
     <!-- Manage Jobs Section -->
     <div class="dashboard-section" id="adminJobsSection">
       <h2>Manage Job Listings</h2>
@@ -414,7 +431,10 @@
         </table>
       </div>
     </div>
-    
+    <div class="bulk-actions">
+  <button onclick="deleteSelectedJobs()" class="danger">Delete Selected Jobs</button>
+</div>
+
     <!-- Settings Section -->
     <div class="dashboard-section" id="adminSettingsSection">
       <h2>Admin Settings</h2>

@@ -1051,25 +1051,30 @@
   };
 
 // 🔒 Ban User by email
-// Update your banUser function to:
+
+// Update the banUser function to properly get the email value
 window.banUser = async function() {
   const email = document.getElementById('banUserEmail').value.trim();
-  if (!email) return alert("Please enter an email");
+  if (!email) {
+    alert("Please enter an email address");
+    return;
+  }
 
   try {
     // Verify admin status
     const currentUser = auth.currentUser;
     const currentUserDoc = await getDoc(doc(db, "users", currentUser.uid));
-    if (!currentUserDoc.data().isOriginalAdmin) {
+    if (!currentUserDoc.exists() || !currentUserDoc.data().isOriginalAdmin) {
       alert("Only original admin can ban users");
       return;
     }
 
     // Find user to ban
-    const usersSnapshot = await getDocs(query(
+    const usersQuery = query(
       collection(db, "users"),
       where("email", "==", email)
-    ));
+    );
+    const usersSnapshot = await getDocs(usersQuery);
 
     if (usersSnapshot.empty) {
       alert("User not found");
@@ -1088,25 +1093,30 @@ window.banUser = async function() {
     loadBannedUsers(); // Refresh banned users list
   } catch (err) {
     console.error("Ban error:", err);
-    alert("Error banning user: " + err.message);
+    alert(`Error banning user: ${err.message}`);
   }
 };
 
 // 📢 Post announcement
 window.postAnnouncement = async function(text) {
+  if (!text || text.trim() === "") {
+    alert("Please enter announcement text");
+    return;
+  }
+
   try {
     const user = auth.currentUser;
     if (!user) throw new Error("Not authenticated");
     
     // Verify original admin status
     const userDoc = await getDoc(doc(db, "users", user.uid));
-    if (!userDoc.data().isOriginalAdmin) {
+    if (!userDoc.exists() || !userDoc.data().isOriginalAdmin) {
       throw new Error("Only original admin can post announcements");
     }
 
     // Create/update announcement document
-    await setDoc(doc(db, "announcements", "current_announcement"), {
-      text: text,
+    await setDoc(doc(db, "announcements", "current"), {
+      text: text.trim(),
       timestamp: new Date().toISOString(),
       author: user.email,
       authorId: user.uid
@@ -1120,10 +1130,13 @@ window.postAnnouncement = async function(text) {
   }
 };
 
-// Update the modal trigger:
+// Update the announcement modal trigger
 window.showAnnouncementModal = function() {
-  const text = prompt("Enter announcement text:");
-  if (text) postAnnouncement(text);
+  const currentAnnouncement = document.getElementById("currentAnnouncement").textContent;
+  const text = prompt("Enter announcement text:", currentAnnouncement.includes("No active") ? "" : currentAnnouncement);
+  if (text !== null) { // Only proceed if user didn't click Cancel
+    postAnnouncement(text);
+  }
 };
 
 
@@ -1273,21 +1286,23 @@ window.showAnnouncementModal = function() {
 
 async function loadAnnouncement() {
   try {
-    const announcement = await getDoc(doc(db, "announcements", "current_announcement")); // Changed from "current" to "current_announcement"
-    const div = document.getElementById("currentAnnouncement");
-    
-    if (announcement.exists()) {
-      const data = announcement.data();
-      div.innerHTML = `
-        <p><strong>${data.text}</strong></p>
-        <small>Posted by ${data.author} on ${new Date(data.timestamp).toLocaleString()}</small>
+    const announcementRef = doc(db, "announcements", "current");
+    const announcementSnap = await getDoc(announcementRef);
+    const announcementDiv = document.getElementById("currentAnnouncement");
+
+    if (announcementSnap.exists()) {
+      const data = announcementSnap.data();
+      announcementDiv.innerHTML = `
+        <p><strong>${data.text || "No text"}</strong></p>
+        <small>Posted by ${data.author || "Unknown"} on ${data.timestamp ? new Date(data.timestamp).toLocaleString() : "Unknown date"}</small>
       `;
     } else {
-      div.innerHTML = "No active announcements";
+      announcementDiv.innerHTML = "No active announcements";
     }
   } catch (err) {
     console.error("Error loading announcement:", err);
-    document.getElementById("currentAnnouncement").innerHTML = "Error loading announcement";
+    document.getElementById("currentAnnouncement").innerHTML = 
+      "Error loading announcement. Please refresh the page.";
   }
 }
 

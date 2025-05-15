@@ -1352,19 +1352,26 @@ window.showAnnouncementModal = async function() {
 
 
 // Ban user
-window.banUser = async (email) => {
+window.banUser = async () => {
+  const email = document.getElementById('banUserEmail').value.trim();
+  if (!email) return alert("Please enter an email");
+
   const userDoc = await getDoc(doc(db, "users", auth.currentUser.uid));
   if (!userDoc.data().isOriginalAdmin) return alert("Admin only");
-  
+
   const userToBan = await getDocs(query(collection(db, "users"), where("email", "==", email)));
   if (userToBan.empty) return alert("User not found");
-  
-  await updateDoc(userToBan.docs[0].ref, { 
+
+  await updateDoc(userToBan.docs[0].ref, {
     banned: true,
     bannedAt: new Date().toISOString()
   });
+
+  alert(`User ${email} has been banned`);
+  document.getElementById('banUserEmail').value = "";
   loadBannedUsers();
 };
+
 
 // Unban user
 window.unbanUser = async function(userId) {

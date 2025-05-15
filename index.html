@@ -1118,7 +1118,7 @@ window.postAnnouncement = async function(text) {
     await setDoc(doc(db, "announcements", "current"), {
       text: text.trim(),
       timestamp: new Date().toISOString(),
-      author: user.role,
+      author: user.email,
       authorId: user.uid
     });
 
@@ -1325,7 +1325,7 @@ window.showAnnouncementModal = async function() {
       await setDoc(doc(db, "announcements", "current"), {
         text: text,
         timestamp: new Date().toISOString(),
-        author: user.role
+        author: user.email
       });
       alert("Announcement posted!");
     } catch (err) {

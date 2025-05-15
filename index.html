@@ -359,10 +359,15 @@
    <!-- ✅ START: Quick Actions Card -->
 
   <!-- Ban User -->
-  <div class="quick-actions">
-  <input type="email" id="banUserEmail" placeholder="Enter email to ban">
+ <!-- Add this to your HTML for better user feedback -->
+<div id="banUserFeedback" style="display: none; margin-top: 10px;"></div>
+
+<!-- Update your ban user input section -->
+<div class="quick-actions">
+  <input type="email" id="banUserEmail" placeholder="Enter email to ban" required>
   <button onclick="banUser()" class="danger">Ban User</button>
   <button onclick="showAnnouncementModal()">Post Announcement</button>
+  <div id="banUserFeedback"></div>
 </div>
 
 <!-- ✅ END: Quick Actions Card -->
@@ -1052,50 +1057,66 @@
 
 // 🔒 Ban User by email
 
-// Update the banUser function to properly get the email value
+// Updated banUser function with proper error handling
 window.banUser = async function() {
-  const email = document.getElementById('banUserEmail').value.trim();
-  if (!email) {
-    alert("Please enter an email address");
-    return;
-  }
-
   try {
-    // Verify admin status
+    // Verify ban permissions first
     const currentUser = auth.currentUser;
     const currentUserDoc = await getDoc(doc(db, "users", currentUser.uid));
-    if (!currentUserDoc.exists() || !currentUserDoc.data().isOriginalAdmin) {
-      alert("Only original admin can ban users");
+    
+    if (!currentUserDoc.exists() || 
+        !(currentUserDoc.data().isOriginalAdmin || currentUserDoc.data().role === "admin")) {
+      alert("Only admins can ban users");
       return;
     }
 
-    // Find user to ban
+    // Find user to ban - fixed query with proper error handling
     const usersQuery = query(
       collection(db, "users"),
       where("email", "==", email)
     );
-    const usersSnapshot = await getDocs(usersQuery);
-
-    if (usersSnapshot.empty) {
-      alert("User not found");
+    
+    const querySnapshot = await getDocs(usersQuery);
+    
+    if (querySnapshot.empty) {
+      alert(`No user found with email: ${email}`);
       return;
     }
 
-    // Ban user
-    const userDoc = usersSnapshot.docs[0];
+    // Ban the user
+    const userDoc = querySnapshot.docs[0];
     await updateDoc(userDoc.ref, {
       banned: true,
       bannedAt: new Date().toISOString()
     });
 
-    alert(`${email} has been banned`);
-    document.getElementById('banUserEmail').value = "";
-    loadBannedUsers(); // Refresh banned users list
-  } catch (err) {
-    console.error("Ban error:", err);
-    alert(`Error banning user: ${err.message}`);
+    alert(`Successfully banned user: ${email}`);
+    emailInput.value = ""; // Clear the input field
+    loadBannedUsers(); // Refresh the banned users list
+    
+  } catch (error) {
+    console.error("Ban user error:", error);
+    alert(`Failed to ban user: ${error.message}`);
   }
 };
+
+// Helper function to validate email format
+function validateEmail(email) {
+  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return re.test(email);
+}
+
+function showBanFeedback(message, isError = false) {
+  const feedbackDiv = document.getElementById('banUserFeedback');
+  feedbackDiv.textContent = message;
+  feedbackDiv.style.color = isError ? 'red' : 'green';
+  feedbackDiv.style.display = 'block';
+  
+  setTimeout(() => {
+    feedbackDiv.style.display = 'none';
+  }, 5000);
+}
+
 
 // 📢 Post announcement
 window.postAnnouncement = async function(text) {

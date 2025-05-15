@@ -910,48 +910,36 @@
     }
   };
 
- window.loadAllUsers = async function() {
-  const table = document.getElementById('usersTableBody');
-  table.innerHTML = '<tr><td colspan="4">Loading users...</td></tr>';
+  window.loadAllUsers = async function() {
+    const table = document.getElementById('usersTableBody');
+    table.innerHTML = '<tr><td colspan="3">Loading users...</td></tr>';
 
-  try {
-    const querySnapshot = await getDocs(collection(db, "users"));
-    table.innerHTML = '';
+    try {
+      const querySnapshot = await getDocs(collection(db, "users"));
+      table.innerHTML = '';
 
-    if (querySnapshot.empty) {
-      table.innerHTML = '<tr><td colspan="4">No users found</td></tr>';
-      return;
+      if (querySnapshot.empty) {
+        table.innerHTML = '<tr><td colspan="3">No users found</td></tr>';
+        return;
+      }
+
+      querySnapshot.forEach(doc => {
+    const data = doc.data();
+    const row = `
+      <tr>
+        <td><input type="checkbox" class="user-checkbox" data-id="${doc.id}"></td>
+        <td>${data.email}</td>
+        <td>${data.role}</td>
+        <td>${!data.isOriginalAdmin ? 
+          `<button onclick="deleteUser('${doc.id}')" class="danger">Delete</button>` : ''}
+        </td>
+      </tr>`;
+    table.innerHTML += row;
+  });
+    } catch (error) {
+      table.innerHTML = '<tr><td colspan="3">Error loading users</td></tr>';
     }
-
-    querySnapshot.forEach(doc => {
-      const data = doc.data();
-      const isBanned = data.banned ? ' (BANNED)' : '';
-      const banButton = data.isOriginalAdmin ? '' : (
-        !data.banned ?
-          `<button onclick="banUserPrompt('${data.email}')" class="danger">Ban</button>` :
-          `<button onclick="unbanUser('${doc.id}')" class="success">Unban</button>`
-      );
-
-      const deleteButton = data.isOriginalAdmin ? '' :
-        `<button onclick="deleteUser('${doc.id}')" class="danger">Delete</button>`;
-
-      const row = `
-        <tr ${data.banned ? 'style="background: rgba(255,0,0,0.1)"' : ''}>
-          <td><input type="checkbox" class="user-checkbox" data-id="${doc.id}"></td>
-          <td>${data.email}${isBanned}</td>
-          <td>${data.role}</td>
-          <td>
-            ${banButton}
-            ${deleteButton}
-          </td>
-        </tr>`;
-      table.innerHTML += row;
-    });
-  } catch (error) {
-    table.innerHTML = '<tr><td colspan="4">Error loading users</td></tr>';
-  }
-};
-
+  };
 
   window.loadAllJobs = async function() {
     const table = document.getElementById('jobsTableBody');

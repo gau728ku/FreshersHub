@@ -1645,6 +1645,13 @@ async function loadBannedUsers() {
         const userDoc = await getDoc(doc(db, "users", user.uid));
         if (userDoc.exists()) {
           const userData = userDoc.data();
+
+        if (userData.banned) {
+          alert("Your account has been banned.");
+          await signOut(auth);
+          return;
+           }
+           
           showDashboard(userData.role);
 
           // Set up role change listener

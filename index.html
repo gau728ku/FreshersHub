@@ -910,36 +910,48 @@
     }
   };
 
-  window.loadAllUsers = async function() {
-    const table = document.getElementById('usersTableBody');
-    table.innerHTML = '<tr><td colspan="3">Loading users...</td></tr>';
+ window.loadAllUsers = async function() {
+  const table = document.getElementById('usersTableBody');
+  table.innerHTML = '<tr><td colspan="4">Loading users...</td></tr>';
 
-    try {
-      const querySnapshot = await getDocs(collection(db, "users"));
-      table.innerHTML = '';
+  try {
+    const querySnapshot = await getDocs(collection(db, "users"));
+    table.innerHTML = '';
 
-      if (querySnapshot.empty) {
-        table.innerHTML = '<tr><td colspan="3">No users found</td></tr>';
-        return;
-      }
-
-      querySnapshot.forEach(doc => {
-    const data = doc.data();
-    const row = `
-      <tr>
-        <td><input type="checkbox" class="user-checkbox" data-id="${doc.id}"></td>
-        <td>${data.email}</td>
-        <td>${data.role}</td>
-        <td>${!data.isOriginalAdmin ? 
-          `<button onclick="deleteUser('${doc.id}')" class="danger">Delete</button>` : ''}
-        </td>
-      </tr>`;
-    table.innerHTML += row;
-  });
-    } catch (error) {
-      table.innerHTML = '<tr><td colspan="3">Error loading users</td></tr>';
+    if (querySnapshot.empty) {
+      table.innerHTML = '<tr><td colspan="4">No users found</td></tr>';
+      return;
     }
-  };
+
+    querySnapshot.forEach(doc => {
+      const data = doc.data();
+      const isBanned = data.banned ? ' (BANNED)' : '';
+      const banButton = data.isOriginalAdmin ? '' : (
+        !data.banned ?
+          `<button onclick="banUserPrompt('${data.email}')" class="danger">Ban</button>` :
+          `<button onclick="unbanUser('${doc.id}')" class="success">Unban</button>`
+      );
+
+      const deleteButton = data.isOriginalAdmin ? '' :
+        `<button onclick="deleteUser('${doc.id}')" class="danger">Delete</button>`;
+
+      const row = `
+        <tr ${data.banned ? 'style="background: rgba(255,0,0,0.1)"' : ''}>
+          <td><input type="checkbox" class="user-checkbox" data-id="${doc.id}"></td>
+          <td>${data.email}${isBanned}</td>
+          <td>${data.role}</td>
+          <td>
+            ${banButton}
+            ${deleteButton}
+          </td>
+        </tr>`;
+      table.innerHTML += row;
+    });
+  } catch (error) {
+    table.innerHTML = '<tr><td colspan="4">Error loading users</td></tr>';
+  }
+};
+
 
   window.loadAllJobs = async function() {
     const table = document.getElementById('jobsTableBody');
@@ -1049,39 +1061,80 @@
   };
 
 // 🔒 Ban User by email
-window.banUser = async function () {
+// Update your banUser function to:
+window.banUser = async function() {
   const email = document.getElementById('banUserEmail').value.trim();
-  if (!email) return alert("Enter a valid email");
+  if (!email) return alert("Please enter an email");
 
   try {
-    const snapshot = await getDocs(query(collection(db, "users"), where("email", "==", email)));
-    if (snapshot.empty) return alert("User not found");
+    // Verify admin status
+    const currentUser = auth.currentUser;
+    const currentUserDoc = await getDoc(doc(db, "users", currentUser.uid));
+    if (!currentUserDoc.data().isOriginalAdmin) {
+      alert("Only original admin can ban users");
+      return;
+    }
 
-    const userDoc = snapshot.docs[0];
-    await updateDoc(userDoc.ref, { banned: true });
+    // Find user to ban
+    const usersSnapshot = await getDocs(query(
+      collection(db, "users"),
+      where("email", "==", email)
+    ));
 
-    alert("User has been banned");
+    if (usersSnapshot.empty) {
+      alert("User not found");
+      return;
+    }
+
+    // Ban user
+    const userDoc = usersSnapshot.docs[0];
+    await updateDoc(userDoc.ref, {
+      banned: true,
+      bannedAt: new Date().toISOString()
+    });
+
+    alert(`${email} has been banned`);
     document.getElementById('banUserEmail').value = "";
+    loadBannedUsers(); // Refresh banned users list
   } catch (err) {
-    alert("Ban failed: " + err.message);
+    console.error("Ban error:", err);
+    alert("Error banning user: " + err.message);
   }
 };
 
 // 📢 Post announcement
-window.postAnnouncement = async function () {
-  const text = document.getElementById('announcementText').value.trim();
-  if (!text) return alert("Announcement cannot be empty");
-
+// Update your announcement function:
+window.postAnnouncement = async function(text) {
   try {
-    await setDoc(doc(db, "settings", "announcement"), {
-      text,
-      timestamp: new Date().toISOString()
+    const user = auth.currentUser;
+    if (!user) throw new Error("Not authenticated");
+    
+    // Verify original admin status
+    const userDoc = await getDoc(doc(db, "users", user.uid));
+    if (!userDoc.data().isOriginalAdmin) {
+      throw new Error("Only original admin can post announcements");
+    }
+
+    // Create announcement document
+    await setDoc(doc(db, "announcements", "current_announcement"), {
+      text: text,
+      timestamp: new Date().toISOString(),
+      author: user.email,
+      authorId: user.uid
     });
-    alert("Announcement posted!");
-    document.getElementById('announcementText').value = "";
+
+    alert("Announcement posted successfully!");
+    loadAnnouncement(); // Refresh the displayed announcement
   } catch (err) {
-    alert("Failed to post: " + err.message);
+    console.error("Announcement error:", err);
+    alert(`Failed to post announcement: ${err.message}\n\nPlease ensure you're logged in as the original admin.`);
   }
+};
+
+// Update the modal trigger:
+window.showAnnouncementModal = function() {
+  const text = prompt("Enter announcement text:");
+  if (text) postAnnouncement(text);
 };
 
 

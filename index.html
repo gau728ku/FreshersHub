@@ -269,6 +269,33 @@
   font-weight: bold;
 }
 
+/* Add to your <style> section */
+.table-container table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+.table-container th:nth-child(1),
+.table-container td:nth-child(1) {
+  width: 40px; /* Checkbox column */
+  text-align: center;
+}
+
+.table-container th:nth-child(2),
+.table-container td:nth-child(2) {
+  width: 30%; /* Email column */
+}
+
+.table-container th:nth-child(3),
+.table-container td:nth-child(3) {
+  width: 20%; /* Role column */
+}
+
+.table-container th:nth-child(4),
+.table-container td:nth-child(4) {
+  width: 15%; /* Actions column */
+}
+
   </style>
 </head>
 <body>
@@ -847,19 +874,18 @@
       }
 
       querySnapshot.forEach(doc => {
-        const data = doc.data();
-        const isOriginalAdmin = data.isOriginalAdmin;
-        const deleteButton = isOriginalAdmin ? '' : 
-          `<button onclick="deleteUser('${doc.id}')" class="danger">Delete</button>`;
-
-        const row = `
-          <tr>
-            <td>${data.email}</td>
-            <td>${data.role}</td>
-            <td>${deleteButton}</td>
-          </tr>`;
-        table.innerHTML += row;
-      });
+    const data = doc.data();
+    const row = `
+      <tr>
+        <td><input type="checkbox" class="user-checkbox" data-id="${doc.id}"></td>
+        <td>${data.email}</td>
+        <td>${data.role}</td>
+        <td>${!data.isOriginalAdmin ? 
+          `<button onclick="deleteUser('${doc.id}')" class="danger">Delete</button>` : ''}
+        </td>
+      </tr>`;
+    table.innerHTML += row;
+  });
     } catch (error) {
       table.innerHTML = '<tr><td colspan="3">Error loading users</td></tr>';
     }
@@ -1153,26 +1179,23 @@ window.postAnnouncement = async function () {
 
   //show announcement modal
 
-window.showAnnouncementModal = function() {
-  const announcementText = prompt("Enter your announcement:");
-  if (announcementText) {
-    // Save to Firebase
-    postAnnouncement(announcementText);
-  }
-};
+window.showAnnouncementModal = async function() {
+  const text = prompt("Enter announcement text:");
+  if (!text) return;
 
-async function postAnnouncement(text) {
   try {
-    await setDoc(doc(db, "announcements", "latest"), {
+    await setDoc(doc(db, "announcements", "current"), {
       text: text,
       timestamp: new Date().toISOString(),
-      admin: auth.currentUser.email
+      author: auth.currentUser.email
     });
     alert("Announcement posted!");
-  } catch (error) {
-    alert("Error posting announcement: " + error.message);
+    logAdminAction(`Posted announcement: "${text.substring(0, 20)}..."`);
+  } catch (err) {
+    console.error("Announcement error:", err);
+    alert(`Failed: ${err.message}\n\nEnsure you're the original admin.`);
   }
-}
+};
 
 
   // Employer section functions

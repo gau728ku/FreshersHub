@@ -923,6 +923,8 @@
 
     if (section === 'home') {
       document.getElementById('adminHomeSection').style.display = 'block';
+       loadAdminStats();
+       loadRecentActivity(); 
        loadAnnouncement(); // Add this line    
     } else if (section === 'users') {
       document.getElementById('adminUsersSection').style.display = 'block';
@@ -1323,13 +1325,12 @@ window.showAnnouncementModal = function() {
 
 //loadannouncements
 
-async function loadAnnouncement() {
-  try {
-    const announcementRef = doc(db, "announcements", "current");
-    const announcementSnap = await getDoc(announcementRef);
-    const announcementDiv = document.getElementById("currentAnnouncement");
-    const actionsDiv = document.getElementById("announcementActions");
+function loadAnnouncement() {
+  const announcementRef = doc(db, "announcements", "current");
+  const announcementDiv = document.getElementById("currentAnnouncement");
+  const actionsDiv = document.getElementById("announcementActions");
 
+  onSnapshot(announcementRef, async (announcementSnap) => {
     if (announcementSnap.exists()) {
       const data = announcementSnap.data();
       announcementDiv.innerHTML = `
@@ -1337,25 +1338,20 @@ async function loadAnnouncement() {
         <small>Posted by ${data.author || "Unknown"} on ${data.timestamp ? new Date(data.timestamp).toLocaleString() : "Unknown date"}</small>
       `;
 
-      // Show edit/delete buttons only if original admin
-      const currentUser = auth.currentUser;
-      const userDoc = await getDoc(doc(db, "users", currentUser.uid));
-      if (userDoc.exists() && userDoc.data().isOriginalAdmin) {
-        actionsDiv.style.display = "block";
-      } else {
-        actionsDiv.style.display = "none";
-      }
+      // Only show actions if original admin
+      const userDoc = await getDoc(doc(db, "users", auth.currentUser.uid));
+      actionsDiv.style.display = userDoc.exists() && userDoc.data().isOriginalAdmin ? "block" : "none";
     } else {
-      announcementDiv.innerHTML = "No active announcements";
+      announcementDiv.innerHTML = "No active announcements.";
       actionsDiv.style.display = "none";
     }
-  } catch (err) {
-    console.error("Error loading announcement:", err);
-    document.getElementById("currentAnnouncement").innerHTML =
-      "Error loading announcement. Please refresh the page.";
-    document.getElementById("announcementActions").style.display = "none";
-  }
+  }, (err) => {
+    console.error("Live announcement error:", err);
+    announcementDiv.innerHTML = "Failed to load announcement.";
+    actionsDiv.style.display = "none";
+  });
 }
+
 
 
 

@@ -342,89 +342,75 @@
   <!-- Admin Home Section -->
     
     <div class="dashboard-section" id="adminHomeSection">
-      <h2>Admin Dashboard</h2>
+  <h2>Admin Dashboard</h2>
 
-   <!-- ✅ START: Quick Actions Card -->
+  <!-- ✅ Quick Actions Section -->
+  <div class="quick-actions">
+    <input type="email" id="banUserEmail" placeholder="Enter email to ban" required>
+    <button onclick="banUser()" class="danger">Ban User</button>
+    <button onclick="showAnnouncementModal()" class="success">Post Announcement</button>
+    <div id="banUserFeedback" style="display: none; margin-top: 10px;"></div>
+  </div>
 
-  <!-- Ban User -->
- <!-- Add this to your HTML for better user feedback -->
-<div id="banUserFeedback" style="display: none; margin-top: 10px;"></div>
+  <!-- ✅ Stats Section -->
+  <div class="stats-container horizontal">
+    <div class="stat-card">
+      <p>Total Freshers</p>
+      <h3 id="totalFreshers">-</h3>
+    </div>
+    <div class="stat-card">
+      <p>Total Employers</p>
+      <h3 id="totalEmployers">-</h3>
+    </div>
+    <div class="stat-card">
+      <p>Total Jobs</p>
+      <h3 id="totalJobs">-</h3>
+    </div>
+  </div>
 
-<!-- Update your ban user input section -->
-<div class="quick-actions">
-  <input type="email" id="banUserEmail" placeholder="Enter email to ban" required>
-  <button onclick="banUser()" class="danger">Ban User</button>
-  <button onclick="showAnnouncementModal()">Post Announcement</button>
-  <div id="banUserFeedback"></div>
-</div>
+  <!-- ✅ Announcement Display -->
+  <div class="card">
+    <h3>Current Announcement</h3>
+    <div id="currentAnnouncement" style="padding: 15px; background: rgba(255,255,255,0.1); border-radius: 8px; max-height: 120px; overflow-y: auto;">
+      Loading announcement...
+    </div>
+    <div id="announcementActions" style="margin-top: 10px; display: none;">
+      <button onclick="showAnnouncementModal()" class="success">✏️ Edit</button>
+      <button onclick="deleteAnnouncement()" class="danger">🗑️ Delete</button>
+    </div>
+  </div>
 
-<!-- ✅ END: Quick Actions Card -->
-
-
-  
-
-
-      <div class="stats-container horizontal">
-        <div class="stat-card">
-          <p>Total Freshers</p>
-          <h3 id="totalFreshers">-</h3>
-        </div>
-        <div class="stat-card">
-          <p>Total Employers</p>
-          <h3 id="totalEmployers">-</h3>
-        </div>
-        <div class="stat-card">
-          <p>Total Jobs</p>
-          <h3 id="totalJobs">-</h3>
+  <!-- ✅ Recent Activity Section -->
+  <div class="card">
+    <h3 style="text-align: center;">Recent Activity</h3>
+    <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;">
+      <div style="flex: 1; min-width: 300px;">
+        <h4>Last 5 Users</h4>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr><th>Email</th><th>Role</th></tr>
+            </thead>
+            <tbody id="recentUsersTable"></tbody>
+          </table>
         </div>
       </div>
 
-<div class="card">
-  <h3>Current Announcement</h3>
-  <div id="currentAnnouncement" style="padding: 15px; background: rgba(255,255,255,0.1); border-radius: 8px;">
-    Loading announcement...
-  </div>
-   <div id="announcementActions" style="margin-top: 10px; display: none;">
-    <button onclick="showAnnouncementModal()" class="success">✏️ Edit</button>
-    <button onclick="deleteAnnouncement()" class="danger">🗑️ Delete</button>
-  </div>
-</div>
-</div>
-
-      <div class="card">
-        <h3 style="text-align: center;">Recent Activity</h3>
-        
-        <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;">
-          <div style="flex: 1; min-width: 300px;">
-            <h4>Last 5 Users</h4>
-            <div class="table-container">
-              <table>
-                <thead>
-                  <tr><th>Email</th><th>Role</th></tr>
-                </thead>
-                <tbody id="recentUsersTable"></tbody>
-              </table>
-            </div>
-          </div>
-
-          <div style="flex: 1; min-width: 300px;">
-            <h4>Last 5 Jobs</h4>
-            <div class="table-container">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Title</th>
-                    <th>Employer</th>
-                    <th>Location</th>
-                  </tr>
-                </thead>
-                <tbody id="recentJobsTable"></tbody>
-              </table>
-            </div>
-          </div>
+      <div style="flex: 1; min-width: 300px;">
+        <h4>Last 5 Jobs</h4>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr><th>Title</th><th>Employer</th><th>Location</th></tr>
+            </thead>
+            <tbody id="recentJobsTable"></tbody>
+          </table>
         </div>
       </div>
     </div>
+  </div>
+</div> <!-- ✅ End of adminHomeSection -->
+
     
     <!-- Manage Users Section -->
 <div class="dashboard-section" id="adminUsersSection">

@@ -258,10 +258,28 @@
 
     <div class="overlay" id="adminOverlay" onclick="toggleAdminMenu()"></div>
 
-    <!-- Admin Home Section -->
+  <!-- Admin Home Section -->
     <div class="dashboard-section" id="adminHomeSection">
       <h2>Admin Dashboard</h2>
       
+  <!-- Add this around line 190 -->
+   <div class="quick-actions" style="
+     display: flex;
+     gap: 10px;
+     margin-bottom: 20px;
+     flex-wrap: wrap;
+     ">
+  <input type="email" id="banUserEmail" placeholder="Enter email to ban" style="
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    flex: 1;
+    min-width: 200px;
+  ">
+    <button onclick="banUser()" class="danger">Ban User</button>
+    <button onclick="showAnnouncementModal()">Post Announcement</button>
+  </div>
+
       <div class="stats-container horizontal">
         <div class="stat-card">
           <p>Total Freshers</p>
@@ -1291,6 +1309,41 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
+
+// Quick-Action Functions
+window.banUser = async function() {
+  const email = document.getElementById('banUserEmail').value.trim();
+  if (!email) return alert("Enter an email");
+
+  if (confirm(`Ban ${email}? This cannot be undone.`)) {
+    try {
+      // Find user by email
+      const usersSnapshot = await getDocs(query(
+        collection(db, "users"),
+        where("email", "==", email)
+      ));
+
+      if (usersSnapshot.empty) {
+        alert("User not found");
+        return;
+      }
+
+      // Mark as banned
+      const userDoc = usersSnapshot.docs[0];
+      await updateDoc(userDoc.ref, { banned: true });
+      alert(`${email} banned successfully`);
+      document.getElementById('banUserEmail').value = "";
+      logAdminAction(`Banned user: ${email}`); // For Activity Timeline
+    } catch (err) {
+      alert("Error: " + err.message);
+    }
+  }
+};
+
+window.showAnnouncementModal = function() {
+  // You'll implement this in step 2 (Activity Timeline)
+  alert("Announcement modal will go here");
+};
 
 </script>
 </body>

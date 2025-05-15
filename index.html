@@ -391,6 +391,14 @@
   <!-- Alerts will appear here automatically -->
 </div>
 
+<!-- In adminHomeSection, below metric alerts -->
+<div class="card">
+  <h3>Current Announcement</h3>
+  <div id="currentAnnouncement" style="padding: 15px; background: rgba(255,255,255,0.1); border-radius: 8px;">
+    Loading announcement...
+  </div>
+</div>
+
       <div class="card">
         <h3 style="text-align: center;">Recent Activity</h3>
         
@@ -499,6 +507,8 @@
       
       <div class="card">
         <h3>System Configuration</h3>
+        
+      <!--Current Admins table-->
         <div id="adminSection">
           <h3>Current Admins</h3>
           <table id="adminTable">
@@ -507,12 +517,31 @@
             </thead>
             <tbody id="adminTableBody"></tbody>
           </table>
-
+        
+          <!--promote user to admin form-->
           <div id="addAdminSection" style="display: none;">
             <h3>Promote User to Admin</h3>
             <input type="email" id="promoteEmail" placeholder="Enter user email">
             <button onclick="promoteToAdmin()">Promote</button>
           </div>
+
+        <!--Banned users table-->
+       <div class="card">
+         <h3>Banned Users</h3>
+         <div class="table-container">
+        <table>
+         <thead>
+         <tr>
+          <th>Email</th>
+          <th>Banned On</th>
+          <th>Actions</th>
+           </tr>
+         </thead>
+         <tbody id="bannedUsersTable"></tbody>
+         </table>
+        </div>
+        </div>
+
         </div>
       </div>
     </div>
@@ -1198,26 +1227,89 @@ window.postAnnouncement = async function () {
     }
   }
 
+//loadannouncements
+
+async function loadAnnouncement() {
+  const announcement = await getDoc(doc(db, "announcements", "current"));
+  const div = document.getElementById("currentAnnouncement");
+  
+  if (announcement.exists()) {
+    const data = announcement.data();
+    div.innerHTML = `
+      <p><strong>${data.text}</strong></p>
+      <small>Posted by ${data.author} on ${new Date(data.timestamp).toLocaleString()}</small>
+    `;
+  } else {
+    div.innerHTML = "No active announcements";
+  }
+}
+
 
   //show announcement modal
 
 window.showAnnouncementModal = async function() {
-  const text = prompt("Enter announcement text:");
-  if (!text) return;
+  // Verify original admin status first
+  const user = auth.currentUser;
+  const userDoc = await getDoc(doc(db, "users", user.uid));
+  
+  if (!userDoc.data().isOriginalAdmin) {
+    alert("Only original admin can post announcements");
+    return;
+  }
 
-  try {
-    await setDoc(doc(db, "announcements", "current"), {
-      text: text,
-      timestamp: new Date().toISOString(),
-      author: auth.currentUser.email
-    });
-    alert("Announcement posted!");
-    logAdminAction(`Posted announcement: "${text.substring(0, 20)}..."`);
-  } catch (err) {
-    console.error("Announcement error:", err);
-    alert(`Failed: ${err.message}\n\nEnsure you're the original admin.`);
+  const text = prompt("Enter announcement text:");
+  if (text) {
+    try {
+      await setDoc(doc(db, "announcements", "current"), {
+        text: text,
+        timestamp: new Date().toISOString(),
+        author: user.email
+      });
+      alert("Announcement posted!");
+    } catch (err) {
+      alert("Error: " + err.message);
+    }
   }
 };
+
+
+// Ban user
+window.banUser = async (email) => {
+  const userDoc = await getDoc(doc(db, "users", auth.currentUser.uid));
+  if (!userDoc.data().isOriginalAdmin) return alert("Admin only");
+  
+  const userToBan = await getDocs(query(collection(db, "users"), where("email", "==", email)));
+  if (userToBan.empty) return alert("User not found");
+  
+  await updateDoc(userToBan.docs[0].ref, { 
+    banned: true,
+    bannedAt: new Date().toISOString()
+  });
+  loadBannedUsers();
+};
+
+// Unban user
+window.unbanUser = async (userId) => {
+  await updateDoc(doc(db, "users", userId), { 
+    banned: false,
+    bannedAt: null
+  });
+  loadBannedUsers();
+};
+
+// Load banned users
+async function loadBannedUsers() {
+  const bannedUsers = await getDocs(query(collection(db, "users"), where("banned", "==", true)));
+  const table = document.getElementById("bannedUsersTable");
+  table.innerHTML = bannedUsers.docs.map(doc => `
+    <tr>
+      <td>${doc.data().email}</td>
+      <td>${new Date(doc.data().bannedAt).toLocaleString()}</td>
+      <td><button onclick="unbanUser('${doc.id}')" class="success">Unban</button></td>
+    </tr>
+  `).join("");
+}
+
 
 
   // Employer section functions

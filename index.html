@@ -898,6 +898,7 @@
 
     if (section === 'home') {
       document.getElementById('adminHomeSection').style.display = 'block';
+       loadAnnouncement(); // Add this line    
     } else if (section === 'users') {
       document.getElementById('adminUsersSection').style.display = 'block';
       loadAllUsers();
@@ -907,6 +908,7 @@
     } else if (section === 'settings') {
       document.getElementById('adminSettingsSection').style.display = 'block';
       loadAdminManagement();
+      loadBannedUsers(); // Add this line
     }
   };
 
@@ -1091,7 +1093,6 @@ window.banUser = async function() {
 };
 
 // 📢 Post announcement
-// Update your announcement function:
 window.postAnnouncement = async function(text) {
   try {
     const user = auth.currentUser;
@@ -1103,7 +1104,7 @@ window.postAnnouncement = async function(text) {
       throw new Error("Only original admin can post announcements");
     }
 
-    // Create announcement document
+    // Create/update announcement document
     await setDoc(doc(db, "announcements", "current_announcement"), {
       text: text,
       timestamp: new Date().toISOString(),
@@ -1115,7 +1116,7 @@ window.postAnnouncement = async function(text) {
     loadAnnouncement(); // Refresh the displayed announcement
   } catch (err) {
     console.error("Announcement error:", err);
-    alert(`Failed to post announcement: ${err.message}\n\nPlease ensure you're logged in as the original admin.`);
+    alert(`Failed to post announcement: ${err.message}`);
   }
 };
 
@@ -1271,17 +1272,22 @@ window.showAnnouncementModal = function() {
 //loadannouncements
 
 async function loadAnnouncement() {
-  const announcement = await getDoc(doc(db, "announcements", "current"));
-  const div = document.getElementById("currentAnnouncement");
-  
-  if (announcement.exists()) {
-    const data = announcement.data();
-    div.innerHTML = `
-      <p><strong>${data.text}</strong></p>
-      <small>Posted by ${data.author} on ${new Date(data.timestamp).toLocaleString()}</small>
-    `;
-  } else {
-    div.innerHTML = "No active announcements";
+  try {
+    const announcement = await getDoc(doc(db, "announcements", "current_announcement")); // Changed from "current" to "current_announcement"
+    const div = document.getElementById("currentAnnouncement");
+    
+    if (announcement.exists()) {
+      const data = announcement.data();
+      div.innerHTML = `
+        <p><strong>${data.text}</strong></p>
+        <small>Posted by ${data.author} on ${new Date(data.timestamp).toLocaleString()}</small>
+      `;
+    } else {
+      div.innerHTML = "No active announcements";
+    }
+  } catch (err) {
+    console.error("Error loading announcement:", err);
+    document.getElementById("currentAnnouncement").innerHTML = "Error loading announcement";
   }
 }
 
@@ -1330,27 +1336,54 @@ window.banUser = async (email) => {
 };
 
 // Unban user
-window.unbanUser = async (userId) => {
-  await updateDoc(doc(db, "users", userId), { 
-    banned: false,
-    bannedAt: null
-  });
-  loadBannedUsers();
+window.unbanUser = async function(userId) {
+  if (!confirm("Are you sure you want to unban this user?")) return;
+  
+  try {
+    await updateDoc(doc(db, "users", userId), { 
+      banned: false,
+      bannedAt: null
+    });
+    alert("User unbanned successfully");
+    loadBannedUsers();
+  } catch (err) {
+    console.error("Error unbanning user:", err);
+    alert("Error unbanning user: " + err.message);
+  }
 };
 
 // Load banned users
 async function loadBannedUsers() {
-  const bannedUsers = await getDocs(query(collection(db, "users"), where("banned", "==", true)));
-  const table = document.getElementById("bannedUsersTable");
-  table.innerHTML = bannedUsers.docs.map(doc => `
-    <tr>
-      <td>${doc.data().email}</td>
-      <td>${new Date(doc.data().bannedAt).toLocaleString()}</td>
-      <td><button onclick="unbanUser('${doc.id}')" class="success">Unban</button></td>
-    </tr>
-  `).join("");
+  try {
+    const bannedUsersQuery = query(
+      collection(db, "users"),
+      where("banned", "==", true)
+    );
+    const bannedUsersSnapshot = await getDocs(bannedUsersQuery);
+    
+    const table = document.getElementById("bannedUsersTable");
+    table.innerHTML = "";
+    
+    if (bannedUsersSnapshot.empty) {
+      table.innerHTML = "<tr><td colspan='3'>No banned users found</td></tr>";
+      return;
+    }
+    
+    bannedUsersSnapshot.forEach(doc => {
+      const userData = doc.data();
+      table.innerHTML += `
+        <tr>
+          <td>${userData.email}</td>
+          <td>${userData.bannedAt ? new Date(userData.bannedAt).toLocaleString() : 'N/A'}</td>
+          <td><button onclick="unbanUser('${doc.id}')" class="success">Unban</button></td>
+        </tr>`;
+    });
+  } catch (err) {
+    console.error("Error loading banned users:", err);
+    document.getElementById("bannedUsersTable").innerHTML = 
+      "<tr><td colspan='3'>Error loading banned users</td></tr>";
+  }
 }
-
 
 
   // Employer section functions

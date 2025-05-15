@@ -789,8 +789,14 @@
 
       if (docSnap.exists()) {
         const userData = docSnap.data();
-        const initialRole = userData.role;
 
+      if (userData.banned) {
+        alert("Your account has been banned. Contact support.");
+        await signOut(auth);
+        return;
+      }  
+
+        const initialRole = userData.role;
         showDashboard(initialRole);
 
         // Set up role change listener

@@ -259,26 +259,26 @@
     <div class="overlay" id="adminOverlay" onclick="toggleAdminMenu()"></div>
 
   <!-- Admin Home Section -->
+    
     <div class="dashboard-section" id="adminHomeSection">
       <h2>Admin Dashboard</h2>
-      
-  <!-- Add this around line 190 -->
-   <div class="quick-actions" style="
-     display: flex;
-     gap: 10px;
-     margin-bottom: 20px;
-     flex-wrap: wrap;
-     ">
-  <input type="email" id="banUserEmail" placeholder="Enter email to ban" style="
-    padding: 10px;
-    border-radius: 8px;
-    border: none;
-    flex: 1;
-    min-width: 200px;
-  ">
-    <button onclick="banUser()" class="danger">Ban User</button>
-    <button onclick="showAnnouncementModal()">Post Announcement</button>
+    <div class="card" style="display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 20px;">
+  <!-- Ban User -->
+  <div style="flex: 1; min-width: 250px;">
+    <h4>Ban User</h4>
+    <input type="email" id="banUserEmail" placeholder="Enter user email" />
+    <button class="danger" onclick="banUser()">Ban</button>
   </div>
+
+  <!-- Post Announcement -->
+  <div style="flex: 2; min-width: 300px;">
+    <h4>Post Announcement</h4>
+    <textarea id="announcementText" placeholder="Write announcement..." style="width:100%; padding:10px; border-radius:8px;"></textarea>
+    <button class="success" onclick="postAnnouncement()">Post</button>
+  </div>
+</div>
+  
+
 
       <div class="stats-container horizontal">
         <div class="stat-card">
@@ -865,6 +865,7 @@
   };
 
   // Admin management functions
+  
   window.promoteToAdmin = async function() {
     const email = document.getElementById('promoteEmail').value.trim();
     const currentUser = auth.currentUser;
@@ -912,6 +913,47 @@
       alert("Error promoting user: " + err.message);
     }
   };
+
+// 🔒 Ban User by email
+window.banUser = async function () {
+  const email = document.getElementById('banUserEmail').value.trim();
+  if (!email) return alert("Enter a valid email");
+
+  try {
+    const snapshot = await getDocs(query(collection(db, "users"), where("email", "==", email)));
+    if (snapshot.empty) return alert("User not found");
+
+    const userDoc = snapshot.docs[0];
+    await updateDoc(userDoc.ref, { banned: true });
+
+    alert("User has been banned");
+    document.getElementById('banUserEmail').value = "";
+  } catch (err) {
+    alert("Ban failed: " + err.message);
+  }
+};
+
+// 📢 Post announcement
+window.postAnnouncement = async function () {
+  const text = document.getElementById('announcementText').value.trim();
+  if (!text) return alert("Announcement cannot be empty");
+
+  try {
+    await setDoc(doc(db, "settings", "announcement"), {
+      text,
+      timestamp: new Date().toISOString()
+    });
+    alert("Announcement posted!");
+    document.getElementById('announcementText').value = "";
+  } catch (err) {
+    alert("Failed to post: " + err.message);
+  }
+};
+
+
+
+
+  //revokeadmin
 
   window.revokeAdmin = async function(userId) {
     const currentUser = auth.currentUser;
@@ -1309,41 +1351,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
-
-// Quick-Action Functions
-window.banUser = async function() {
-  const email = document.getElementById('banUserEmail').value.trim();
-  if (!email) return alert("Enter an email");
-
-  if (confirm(`Ban ${email}? This cannot be undone.`)) {
-    try {
-      // Find user by email
-      const usersSnapshot = await getDocs(query(
-        collection(db, "users"),
-        where("email", "==", email)
-      ));
-
-      if (usersSnapshot.empty) {
-        alert("User not found");
-        return;
-      }
-
-      // Mark as banned
-      const userDoc = usersSnapshot.docs[0];
-      await updateDoc(userDoc.ref, { banned: true });
-      alert(`${email} banned successfully`);
-      document.getElementById('banUserEmail').value = "";
-      logAdminAction(`Banned user: ${email}`); // For Activity Timeline
-    } catch (err) {
-      alert("Error: " + err.message);
-    }
-  }
-};
-
-window.showAnnouncementModal = function() {
-  // You'll implement this in step 2 (Activity Timeline)
-  alert("Announcement modal will go here");
-};
 
 </script>
 </body>

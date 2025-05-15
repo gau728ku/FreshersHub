@@ -239,6 +239,12 @@
   min-width: 200px;
 }
 
+.quick-actions button {
+  margin: 0;
+  flex: 1;
+  min-width: 120px;
+}
+
 /* Bulk Actions */
 .bulk-actions {
   margin-top: 10px;
@@ -389,8 +395,8 @@
       <div class="table-container">
         <table>
           <thead>
-            <th><input type="checkbox" id="selectAllUsers" class="table-checkbox"></th>
             <tr>
+              <th><input type="checkbox" id="selectAllUsers" class="table-checkbox"></th>
               <th>Email</th>
               <th>Role</th>
               <th>Actions</th>
@@ -420,8 +426,8 @@
       <div class="table-container">
         <table>
           <thead>
-            <th><input type="checkbox" id="selectAllJobs" class="table-checkbox"></th>
             <tr>
+            <th><input type="checkbox" id="selectAllJobs" class="table-checkbox"></th>
               <th>Title</th>
               <th>Employer</th>
               <th>Location</th>
@@ -1142,6 +1148,14 @@ window.postAnnouncement = async function () {
       console.error("Error loading recent activity:", error);
     }
   }
+
+window.deleteSelectedUsers = async function() {
+  // Implementation
+};
+
+window.deleteSelectedJobs = async function() {
+  // Implementation
+};
 
   // Employer section functions
   window.showEmployerSection = function(section) {

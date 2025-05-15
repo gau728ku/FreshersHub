@@ -379,68 +379,69 @@
     </div>
     
     <!-- Manage Users Section -->
-    <div class="dashboard-section" id="adminUsersSection">
-      <h2>Manage Users</h2>
-      <button onclick="showAdminSection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
-      
-    <!-- Add search bar ABOVE the table -->
-   <input 
-      type="text" 
-      class="search-input" 
-      data-table-target="usersTableBody" 
-       placeholder="Search users by email or role..."
-    >
+<div class="dashboard-section" id="adminUsersSection">
+  <h2>Manage Users</h2>
+  <button onclick="showAdminSection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
+  
+  <!-- Search bar -->
+  <input 
+    type="text" 
+    class="search-input" 
+    data-table-target="usersTableBody" 
+    placeholder="Search users by email or role..."
+  >
 
-
-      <div class="table-container">
-        <table>
-          <thead>
-            <tr>
-              <th><input type="checkbox" id="selectAllUsers" class="table-checkbox"></th>
-              <th>Email</th>
-              <th>Role</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody id="usersTableBody"></tbody>
-        </table>
-      </div>
-    </div>
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th><input type="checkbox" id="selectAllUsers" class="table-checkbox"></th>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="usersTableBody"></tbody>
+    </table>
+    <!-- Bulk actions INSIDE table-container -->
     <div class="bulk-actions">
-  <button onclick="deleteSelectedUsers()" class="danger">Delete Selected Users</button>
+      <button onclick="deleteSelectedUsers()" class="danger">Delete Selected Users</button>
+    </div>
+  </div>
 </div>
 
-    <!-- Manage Jobs Section -->
-    <div class="dashboard-section" id="adminJobsSection">
-      <h2>Manage Job Listings</h2>
-      <button onclick="showAdminSection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
-      
-    <!-- Add search bar ABOVE the table -->
-      <input 
-      type="text" 
-      class="search-input" 
-      data-table-target="jobsTableBody" 
-      placeholder="Search jobs by title, employer..."
-     >
+<!-- Manage Jobs Section -->
+<div class="dashboard-section" id="adminJobsSection">
+  <h2>Manage Job Listings</h2>
+  <button onclick="showAdminSection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
+  
+  <!-- Search bar -->
+  <input 
+    type="text" 
+    class="search-input" 
+    data-table-target="jobsTableBody" 
+    placeholder="Search jobs by title, employer..."
+  >
 
-      <div class="table-container">
-        <table>
-          <thead>
-            <tr>
-            <th><input type="checkbox" id="selectAllJobs" class="table-checkbox"></th>
-              <th>Title</th>
-              <th>Employer</th>
-              <th>Location</th>
-              <th>Salary</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody id="jobsTableBody"></tbody>
-        </table>
-      </div>
-    </div>
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th><input type="checkbox" id="selectAllJobs" class="table-checkbox"></th>
+          <th>Title</th>
+          <th>Employer</th>
+          <th>Location</th>
+          <th>Salary</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="jobsTableBody"></tbody>
+    </table>
+    <!-- Bulk actions INSIDE table-container -->
     <div class="bulk-actions">
-  <button onclick="deleteSelectedJobs()" class="danger">Delete Selected Jobs</button>
+      <button onclick="deleteSelectedJobs()" class="danger">Delete Selected Jobs</button>
+    </div>
+  </div>
 </div>
 
     <!-- Settings Section -->
@@ -1149,6 +1150,29 @@ window.postAnnouncement = async function () {
     }
   }
 
+
+  //show announcement modal
+
+window.showAnnouncementModal = function() {
+  const announcementText = prompt("Enter your announcement:");
+  if (announcementText) {
+    // Save to Firebase
+    postAnnouncement(announcementText);
+  }
+};
+
+async function postAnnouncement(text) {
+  try {
+    await setDoc(doc(db, "announcements", "latest"), {
+      text: text,
+      timestamp: new Date().toISOString(),
+      admin: auth.currentUser.email
+    });
+    alert("Announcement posted!");
+  } catch (error) {
+    alert("Error posting announcement: " + error.message);
+  }
+}
 
 
   // Employer section functions

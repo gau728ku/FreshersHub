@@ -305,6 +305,31 @@
   padding: 12px;
 }
 
+.announcement-banner {
+  background: #ffc107;
+  color: black;
+  padding: 10px 20px;
+  font-weight: bold;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.scrolling-text {
+  display: inline-block;
+  animation: scroll-left 12s linear infinite;
+}
+
+@keyframes scroll-left {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+
+
   </style>
 </head>
 <body>
@@ -526,6 +551,12 @@
   </div>
 
   <!-- Employer Dashboard -->
+
+<div id="announcementBannerEmployer" class="announcement-banner" style="display: none;">
+  <div class="scrolling-text" id="announcementTextEmployer"></div>
+</div>
+
+
   <div id="EmployerDashboard" style="display:none;">
     <div id="EmployerMenuBtn" onclick="toggleEmployerMenu()">☰</div>
     
@@ -584,6 +615,12 @@
   </div>
 
   <!-- Fresher Dashboard -->
+
+  <div id="announcementBannerFresher" class="announcement-banner" style="display: none;">
+  <div class="scrolling-text" id="announcementTextFresher"></div>
+</div>
+
+
   <div id="fresherDashboard" style="display:none;">
     <div id="fresherMenuBtn" onclick="toggleFresherMenu()">☰</div>
     
@@ -771,6 +808,8 @@
 
         const initialRole = userData.role;
         showDashboard(initialRole);
+        startUserAnnouncementListener();
+
 
         // Set up role change listener
         roleChangeUnsubscribe = onSnapshot(docRef, (snapshot) => {
@@ -1705,6 +1744,34 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
+
+function startUserAnnouncementListener() {
+  const announcementRef = doc(db, "announcements", "current");
+
+  onSnapshot(announcementRef, (docSnap) => {
+    const data = docSnap.data();
+
+    const text = data?.text?.trim();
+    const isActive = !!text;
+
+    // Fresher
+    const fresherBanner = document.getElementById("announcementBannerFresher");
+    const fresherText = document.getElementById("announcementTextFresher");
+    if (fresherBanner && fresherText) {
+      fresherBanner.style.display = isActive ? "block" : "none";
+      fresherText.textContent = text || "";
+    }
+
+    // Employer
+    const employerBanner = document.getElementById("announcementBannerEmployer");
+    const employerText = document.getElementById("announcementTextEmployer");
+    if (employerBanner && employerText) {
+      employerBanner.style.display = isActive ? "block" : "none";
+      employerText.textContent = text || "";
+    }
+  });
+}
+
 
 </script>
 </body>

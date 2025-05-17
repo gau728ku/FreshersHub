@@ -1216,47 +1216,54 @@ window.banUser = async function() {
   if (!email) return alert("Please enter an email");
 
   try {
-    const user = auth.currentUser;
-    const userDoc = await getDoc(doc(db, "users", user.uid));
-    const userData = userDoc.data();
-
-    // Check if current user is admin (original or promoted)
-    if (!userData || (userData.role !== "admin" && !userData.isOriginalAdmin)) {
+    const currentUser = auth.currentUser;
+    const currentUserDoc = await getDoc(doc(db, "users", currentUser.uid));
+    
+    // Check admin status (original or promoted)
+    if (!currentUserDoc.exists() || currentUserDoc.data().role !== "admin") {
       throw new Error("Admin privileges required");
     }
 
     // Find user to ban
-    const userToBan = await getDocs(query(
-      collection(db, "users"),
-      where("email", "==", email)
-    ));
+    const userToBanQuery = query(collection(db, "users"), where("email", "==", email));
+    const querySnapshot = await getDocs(userToBanQuery);
+    
+    if (querySnapshot.empty) {
+      alert("User not found");
+      return;
+    }
 
-    if (userToBan.empty) return alert("User not found");
-
-    const targetUser = userToBan.docs[0];
-    const targetData = targetUser.data();
+    const userDoc = querySnapshot.docs[0];
+    const userData = userDoc.data();
 
     // Prevent banning original admin
-    if (targetData.isOriginalAdmin) {
+    if (userData.isOriginalAdmin) {
       throw new Error("Cannot ban original admin");
     }
 
     // Prevent promoted admins from banning other admins
-    if (!userData.isOriginalAdmin && targetData.role === "admin") {
+    if (!currentUserDoc.data().isOriginalAdmin && userData.role === "admin") {
       throw new Error("Promoted admins cannot ban other admins");
     }
 
-    await updateDoc(targetUser.ref, {
+    // Perform the ban
+    await updateDoc(userDoc.ref, {
       banned: true,
       bannedAt: new Date().toISOString(),
-      bannedBy: user.email
+      bannedBy: currentUser.email
     });
 
     alert(`User ${email} has been banned`);
     document.getElementById('banUserEmail').value = "";
     loadBannedUsers();
   } catch (error) {
-    alert("Error: " + error.message);
+    console.error("Ban error:", error);
+    alert(`Error: ${error.message}`);
+    
+    // Special handling for permission errors
+    if (error.code === "permission-denied") {
+      alert("Please verify: 1) You're admin 2) Firestore rules allow ban updates");
+    }
   }
 };
 

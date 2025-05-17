@@ -1290,19 +1290,25 @@ window.postAnnouncement = async function(text) {
   try {
     const user = auth.currentUser;
     if (!user) throw new Error("Not authenticated");
-    
-    // Verify original admin status
-    const userDoc = await getDoc(doc(db, "users", user.uid));
-    if (!userDoc.exists() || !userDoc.data().isOriginalAdmin) {
-      throw new Error("Only original admin can post announcements");
-    }
+
+    // Get user document
+    const userDocRef = doc(db, "users", user.uid);
+    const userDoc = await getDoc(userDocRef);
+    if (!userDoc.exists()) throw new Error("User not found");
 
     const userData = userDoc.data();
 
-    // Capitalize role (e.g. admin → Admin)
-    const authorRole = userData.role.charAt(0).toUpperCase() + userData.role.slice(1);
+    // Ensure only original admin can post
+    if (!userData.isOriginalAdmin) {
+      throw new Error("Only original admin can post announcements");
+    }
 
-    // Save announcement
+    // Format role (Admin, Employer, etc.)
+    const authorRole = userData.role
+      ? userData.role.charAt(0).toUpperCase() + userData.role.slice(1)
+      : "Admin";
+
+    // Save announcement with role
     await setDoc(doc(db, "announcements", "current"), {
       text: text.trim(),
       timestamp: new Date().toISOString(),
@@ -1311,7 +1317,8 @@ window.postAnnouncement = async function(text) {
     });
 
     alert("Announcement posted successfully!");
-    loadAnnouncement(); // Refresh display
+    loadAnnouncement(); // Refresh announcement display
+
   } catch (err) {
     console.error("Announcement error:", err);
     alert(`Failed to post announcement: ${err.message}`);

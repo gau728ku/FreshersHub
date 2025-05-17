@@ -1297,32 +1297,26 @@ window.postAnnouncement = async function(text) {
       throw new Error("Only original admin can post announcements");
     }
 
-    // Create/update announcement document
+    const userData = userDoc.data();
+
+    // Capitalize role (e.g. admin → Admin)
+    const authorRole = userData.role.charAt(0).toUpperCase() + userData.role.slice(1);
+
+    // Save announcement
     await setDoc(doc(db, "announcements", "current"), {
       text: text.trim(),
       timestamp: new Date().toISOString(),
-      author: user.email,
+      author: authorRole,
       authorId: user.uid
     });
 
     alert("Announcement posted successfully!");
-    loadAnnouncement(); // Refresh the displayed announcement
+    loadAnnouncement(); // Refresh display
   } catch (err) {
     console.error("Announcement error:", err);
     alert(`Failed to post announcement: ${err.message}`);
   }
 };
-
-// Update the announcement modal trigger
-window.showAnnouncementModal = function() {
-  const currentAnnouncement = document.getElementById("currentAnnouncement").textContent;
-  const text = prompt("Enter announcement text:", currentAnnouncement.includes("No active") ? "" : currentAnnouncement);
-  if (text !== null) { // Only proceed if user didn't click Cancel
-    postAnnouncement(text);
-  }
-};
-
-
 
 
   //revokeadmin

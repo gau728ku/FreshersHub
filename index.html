@@ -1250,7 +1250,8 @@ window.banUser = async function() {
     };
 
     // Perform the update
-    await updateDoc(userDoc.ref, updateData);
+    await setDoc(userDoc.ref, updateData, { merge: true });
+
 
     alert(`User ${email} has been banned`);
     document.getElementById('banUserEmail').value = "";

@@ -860,7 +860,7 @@ async function startEmployerSignupListener() {
     snapshot.docChanges().forEach((change) => {
       if (change.type === "added") {
         const data = change.doc.data();
-        if (data.role === "employer") {
+        if (data.role.toLowerCase() === "employer") {
           const id = change.doc.id;
           if (!latestEmployerTimestamps[id]) {
             latestEmployerTimestamps[id] = true;

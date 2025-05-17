@@ -474,6 +474,24 @@
       <button onclick="deleteSelectedUsers()" class="danger">Delete Selected Users</button>
     </div>
   </div>
+
+<!-- Add this right after the current users table -->
+<div class="card" style="margin-top: 20px;">
+  <h3>Deleted Users</h3>
+  <p style="font-size: 0.9rem; color: #ccc;">Click email to delete permanently from Firebase</p>
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Email</th>
+          <th>Deleted On</th>
+        </tr>
+      </thead>
+      <tbody id="deletedUsersTable"></tbody>
+    </table>
+  </div>
+</div>
+
 </div>
 
 <!-- Manage Jobs Section -->
@@ -974,6 +992,7 @@ async function startEmployerSignupListener() {
     } else if (section === 'users') {
       document.getElementById('adminUsersSection').style.display = 'block';
       loadAllUsers();
+      loadDeletedUsers(); // Add this line to load deleted users
     } else if (section === 'jobs') {
       document.getElementById('adminJobsSection').style.display = 'block';
       loadAllJobs();
@@ -1051,17 +1070,41 @@ async function startEmployerSignupListener() {
     }
   };
 
+//delete users
+
   window.deleteUser = async function(userId) {
-    if (!confirm("Are you sure you want to delete this user?")) return;
+  if (!confirm("Are you sure you want to delete this user?")) return;
+  
+  try {
+    // Get user data before deleting
+    const userRef = doc(db, "users", userId);
+    const userSnap = await getDoc(userRef);
     
-    try {
-      await deleteDoc(doc(db, "users", userId));
-      alert("User deleted successfully");
-      loadAllUsers();
-    } catch (error) {
-      alert("Error deleting user: " + error.message);
+    if (!userSnap.exists()) {
+      alert("User not found");
+      return;
     }
-  };
+    
+    const userEmail = userSnap.data().email;
+    
+    // Add to deleted_users collection
+    await setDoc(doc(db, "deleted_users", userId), {
+      email: userEmail,
+      deletedAt: new Date().toISOString()
+    });
+    
+    // Delete from active users
+    await deleteDoc(userRef);
+    
+    alert("User marked as deleted. Click the email in Deleted Users table to remove permanently from Firebase.");
+    loadAllUsers();
+    loadDeletedUsers(); // Load the updated deleted users list
+  } catch (error) {
+    alert("Error deleting user: " + error.message);
+  }
+};
+
+//delete jobs
 
   window.deleteJob = async function(jobId) {
     if (!confirm("Are you sure you want to delete this job?")) return;
@@ -1838,6 +1881,41 @@ function showAdminToast(message) {
       toast.style.display = 'none';
     }, 500);
   }, 4000);
+}
+
+//loaddeletedusers
+
+async function loadDeletedUsers() {
+  try {
+    const querySnapshot = await getDocs(collection(db, "deleted_users"));
+    const table = document.getElementById('deletedUsersTable');
+    table.innerHTML = '';
+    
+    if (querySnapshot.empty) {
+      table.innerHTML = '<tr><td colspan="2">No deleted users yet</td></tr>';
+      return;
+    }
+    
+    querySnapshot.forEach(doc => {
+      const data = doc.data();
+      const firebaseAuthLink = `https://console.firebase.google.com/u/0/project/${firebaseConfig.projectId}/authentication/users`;
+      
+      table.innerHTML += `
+        <tr>
+          <td>
+            <a href="${firebaseAuthLink}" target="_blank" 
+               style="color: #00c6ff; text-decoration: underline;">
+              ${data.email}
+            </a>
+          </td>
+          <td>${new Date(data.deletedAt).toLocaleString()}</td>
+        </tr>`;
+    });
+  } catch (error) {
+    console.error("Error loading deleted users:", error);
+    document.getElementById('deletedUsersTable').innerHTML = 
+      '<tr><td colspan="2">Error loading deleted users</td></tr>';
+  }
 }
 
 

@@ -485,6 +485,7 @@
         <tr>
           <th>Email</th>
           <th>Deleted On</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody id="deletedUsersTable"></tbody>
@@ -1116,6 +1117,24 @@ async function startEmployerSignupListener() {
     alert("Error: " + error.message);
   }
 };
+
+//confirm full deletion
+
+window.confirmFullDeletion = async function(docId, email) {
+  if (!confirm(`Have you already deleted ${email} from Firebase Authentication? This will remove the record completely.`)) {
+    return;
+  }
+  
+  try {
+    // Remove from deleted_users collection
+    await deleteDoc(doc(db, "deleted_users", docId));
+    alert("Record cleaned up successfully!");
+    loadDeletedUsers();
+  } catch (error) {
+    alert("Error removing record: " + error.message);
+  }
+};
+
 
 //delete jobs
 
@@ -1905,7 +1924,7 @@ async function loadDeletedUsers() {
     table.innerHTML = '';
     
     if (querySnapshot.empty) {
-      table.innerHTML = '<tr><td colspan="2">No deleted users yet</td></tr>';
+      table.innerHTML = '<tr><td colspan="3">No deleted users yet</td></tr>';
       return;
     }
     
@@ -1922,12 +1941,18 @@ async function loadDeletedUsers() {
             </a>
           </td>
           <td>${new Date(data.deletedAt).toLocaleString()}</td>
+          <td>
+            <button onclick="confirmFullDeletion('${doc.id}', '${data.email}')" 
+                    class="danger" style="padding: 5px 10px;">
+              Confirm Deletion
+            </button>
+          </td>
         </tr>`;
     });
   } catch (error) {
     console.error("Error loading deleted users:", error);
     document.getElementById('deletedUsersTable').innerHTML = 
-      '<tr><td colspan="2">Error loading deleted users</td></tr>';
+      '<tr><td colspan="3">Error loading deleted users</td></tr>';
   }
 }
 

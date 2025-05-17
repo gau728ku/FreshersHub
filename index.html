@@ -1079,7 +1079,13 @@ async function startEmployerSignupListener() {
     const user = auth.currentUser;
     if (!user) throw new Error("Not authenticated");
     
-    // Get user data before deleting
+    // Verify admin status
+    const userDoc = await getDoc(doc(db, "users", user.uid));
+    if (!userDoc.exists() || userDoc.data().role !== "admin") {
+      throw new Error("Admin privileges required");
+    }
+
+    // Rest of your delete logic...
     const userRef = doc(db, "users", userId);
     const userSnap = await getDoc(userRef);
     
@@ -1098,7 +1104,8 @@ async function startEmployerSignupListener() {
       email: userData.email,
       role: userData.role,
       deletedAt: new Date().toISOString(),
-      deletedBy: user.email
+      deletedBy: user.email,
+      originalId: userId // Keep reference to original ID
     });
     
     alert("User moved to deleted users successfully!");
@@ -1106,12 +1113,7 @@ async function startEmployerSignupListener() {
     loadDeletedUsers();
   } catch (error) {
     console.error("Delete error:", error);
-    alert("Error deleting user: " + error.message);
-    
-    // Special handling for permission errors
-    if (error.message.includes("permission")) {
-      alert("PRO TIP: Make sure your Firestore rules allow writing to 'deleted_users' collection");
-    }
+    alert("Error: " + error.message);
   }
 };
 

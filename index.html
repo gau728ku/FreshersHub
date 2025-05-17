@@ -1281,7 +1281,7 @@ function showBanFeedback(message, isError = false) {
 
 
 // 📢 Post announcement
-window.postAnnouncement = async function(text) {
+window.postAnnouncementV2 = async function(text) {
   if (!text || text.trim() === "") {
     alert("Please enter announcement text");
     return;
@@ -1510,10 +1510,9 @@ function loadAnnouncement() {
   //show announcement modal
 
 window.showAnnouncementModal = async function() {
-  // Verify original admin status first
   const user = auth.currentUser;
   const userDoc = await getDoc(doc(db, "users", user.uid));
-  
+
   if (!userDoc.data().isOriginalAdmin) {
     alert("Only original admin can post announcements");
     return;
@@ -1522,17 +1521,22 @@ window.showAnnouncementModal = async function() {
   const text = prompt("Enter announcement text:");
   if (text) {
     try {
+      const userData = userDoc.data();
+      const authorRole = userData.role.charAt(0).toUpperCase() + userData.role.slice(1);
+
       await setDoc(doc(db, "announcements", "current"), {
         text: text,
         timestamp: new Date().toISOString(),
         author: authorRole
       });
+
       alert("Announcement posted!");
     } catch (err) {
       alert("Error: " + err.message);
     }
   }
 };
+
 
 // delete announcements
 

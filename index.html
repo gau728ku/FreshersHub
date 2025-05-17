@@ -1217,9 +1217,10 @@ window.banUser = async function() {
 
   try {
     const currentUser = auth.currentUser;
-    const currentUserDoc = await getDoc(doc(db, "users", currentUser.uid));
-    
+    if (!currentUser) throw new Error("Not authenticated");
+
     // Check admin status (original or promoted)
+    const currentUserDoc = await getDoc(doc(db, "users", currentUser.uid));
     if (!currentUserDoc.exists() || currentUserDoc.data().role !== "admin") {
       throw new Error("Admin privileges required");
     }
@@ -1241,17 +1242,15 @@ window.banUser = async function() {
       throw new Error("Cannot ban original admin");
     }
 
-    // Prevent promoted admins from banning other admins
-    if (!currentUserDoc.data().isOriginalAdmin && userData.role === "admin") {
-      throw new Error("Promoted admins cannot ban other admins");
-    }
-
-    // Perform the ban
-    await updateDoc(userDoc.ref, {
+    // Prepare update data - MUST match exactly what rules expect
+    const updateData = {
       banned: true,
       bannedAt: new Date().toISOString(),
       bannedBy: currentUser.email
-    });
+    };
+
+    // Perform the update
+    await updateDoc(userDoc.ref, updateData);
 
     alert(`User ${email} has been banned`);
     document.getElementById('banUserEmail').value = "";
@@ -1260,9 +1259,9 @@ window.banUser = async function() {
     console.error("Ban error:", error);
     alert(`Error: ${error.message}`);
     
-    // Special handling for permission errors
+    // Special guidance for permission errors
     if (error.code === "permission-denied") {
-      alert("Please verify: 1) You're admin 2) Firestore rules allow ban updates");
+      alert("Please verify: 1) You're admin 2) Only updating ban fields");
     }
   }
 };

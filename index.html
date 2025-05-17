@@ -306,18 +306,25 @@
 }
 
 .announcement-banner {
-  background: #ffc107;
-  color: black;
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  font-weight: 500;
   padding: 10px 20px;
-  font-weight: bold;
+  border-left: 5px solid #ffc107;
+  font-size: 1rem;
   overflow: hidden;
   white-space: nowrap;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 1px 5px rgba(0,0,0,0.2);
+  margin-bottom: 10px;
+  border-radius: 6px;
 }
 
 .scrolling-text {
   display: inline-block;
-  animation: scroll-left 12s linear infinite;
+  animation: scroll-left 18s linear infinite;
 }
+
 
 @keyframes scroll-left {
   0% {

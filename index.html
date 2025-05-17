@@ -1076,6 +1076,9 @@ async function startEmployerSignupListener() {
   if (!confirm("Are you sure you want to delete this user?")) return;
   
   try {
+    const user = auth.currentUser;
+    if (!user) throw new Error("Not authenticated");
+    
     // Get user data before deleting
     const userRef = doc(db, "users", userId);
     const userSnap = await getDoc(userRef);
@@ -1085,22 +1088,30 @@ async function startEmployerSignupListener() {
       return;
     }
     
-    const userEmail = userSnap.data().email;
+    const userData = userSnap.data();
     
-    // Add to deleted_users collection
-    await setDoc(doc(db, "deleted_users", userId), {
-      email: userEmail,
-      deletedAt: new Date().toISOString()
-    });
-    
-    // Delete from active users
+    // First delete from users collection
     await deleteDoc(userRef);
     
-    alert("User marked as deleted. Click the email in Deleted Users table to remove permanently from Firebase.");
+    // Then add to deleted_users collection
+    await setDoc(doc(db, "deleted_users", userId), {
+      email: userData.email,
+      role: userData.role,
+      deletedAt: new Date().toISOString(),
+      deletedBy: user.email
+    });
+    
+    alert("User moved to deleted users successfully!");
     loadAllUsers();
-    loadDeletedUsers(); // Load the updated deleted users list
+    loadDeletedUsers();
   } catch (error) {
+    console.error("Delete error:", error);
     alert("Error deleting user: " + error.message);
+    
+    // Special handling for permission errors
+    if (error.message.includes("permission")) {
+      alert("PRO TIP: Make sure your Firestore rules allow writing to 'deleted_users' collection");
+    }
   }
 };
 

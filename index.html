@@ -1706,6 +1706,8 @@ async function loadBannedUsers() {
            }
 
           showDashboard(userData.role);
+          startUserAnnouncementListener();
+
 
           // Set up role change listener
           if (roleChangeUnsubscribe) {
@@ -1757,6 +1759,7 @@ function startUserAnnouncementListener() {
 
   onSnapshot(announcementRef, (docSnap) => {
     const data = docSnap.data();
+    console.log("Live announcement received:", data);  // 👈 Add this
 
     const text = data?.text?.trim();
     const isActive = !!text;

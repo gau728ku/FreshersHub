@@ -1309,6 +1309,8 @@ window.postAnnouncement = async function(text) {
       : "Admin";
 
     // Save announcement with role
+    console.log("Author being saved:", authorRole);
+
     await setDoc(doc(db, "announcements", "current"), {
       text: text.trim(),
       timestamp: new Date().toISOString(),

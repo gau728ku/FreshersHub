@@ -1478,7 +1478,7 @@ function loadAnnouncement() {
       const data = announcementSnap.data();
       announcementDiv.innerHTML = `
         <p style="margin-bottom: 8px;"><strong>${data.text || "No text"}</strong></p>
-        <small>Posted by ${data.author || "Unknown"} on ${data.timestamp ? new Date(data.timestamp).toLocaleString() : "Unknown date"}</small>
+        <small>Posted by ${data.author || "Admin"} on ${data.timestamp ? new Date(data.timestamp).toLocaleString() : "Unknown date"}</small>
       `;
 
       // Only show actions if original admin

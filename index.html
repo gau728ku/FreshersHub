@@ -561,7 +561,7 @@
 
   <div id="EmployerDashboard" style="display:none;">
 
-<div id="announcementBannerEmployer" class="announcement-banner" style="display: none;">
+<div id="announcementBannerEmployer" class="announcement-banner" style="display: none; cursor: pointer;" onclick="showFullAnnouncement()">
   <div class="scrolling-text" id="announcementTextEmployer"></div>
 </div>
 
@@ -625,7 +625,7 @@
 
   <div id="fresherDashboard" style="display:none;">
 
-<div id="announcementBannerFresher" class="announcement-banner" style="display: none;">
+<div id="announcementBannerFresher" class="announcement-banner" style="display: none; cursor: pointer;" onclick="showFullAnnouncement()">
   <div class="scrolling-text" id="announcementTextFresher"></div>
 </div>
 
@@ -1411,6 +1411,17 @@ window.deleteAnnouncement = async function() {
     alert("Failed to delete announcement: " + err.message);
   }
 };
+
+//showfullannouncement
+
+window.showFullAnnouncement = async function() {
+  const snap = await getDoc(doc(db, "announcements", "current"));
+  const data = snap.exists() ? snap.data() : null;
+  const fullText = data?.text || "No announcement.";
+
+  alert("📢 Announcement:\n\n" + fullText);
+};
+
 
 
 

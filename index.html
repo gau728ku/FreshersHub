@@ -1139,16 +1139,24 @@ window.confirmFullDeletion = async function(docId, email) {
 //delete jobs
 
   window.deleteJob = async function(jobId) {
-    if (!confirm("Are you sure you want to delete this job?")) return;
+  if (!confirm("Are you sure you want to delete this job?")) return;
+  
+  try {
+    const user = auth.currentUser;
+    const userDoc = await getDoc(doc(db, "users", user.uid));
     
-    try {
-      await deleteDoc(doc(db, "jobs", jobId));
-      alert("Job deleted successfully");
-      loadAllJobs();
-    } catch (error) {
-      alert("Error deleting job: " + error.message);
+    // Verify admin status (original or promoted)
+    if (!userDoc.exists() || userDoc.data().role !== "admin") {
+      throw new Error("Admin privileges required");
     }
-  };
+
+    await deleteDoc(doc(db, "jobs", jobId));
+    alert("Job deleted successfully");
+    loadAllJobs();
+  } catch (error) {
+    alert("Error deleting job: " + error.message);
+  }
+};
 
   // Admin management functions
   
@@ -1204,44 +1212,51 @@ window.confirmFullDeletion = async function(docId, email) {
 
 // Updated banUser function with proper error handling
 window.banUser = async function() {
+  const email = document.getElementById('banUserEmail').value.trim();
+  if (!email) return alert("Please enter an email");
+
   try {
-    // Verify ban permissions first
-    const currentUser = auth.currentUser;
-    const currentUserDoc = await getDoc(doc(db, "users", currentUser.uid));
-    
-    if (!currentUserDoc.exists() || 
-        !(currentUserDoc.data().isOriginalAdmin || currentUserDoc.data().role === "admin")) {
-      alert("Only admins can ban users");
-      return;
+    const user = auth.currentUser;
+    const userDoc = await getDoc(doc(db, "users", user.uid));
+    const userData = userDoc.data();
+
+    // Check if current user is admin (original or promoted)
+    if (!userData || (userData.role !== "admin" && !userData.isOriginalAdmin)) {
+      throw new Error("Admin privileges required");
     }
 
-    // Find user to ban - fixed query with proper error handling
-    const usersQuery = query(
+    // Find user to ban
+    const userToBan = await getDocs(query(
       collection(db, "users"),
       where("email", "==", email)
-    );
-    
-    const querySnapshot = await getDocs(usersQuery);
-    
-    if (querySnapshot.empty) {
-      alert(`No user found with email: ${email}`);
-      return;
+    ));
+
+    if (userToBan.empty) return alert("User not found");
+
+    const targetUser = userToBan.docs[0];
+    const targetData = targetUser.data();
+
+    // Prevent banning original admin
+    if (targetData.isOriginalAdmin) {
+      throw new Error("Cannot ban original admin");
     }
 
-    // Ban the user
-    const userDoc = querySnapshot.docs[0];
-    await updateDoc(userDoc.ref, {
+    // Prevent promoted admins from banning other admins
+    if (!userData.isOriginalAdmin && targetData.role === "admin") {
+      throw new Error("Promoted admins cannot ban other admins");
+    }
+
+    await updateDoc(targetUser.ref, {
       banned: true,
-      bannedAt: new Date().toISOString()
+      bannedAt: new Date().toISOString(),
+      bannedBy: user.email
     });
 
-    alert(`Successfully banned user: ${email}`);
-    emailInput.value = ""; // Clear the input field
-    loadBannedUsers(); // Refresh the banned users list
-    
+    alert(`User ${email} has been banned`);
+    document.getElementById('banUserEmail').value = "";
+    loadBannedUsers();
   } catch (error) {
-    console.error("Ban user error:", error);
-    alert(`Failed to ban user: ${error.message}`);
+    alert("Error: " + error.message);
   }
 };
 
@@ -1356,22 +1371,29 @@ window.showAnnouncementModal = function() {
 
       table.innerHTML = '';
       querySnapshot.forEach(doc => {
-        const data = doc.data();
-        const isCurrentUser = doc.id === currentUser.uid;
-        const isTargetOriginalAdmin = data.isOriginalAdmin;
-        
-        let actionCell = "-";
-        if (isOriginalAdmin && !isTargetOriginalAdmin && !isCurrentUser) {
-          actionCell = `<button onclick="revokeAdmin('${doc.id}')" class="danger">Revoke</button>`;
-        }
+    const data = doc.data();
+    const isCurrentUser = doc.id === currentUser.uid;
+    const isTargetOriginalAdmin = data.isOriginalAdmin;
+    
+    let adminType = "";
+    if (data.isOriginalAdmin) {
+      adminType = " (Original Admin)";
+    } else if (data.role === "admin") {
+      adminType = " (Promoted Admin)";
+    }
 
-        const row = `
-          <tr>
-            <td>${data.email}</td>
-            <td>${actionCell}</td>
-          </tr>`;
-        table.innerHTML += row;
-      });
+    let actionCell = "-";
+    if (isOriginalAdmin && !isTargetOriginalAdmin && !isCurrentUser) {
+      actionCell = `<button onclick="revokeAdmin('${doc.id}')" class="danger">Revoke</button>`;
+    }
+
+    const row = `
+      <tr>
+        <td>${data.email}${adminType}</td>
+        <td>${actionCell}</td>
+      </tr>`;
+    table.innerHTML += row;
+  });
 
       if (table.innerHTML === '') {
         table.innerHTML = '<tr><td colspan="2">No admins found</td></tr>';

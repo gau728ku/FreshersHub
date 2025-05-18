@@ -353,22 +353,6 @@
   color: #dc3545;
 }
 
-/* Employer dashboard specific */
-#quickJobForm {
-  display: flex;
-  gap: 10px;
-}
-
-#quickJobForm input {
-  flex: 1;
-  margin: 0;
-}
-
-#quickJobForm button {
-  width: auto;
-  padding: 12px 24px;
-}
-
 
   </style>
 </head>
@@ -643,23 +627,6 @@
       <p>Total Applications</p>
       <h3 id="employerAppCount">-</h3>
     </div>
-  </div>
-
-  <!-- Announcement Card -->
-  <div class="card">
-    <h3>Platform Announcements</h3>
-    <div id="employerAnnouncement">
-      Loading announcements...
-    </div>
-  </div>
-
-  <!-- Quick Post Job Card -->
-  <div class="card">
-    <h3>Quick Post Job</h3>
-    <form id="quickJobForm">
-      <input type="text" id="quickJobTitle" placeholder="Job Title" required>
-      <button type="submit" class="success">Post Job</button>
-    </form>
   </div>
 </div>
 
@@ -1633,7 +1600,7 @@ window.loadEmployerStats = async function() {
 };
 
 // Initialize employer dashboard
-// Add this function to your existing JavaScript
+
 window.initEmployerDashboard = async function() {
   try {
     // Load stats
@@ -1644,28 +1611,6 @@ window.initEmployerDashboard = async function() {
     
     // Set up form listeners
     document.getElementById('postJobForm')?.addEventListener('submit', postJob);
-    document.getElementById('quickJobForm')?.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const quickTitle = document.getElementById('quickJobTitle').value;
-      if (quickTitle) {
-        document.getElementById('jobTitle').value = quickTitle;
-        showEmployerSection('postJob');
-      }
-    });
-    
-    // Load announcement
-    const announcementRef = doc(db, "announcements", "current");
-    onSnapshot(announcementRef, (doc) => {
-      const announcementDiv = document.getElementById('employerAnnouncement');
-      if (doc.exists()) {
-        announcementDiv.innerHTML = `
-          <p><strong>${doc.data().text}</strong></p>
-          <small>Posted by Admin on ${new Date(doc.data().timestamp).toLocaleString()}</small>
-        `;
-      } else {
-        announcementDiv.innerHTML = "<p>No current announcements</p>";
-      }
-    });
     
     // Add search functionality
     document.getElementById('searchMyJobs')?.addEventListener('input', (e) => {

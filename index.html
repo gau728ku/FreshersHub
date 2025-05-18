@@ -1519,8 +1519,6 @@ window.loadEmployerStats = async function() {
 };
 
 
-let jobsListener = null; // To store the listener
-
 window.loadEmployerJobs = function() {
   const table = document.getElementById('EmployerJobsTable');
   const user = auth.currentUser;
@@ -1531,37 +1529,42 @@ window.loadEmployerJobs = function() {
   // Show loading state
   table.innerHTML = '<tr><td colspan="6">Loading jobs...</td></tr>';
 
-  // Set up real-time listener
+  // Set up real-time listener with proper field name
   jobsListener = onSnapshot(
     query(
       collection(db, "jobs"),
-      where("employerId", "==", user.uid),
+      where("employerId", "==", user.uid), // Make sure this matches your data
       orderBy("createdAt", "desc")
     ),
     (snapshot) => {
-      if (snapshot.empty) {
-        table.innerHTML = '<tr><td colspan="6">No jobs posted yet</td></tr>';
-        return;
-      }
+      try {
+        if (snapshot.empty) {
+          table.innerHTML = '<tr><td colspan="6">No jobs posted yet</td></tr>';
+          return;
+        }
 
-      table.innerHTML = '';
-      snapshot.forEach(doc => {
-        const data = doc.data();
-        const row = `
-          <tr>
-            <td>${data.Title || 'Untitled'}</td>
-            <td>${data.applications?.length || 0}</td>
-            <td>${data.jobType || 'N/A'}</td>
-            <td>${new Date(data.createdAt).toLocaleDateString()}</td>
-            <td><span class="job-status">${data.status || 'active'}</span></td>
-            <td>
-              <button onclick="viewJobApplications('${doc.id}')" class="success">View</button>
-              <button onclick="editJob('${doc.id}')">Edit</button>
-              <button onclick="deleteJob('${doc.id}')" class="danger">Delete</button>
-            </td>
-          </tr>`;
-        table.innerHTML += row;
-      });
+        table.innerHTML = '';
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          const row = `
+            <tr>
+              <td>${data.Title || 'Untitled'}</td>
+              <td>${data.applications?.length || 0}</td>
+              <td>${data.jobType || 'N/A'}</td>
+              <td>${new Date(data.createdAt).toLocaleDateString()}</td>
+              <td><span class="job-status">${data.status || 'active'}</span></td>
+              <td>
+                <button onclick="viewJobApplications('${doc.id}')" class="success">View</button>
+                <button onclick="editJob('${doc.id}')">Edit</button>
+                <button onclick="deleteJob('${doc.id}')" class="danger">Delete</button>
+              </td>
+            </tr>`;
+          table.innerHTML += row;
+        });
+      } catch (error) {
+        console.error("Error processing snapshot:", error);
+        table.innerHTML = '<tr><td colspan="6">Error loading jobs</td></tr>';
+      }
     },
     (error) => {
       console.error("Listener error:", error);
@@ -1604,7 +1607,6 @@ document.getElementById('searchMyJobs').addEventListener('input', (e) => {
 window.postJob = async function(e) {
   e.preventDefault();
   
-  // Disable button during submission
   const submitBtn = e.target.querySelector('button[type="submit"]');
   submitBtn.disabled = true;
   submitBtn.textContent = "Posting...";
@@ -1620,15 +1622,13 @@ window.postJob = async function(e) {
       salary: document.getElementById('jobSalary').value,
       jobType: document.getElementById('jobType').value,
       Employer: user.email,
-      employerId: user.uid,
-      createdAt: new Date().toISOString(),
+      employerId: user.uid, // This is required by the rules
+      createdAt: new Date().toISOString(), // This is required by the rules
       status: "active",
       applications: []
     });
 
-    // Success - no alert here, let the real-time listener handle it
     showEmployerSection('myJobs');
-
   } catch (error) {
     console.error("Post error:", error);
     alert(`Error: ${error.message}`);
@@ -1637,7 +1637,6 @@ window.postJob = async function(e) {
     submitBtn.textContent = "Post Job";
   }
 };
-
 
 // Enhanced loadEmployerStats function
 

@@ -627,6 +627,10 @@
       <p>Total Applications</p>
       <h3 id="employerAppCount">-</h3>
     </div>
+    <div class="stat-card" onclick="showEmployerSection('myJobs')">
+      <p>Total Jobs Posted</p>
+      <h3 id="employerTotalJobs">-</h3>
+    </div>
   </div>
 </div>
 
@@ -1576,25 +1580,37 @@ window.postJob = async function(e) {
 };
 
 // Enhanced loadEmployerStats function
+
 window.loadEmployerStats = async function() {
   try {
     const user = auth.currentUser;
     if (!user) return;
 
-    // Count employer's active jobs
-    const jobsQuery = query(
+    // Count employer's ACTIVE jobs (existing)
+    const activeJobsQuery = query(
       collection(db, "jobs"),
       where("employerId", "==", user.uid),
       where("status", "==", "active")
     );
-    const jobsSnapshot = await getDocs(jobsQuery);
-    document.getElementById('employerJobCount').textContent = jobsSnapshot.size;
+    const activeJobsSnapshot = await getDocs(activeJobsQuery);
+    document.getElementById('employerJobCount').textContent = activeJobsSnapshot.size;
 
-    // Count applications (placeholder - will implement later)
+    // NEW: Count ALL jobs (including inactive/closed)
+    const totalJobsQuery = query(
+      collection(db, "jobs"),
+      where("employerId", "==", user.uid)
+    );
+    const totalJobsSnapshot = await getDocs(totalJobsQuery);
+    document.getElementById('employerTotalJobs').textContent = totalJobsSnapshot.size;
+
+    // Count applications (placeholder - implement later)
     document.getElementById('employerAppCount').textContent = "0";
+
   } catch (error) {
     console.error("Error loading stats:", error);
+    // Show errors in UI
     document.getElementById('employerJobCount').textContent = "Error";
+    document.getElementById('employerTotalJobs').textContent = "Error";
     document.getElementById('employerAppCount').textContent = "Error";
   }
 };

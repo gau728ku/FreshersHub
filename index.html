@@ -645,6 +645,24 @@
     </div>
   </div>
 
+  <!-- Announcement Card -->
+  <div class="card">
+    <h3>Platform Announcements</h3>
+    <div id="employerAnnouncement">
+      Loading announcements...
+    </div>
+  </div>
+
+  <!-- Quick Post Job Card -->
+  <div class="card">
+    <h3>Quick Post Job</h3>
+    <form id="quickJobForm">
+      <input type="text" id="quickJobTitle" placeholder="Job Title" required>
+      <button type="submit" class="success">Post Job</button>
+    </form>
+  </div>
+</div>
+
 <!-- Update the Post Job Section with this: -->
 <div class="dashboard-section" id="EmployerPostJobSection">
   <h2>Post New Job</h2>
@@ -1541,7 +1559,7 @@ window.loadEmployerJobs = async function() {
 };
 
 // Enhanced post job function
-
+// Enhanced post job function with better error handling
 window.postJob = async function(e) {
   e.preventDefault();
   
@@ -1562,15 +1580,8 @@ window.postJob = async function(e) {
 
     // Verify the user is still an employer
     const userDoc = await getDoc(doc(db, "users", user.uid));
-    const userData = userDoc.data();
-    
-    if (!userDoc.exists() || userData.role !== "Employer") {
+    if (userDoc.data().role !== "Employer") {
       throw new Error("Only employers can post jobs");
-    }
-
-    // Check if user is banned
-    if (userData.banned) {
-      throw new Error("Your account has been banned");
     }
 
     await addDoc(collection(db, "jobs"), {
@@ -1580,7 +1591,7 @@ window.postJob = async function(e) {
       salary: salary,
       jobType: jobType,
       Employer: user.email,
-      employerId: user.uid,
+      employerId: user.uid, // Added for easier querying
       createdAt: new Date().toISOString(),
       status: "active",
       applications: 0
@@ -1594,11 +1605,6 @@ window.postJob = async function(e) {
   } catch (error) {
     console.error("Post job error:", error);
     alert(`Error posting job: ${error.message}`);
-    
-    // If permission error, suggest logging out and back in
-    if (error.code === "permission-denied") {
-      alert("Please try logging out and back in to refresh your permissions.");
-    }
   }
 };
 
@@ -1919,10 +1925,10 @@ async function loadBannedUsers() {
 
   // Validation functions
   function validateEmail(email) {
-  // Remove any invalid flags after the regex pattern
-  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;  // Removed any flags like /g, /i etc.
-  return re.test(email);
-}
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+  }
+
   function validatePassword(password) {
     return password.length >= 8;
   }
@@ -2248,8 +2254,8 @@ async function loadDeletedUsers() {
       '<tr><td colspan="3">Error loading deleted users</td></tr>';
   }
 }
-  }
-);
+})
+
 </script>
 
 <!-- 🔔 Admin Notification Toast -->
@@ -2268,6 +2274,6 @@ async function loadDeletedUsers() {
   transition: opacity 0.4s ease;
 "></div>
 
-
- </body>
- </html> 
+  
+</body>
+</html>

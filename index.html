@@ -2248,14 +2248,6 @@ async function loadDeletedUsers() {
       '<tr><td colspan="3">Error loading deleted users</td></tr>';
   }
 }
-
-function isEmployer() {
-  return request.auth != null &&
-    (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "Employer" ||
-     get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "employer");
-}
-
-
   }
 );
 </script>

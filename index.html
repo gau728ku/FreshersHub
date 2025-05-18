@@ -1114,6 +1114,39 @@ async function startEmployerSignupListener() {
     }
   };
 
+
+// Announcement Listener (add this EXACTLY here)
+
+window.startUserAnnouncementListener = function() {
+  const announcementRef = doc(db, "announcements", "current");
+
+  onSnapshot(announcementRef, (docSnap) => {
+    const data = docSnap.data();
+    const text = data?.text?.trim();
+    const isActive = !!text;
+
+    // Update Fresher banner
+    const fresherBanner = document.getElementById("announcementBannerFresher");
+    const fresherText = document.getElementById("announcementTextFresher");
+    if (fresherBanner && fresherText) {
+      fresherBanner.style.display = isActive ? "block" : "none";
+      fresherText.textContent = text || "";
+    }
+
+    // Update Employer banner
+    const employerBanner = document.getElementById("announcementBannerEmployer");
+    const employerText = document.getElementById("announcementTextEmployer");
+    if (employerBanner && employerText) {
+      employerBanner.style.display = isActive ? "block" : "none";
+      employerText.textContent = text || "";
+    }
+  }, (error) => {
+    console.error("Announcement error:", error);
+  });
+};
+
+
+
 //delete users
 
   window.deleteUser = async function(userId) {
@@ -2069,6 +2102,12 @@ async function loadBannedUsers() {
       showDashboard(userData.role);
       startUserAnnouncementListener();
       startEmployerSignupListener();
+
+      //Initialize listeners
+ if (typeof startUserAnnouncementListener === 'function') {
+        startUserAnnouncementListener(); // Now safely called
+      }
+      
 
       // Initialize role-specific dashboard components
       if (userData.role === 'admin') {

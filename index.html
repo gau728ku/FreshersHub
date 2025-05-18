@@ -645,24 +645,6 @@
     </div>
   </div>
 
-  <!-- Announcement Card -->
-  <div class="card">
-    <h3>Platform Announcements</h3>
-    <div id="employerAnnouncement">
-      Loading announcements...
-    </div>
-  </div>
-
-  <!-- Quick Post Job Card -->
-  <div class="card">
-    <h3>Quick Post Job</h3>
-    <form id="quickJobForm">
-      <input type="text" id="quickJobTitle" placeholder="Job Title" required>
-      <button type="submit" class="success">Post Job</button>
-    </form>
-  </div>
-</div>
-
 <!-- Update the Post Job Section with this: -->
 <div class="dashboard-section" id="EmployerPostJobSection">
   <h2>Post New Job</h2>
@@ -1559,7 +1541,7 @@ window.loadEmployerJobs = async function() {
 };
 
 // Enhanced post job function
-// Enhanced post job function with better error handling
+
 window.postJob = async function(e) {
   e.preventDefault();
   
@@ -1580,8 +1562,15 @@ window.postJob = async function(e) {
 
     // Verify the user is still an employer
     const userDoc = await getDoc(doc(db, "users", user.uid));
-    if (userDoc.data().role !== "Employer") {
+    const userData = userDoc.data();
+    
+    if (!userDoc.exists() || userData.role !== "Employer") {
       throw new Error("Only employers can post jobs");
+    }
+
+    // Check if user is banned
+    if (userData.banned) {
+      throw new Error("Your account has been banned");
     }
 
     await addDoc(collection(db, "jobs"), {
@@ -1591,7 +1580,7 @@ window.postJob = async function(e) {
       salary: salary,
       jobType: jobType,
       Employer: user.email,
-      employerId: user.uid, // Added for easier querying
+      employerId: user.uid,
       createdAt: new Date().toISOString(),
       status: "active",
       applications: 0
@@ -1605,6 +1594,11 @@ window.postJob = async function(e) {
   } catch (error) {
     console.error("Post job error:", error);
     alert(`Error posting job: ${error.message}`);
+    
+    // If permission error, suggest logging out and back in
+    if (error.code === "permission-denied") {
+      alert("Please try logging out and back in to refresh your permissions.");
+    }
   }
 };
 
@@ -2254,6 +2248,15 @@ async function loadDeletedUsers() {
       '<tr><td colspan="3">Error loading deleted users</td></tr>';
   }
 }
+
+function isEmployer() {
+  return request.auth != null &&
+    (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "Employer" ||
+     get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "employer");
+}
+
+
+
   }
 );
 </script>

@@ -335,39 +335,6 @@
   }
 }
 
-/* Add to your existing CSS */
-.job-status {
-  padding: 4px 8px;
-  border-radius: 12px;
-  font-size: 0.8rem;
-  font-weight: bold;
-}
-
-.job-status[data-status="active"] {
-  background-color: #28a74520;
-  color: #28a745;
-}
-
-.job-status[data-status="closed"] {
-  background-color: #dc354520;
-  color: #dc3545;
-}
-
-/* Employer dashboard specific */
-#quickJobForm {
-  display: flex;
-  gap: 10px;
-}
-
-#quickJobForm input {
-  flex: 1;
-  margin: 0;
-}
-
-#quickJobForm button {
-  width: auto;
-  padding: 12px 24px;
-}
 
 
   </style>
@@ -629,88 +596,49 @@
     <div class="overlay" id="EmployerOverlay" onclick="toggleEmployerMenu()"></div>
     
     <!-- Employer Home Section -->
-    <!-- Replace the Employer Home Section with this: -->
-<div class="dashboard-section" id="EmployerHomeSection">
-  <h2>Employer Dashboard</h2>
-  
-  <!-- Quick Stats -->
-  <div class="stats-container">
-    <div class="stat-card" onclick="showEmployerSection('myJobs')">
-      <p>Active Jobs</p>
-      <h3 id="employerJobCount">-</h3>
+    <div class="dashboard-section" id="EmployerHomeSection">
+      <h2>Employer Dashboard</h2>
+      <div class="card">
+        <p>Welcome to your Employer dashboard!</p>
+      </div>
     </div>
-    <div class="stat-card" onclick="loadApplicationsStats()">
-      <p>Total Applications</p>
-      <h3 id="employerAppCount">-</h3>
+    
+    <!-- Post Job Section -->
+    <div class="dashboard-section" id="EmployerPostJobSection">
+      <h2>Post New Job</h2>
+      <button onclick="showEmployerSection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
+      
+      <div class="card">
+        <form id="postJobForm">
+          <input type="text" id="jobTitle" placeholder="Job Title" required>
+          <textarea id="jobDescription" placeholder="Job Description" required style="width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px;"></textarea>
+          <input type="text" id="jobLocation" placeholder="Location" required>
+          <input type="text" id="jobSalary" placeholder="Salary Range" required>
+          <button type="submit" class="success">Post Job</button>
+        </form>
+      </div>
+    </div>
+    
+    <!-- My Jobs Section -->
+    <div class="dashboard-section" id="EmployerMyJobsSection">
+      <h2>My Job Postings</h2>
+      <button onclick="showEmployerSection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
+      
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Applications</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="EmployerJobsTable"></tbody>
+        </table>
+      </div>
     </div>
   </div>
-
-  <!-- Announcement Card -->
-  <div class="card">
-    <h3>Platform Announcements</h3>
-    <div id="employerAnnouncement">
-      Loading announcements...
-    </div>
-  </div>
-
-  <!-- Quick Post Job Card -->
-  <div class="card">
-    <h3>Quick Post Job</h3>
-    <form id="quickJobForm">
-      <input type="text" id="quickJobTitle" placeholder="Job Title" required>
-      <button type="submit" class="success">Post Job</button>
-    </form>
-  </div>
-</div>
-
-<!-- Update the Post Job Section with this: -->
-<div class="dashboard-section" id="EmployerPostJobSection">
-  <h2>Post New Job</h2>
-  <button onclick="showEmployerSection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
-  
-  <div class="card">
-    <form id="postJobForm">
-      <input type="text" id="jobTitle" placeholder="Job Title" required>
-      <textarea id="jobDescription" placeholder="Job Description (Responsibilities, Requirements)" required 
-                style="width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; min-height: 120px;"></textarea>
-      <input type="text" id="jobLocation" placeholder="Location (e.g., Remote, City)" required>
-      <input type="text" id="jobSalary" placeholder="Salary Range (e.g., $50k-$70k)" required>
-      <select id="jobType" required>
-        <option value="">Select Job Type</option>
-        <option value="Full-time">Full-time</option>
-        <option value="Part-time">Part-time</option>
-        <option value="Contract">Contract</option>
-        <option value="Internship">Internship</option>
-      </select>
-      <button type="submit" class="success">Post Job</button>
-    </form>
-  </div>
-</div>
-
-<!-- Update the My Jobs Section with this: -->
-<div class="dashboard-section" id="EmployerMyJobsSection">
-  <h2>My Job Postings</h2>
-  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-    <button onclick="showEmployerSection('home')">← Back to Dashboard</button>
-    <input type="text" class="search-input" placeholder="Search my jobs..." id="searchMyJobs">
-  </div>
-  
-  <div class="table-container">
-    <table>
-      <thead>
-        <tr>
-          <th>Title</th>
-          <th>Applications</th>
-          <th>Type</th>
-          <th>Posted</th>
-          <th>Status</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody id="EmployerJobsTable"></tbody>
-    </table>
-  </div>
-</div>
 
   <!-- Fresher Dashboard -->
 
@@ -1485,205 +1413,6 @@ window.postAnnouncementV2 = async function(text) {
     }
   };
 
-//loadEmployerstats
-
-// Add to your existing JavaScript
-window.loadEmployerStats = async function() {
-  try {
-    const user = auth.currentUser;
-    if (!user) return;
-
-    // Count employer's jobs
-    const jobsQuery = query(
-      collection(db, "jobs"),
-      where("Employer", "==", user.email)
-    );
-    const jobsSnapshot = await getDocs(jobsQuery);
-    document.getElementById('employerJobCount').textContent = jobsSnapshot.size;
-
-    // Count applications (placeholder - will implement later)
-    document.getElementById('employerAppCount').textContent = "0";
-  } catch (error) {
-    console.error("Error loading stats:", error);
-  }
-};
-
-window.loadEmployerJobs = async function() {
-  const table = document.getElementById('EmployerJobsTable');
-  table.innerHTML = '<tr><td colspan="6">Loading your jobs...</td></tr>';
-
-  try {
-    const user = auth.currentUser;
-    const querySnapshot = await getDocs(query(
-      collection(db, "jobs"),
-      where("Employer", "==", user.email)
-    ));
-
-    table.innerHTML = '';
-    if (querySnapshot.empty) {
-      table.innerHTML = '<tr><td colspan="6">You haven\'t posted any jobs yet</td></tr>';
-      return;
-    }
-
-    querySnapshot.forEach(doc => {
-      const data = doc.data();
-      const row = `
-        <tr>
-          <td>${data.Title || 'Untitled'}</td>
-          <td>0</td> <!-- Applications count placeholder -->
-          <td>${data.jobType || 'N/A'}</td>
-          <td>${new Date(data.createdAt).toLocaleDateString()}</td>
-          <td><span class="job-status">Active</span></td>
-          <td>
-            <button onclick="viewJobApplications('${doc.id}')" class="success">View</button>
-            <button onclick="editJob('${doc.id}')">Edit</button>
-            <button onclick="deleteJob('${doc.id}')" class="danger">Delete</button>
-          </td>
-        </tr>`;
-      table.innerHTML += row;
-    });
-
-    // Add search functionality
-    document.getElementById('searchMyJobs').addEventListener('input', (e) => {
-      const term = e.target.value.toLowerCase();
-      const rows = table.querySelectorAll('tr');
-      rows.forEach(row => {
-        const text = row.textContent.toLowerCase();
-        row.style.display = text.includes(term) ? '' : 'none';
-      });
-    });
-  } catch (error) {
-    console.error("Error loading jobs:", error);
-    table.innerHTML = '<tr><td colspan="6">Error loading your jobs</td></tr>';
-  }
-};
-
-// Enhanced post job function
-// Enhanced post job function with better error handling
-window.postJob = async function(e) {
-  e.preventDefault();
-  
-  const title = document.getElementById('jobTitle').value;
-  const description = document.getElementById('jobDescription').value;
-  const location = document.getElementById('jobLocation').value;
-  const salary = document.getElementById('jobSalary').value;
-  const jobType = document.getElementById('jobType').value;
-  
-  if (!title || !description || !location || !salary || !jobType) {
-    alert("Please fill all fields");
-    return;
-  }
-
-  try {
-    const user = auth.currentUser;
-    if (!user) throw new Error("Not authenticated");
-
-    // Verify the user is still an employer
-    const userDoc = await getDoc(doc(db, "users", user.uid));
-    if (userDoc.data().role !== "Employer") {
-      throw new Error("Only employers can post jobs");
-    }
-
-    await addDoc(collection(db, "jobs"), {
-      Title: title,
-      description: description,
-      location: location,
-      salary: salary,
-      jobType: jobType,
-      Employer: user.email,
-      employerId: user.uid, // Added for easier querying
-      createdAt: new Date().toISOString(),
-      status: "active",
-      applications: 0
-    });
-    
-    alert("Job posted successfully!");
-    document.getElementById('postJobForm').reset();
-    loadEmployerJobs();
-    loadEmployerStats();
-    showEmployerSection('myJobs');
-  } catch (error) {
-    console.error("Post job error:", error);
-    alert(`Error posting job: ${error.message}`);
-  }
-};
-
-// Enhanced loadEmployerStats function
-window.loadEmployerStats = async function() {
-  try {
-    const user = auth.currentUser;
-    if (!user) return;
-
-    // Count employer's active jobs
-    const jobsQuery = query(
-      collection(db, "jobs"),
-      where("employerId", "==", user.uid),
-      where("status", "==", "active")
-    );
-    const jobsSnapshot = await getDocs(jobsQuery);
-    document.getElementById('employerJobCount').textContent = jobsSnapshot.size;
-
-    // Count applications (placeholder - will implement later)
-    document.getElementById('employerAppCount').textContent = "0";
-  } catch (error) {
-    console.error("Error loading stats:", error);
-    document.getElementById('employerJobCount').textContent = "Error";
-    document.getElementById('employerAppCount').textContent = "Error";
-  }
-};
-
-// Initialize employer dashboard
-// Add this function to your existing JavaScript
-window.initEmployerDashboard = async function() {
-  try {
-    // Load stats
-    await loadEmployerStats();
-    
-    // Load jobs
-    await loadEmployerJobs();
-    
-    // Set up form listeners
-    document.getElementById('postJobForm')?.addEventListener('submit', postJob);
-    document.getElementById('quickJobForm')?.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const quickTitle = document.getElementById('quickJobTitle').value;
-      if (quickTitle) {
-        document.getElementById('jobTitle').value = quickTitle;
-        showEmployerSection('postJob');
-      }
-    });
-    
-    // Load announcement
-    const announcementRef = doc(db, "announcements", "current");
-    onSnapshot(announcementRef, (doc) => {
-      const announcementDiv = document.getElementById('employerAnnouncement');
-      if (doc.exists()) {
-        announcementDiv.innerHTML = `
-          <p><strong>${doc.data().text}</strong></p>
-          <small>Posted by Admin on ${new Date(doc.data().timestamp).toLocaleString()}</small>
-        `;
-      } else {
-        announcementDiv.innerHTML = "<p>No current announcements</p>";
-      }
-    });
-    
-    // Add search functionality
-    document.getElementById('searchMyJobs')?.addEventListener('input', (e) => {
-      const term = e.target.value.toLowerCase();
-      const table = document.getElementById('EmployerJobsTable');
-      const rows = table?.querySelectorAll('tr');
-      rows?.forEach(row => {
-        const text = row.textContent.toLowerCase();
-        row.style.display = text.includes(term) ? '' : 'none';
-      });
-    });
-  } catch (error) {
-    console.error("Error initializing employer dashboard:", error);
-  }
-};
-
-
-
   // Stats and activity functions
   async function loadAdminStats() {
     try {
@@ -2089,62 +1818,46 @@ async function loadBannedUsers() {
 
     // Auth state change handler
     onAuthStateChanged(auth, async (user) => {
-  if (!user) {
-    document.getElementById('auth-section').style.display = 'block';
-    return;
-  }
-
-  try {
-    const userDoc = await getDoc(doc(db, "users", user.uid));
-    if (userDoc.exists()) {
-      const userData = userDoc.data();
-
-      if (userData.banned) {
-        alert("Your account has been banned.");
-        await signOut(auth);
+      if (!user) {
+        document.getElementById('auth-section').style.display = 'block';
         return;
       }
 
-      showDashboard(userData.role);
-      startUserAnnouncementListener();
-      startEmployerSignupListener();
+      try {
+        const userDoc = await getDoc(doc(db, "users", user.uid));
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
 
-      // Initialize role-specific dashboard components
-      if (userData.role === 'admin') {
-        loadAdminStats();
-        loadRecentActivity();
-        loadAnnouncement();
-      } else if (userData.role === 'Employer') {
-        initEmployerDashboard(); // Initialize employer-specific features
-      } else if (userData.role === 'fresher') {
-        // Initialize fresher-specific features if needed
-      }
-
-      // Set up role change listener
-      if (roleChangeUnsubscribe) {
-        roleChangeUnsubscribe();
-      }
-      
-      roleChangeUnsubscribe = onSnapshot(userDoc.ref, (snapshot) => {
-        const newData = snapshot.data();
-        if (newData?.banned) {
-          alert("Your account has been banned. You are now logged out.");
-          logout();
+        if (userData.banned) {
+          alert("Your account has been banned.");
+          await signOut(auth);
           return;
+           }
+
+          showDashboard(userData.role);
+          startUserAnnouncementListener();
+          startEmployerSignupListener();
+
+
+
+          // Set up role change listener
+          if (roleChangeUnsubscribe) {
+            roleChangeUnsubscribe();
+          }
+          
+          roleChangeUnsubscribe = onSnapshot(userDoc.ref, (snapshot) => {
+            const newRole = snapshot.data()?.role;
+            if (newRole !== userData.role) {
+              alert("Your role has changed. Please log in again.");
+              logout();
+            }
+          });
         }
-        
-        const newRole = newData?.role;
-        if (newRole !== userData.role) {
-          alert("Your role has changed. Please log in again.");
-          logout();
-        }
-      });
-    }
-  } catch (error) {
-    console.error("Error checking user role:", error);
-    alert("Error loading user data. Please try again.");
-  }
-});
+      } catch (error) {
+        console.error("Error checking user role:", error);
+      }
+    });
+  });
 
 document.addEventListener('DOMContentLoaded', () => {
   // Password Toggle
@@ -2254,7 +1967,8 @@ async function loadDeletedUsers() {
       '<tr><td colspan="3">Error loading deleted users</td></tr>';
   }
 }
-})
+
+
 </script>
 
 <!-- 🔔 Admin Notification Toast -->
@@ -2273,6 +1987,6 @@ async function loadDeletedUsers() {
   transition: opacity 0.4s ease;
 "></div>
 
-  
+
 </body>
 </html>

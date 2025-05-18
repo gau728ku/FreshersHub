@@ -1919,10 +1919,10 @@ async function loadBannedUsers() {
 
   // Validation functions
   function validateEmail(email) {
-  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  // Remove any invalid flags after the regex pattern
+  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;  // Removed any flags like /g, /i etc.
   return re.test(email);
 }
-
   function validatePassword(password) {
     return password.length >= 8;
   }

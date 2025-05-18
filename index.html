@@ -1512,58 +1512,94 @@ window.loadEmployerStats = async function() {
   }
 };
 
-window.loadEmployerJobs = async function() {
+window.loadEmployerJobs = function() {
   const table = document.getElementById('EmployerJobsTable');
-  table.innerHTML = '<tr><td colspan="6">Loading your jobs...</td></tr>';
+  const user = auth.currentUser;
+  
+  if (!user) {
+    table.innerHTML = '<tr><td colspan="6">Not authenticated</td></tr>';
+    return;
+  }
 
-  try {
-    const user = auth.currentUser;
-    const querySnapshot = await getDocs(query(
-      collection(db, "jobs"),
-      where("Employer", "==", user.email)
-    ));
+  // Clear table with loading state
+  table.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 20px;">Loading your jobs...</td></tr>';
 
-    table.innerHTML = '';
-    if (querySnapshot.empty) {
-      table.innerHTML = '<tr><td colspan="6">You haven\'t posted any jobs yet</td></tr>';
-      return;
-    }
+  // Real-time listener with optimized query
+  const jobsQuery = query(
+    collection(db, "jobs"),
+    where("employerId", "==", user.uid),  // Changed from "Employer" to "employerId" for security
+    orderBy("createdAt", "desc")  // Newest jobs first
+  );
 
-    querySnapshot.forEach(doc => {
-      const data = doc.data();
-      const row = `
+  // Unsubscribe any existing listener to avoid duplicates
+  if (window.employerJobsListener) {
+    window.employerJobsListener();
+  }
+
+  // Set up real-time listener
+  window.employerJobsListener = onSnapshot(jobsQuery, 
+    (snapshot) => {
+      if (snapshot.empty) {
+        table.innerHTML = '<tr><td colspan="6">You haven\'t posted any jobs yet</td></tr>';
+        return;
+      }
+
+      table.innerHTML = '';  // Clear loading message
+      
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        const statusClass = data.status === "closed" ? "closed" : "active";
+        
+        const row = `
         <tr>
           <td>${data.Title || 'Untitled'}</td>
-          <td>0</td> <!-- Applications count placeholder -->
+          <td>${data.applications?.length || 0}</td> <!-- Dynamic application count -->
           <td>${data.jobType || 'N/A'}</td>
           <td>${new Date(data.createdAt).toLocaleDateString()}</td>
-          <td><span class="job-status">Active</span></td>
+          <td><span class="job-status" data-status="${statusClass}">${data.status || 'active'}</span></td>
           <td>
             <button onclick="viewJobApplications('${doc.id}')" class="success">View</button>
             <button onclick="editJob('${doc.id}')">Edit</button>
             <button onclick="deleteJob('${doc.id}')" class="danger">Delete</button>
           </td>
         </tr>`;
-      table.innerHTML += row;
-    });
-
-    // Add search functionality
-    document.getElementById('searchMyJobs').addEventListener('input', (e) => {
-      const term = e.target.value.toLowerCase();
-      const rows = table.querySelectorAll('tr');
-      rows.forEach(row => {
-        const text = row.textContent.toLowerCase();
-        row.style.display = text.includes(term) ? '' : 'none';
+        table.innerHTML += row;
       });
-    });
-  } catch (error) {
-    console.error("Error loading jobs:", error);
-    table.innerHTML = '<tr><td colspan="6">Error loading your jobs</td></tr>';
-  }
+    },
+    (error) => {
+      console.error("Jobs listener error:", error);
+      table.innerHTML = `
+        <tr>
+          <td colspan="6" style="color: #dc3545;">
+            Error loading jobs. <button onclick="loadEmployerJobs()">Retry</button>
+          </td>
+        </tr>`;
+    }
+  );
 };
 
+    // Add search functionality
+document.getElementById('searchMyJobs').addEventListener('input', (e) => {
+  const term = e.target.value.toLowerCase();
+  const table = document.getElementById('EmployerJobsTable'); // Make sure this matches your table ID
+  const rows = table.querySelectorAll('tr');
+
+  try {
+    rows.forEach(row => {
+      const text = row.textContent.toLowerCase();
+      row.style.display = text.includes(term) ? '' : 'none';
+    });
+  } catch (error) {
+    console.error("Search error:", error);
+    // Show error without breaking the UI
+    const errorRow = document.createElement('tr');
+    errorRow.innerHTML = '<td colspan="6" style="color: red;">Search failed</td>';
+    table.appendChild(errorRow);
+  }
+});
+
 // Enhanced post job function
-// Enhanced post job function with better error handling
+
 window.postJob = async function(e) {
   e.preventDefault();
   
@@ -1573,44 +1609,51 @@ window.postJob = async function(e) {
   const salary = document.getElementById('jobSalary').value;
   const jobType = document.getElementById('jobType').value;
   
-  if (!title || !description || !location || !salary || !jobType) {
-    alert("Please fill all fields");
-    return;
-  }
-
   try {
     const user = auth.currentUser;
-    if (!user) throw new Error("Not authenticated");
+    if (!user) throw new Error("Not logged in");
 
-    // Verify the user is still an employer
-    const userDoc = await getDoc(doc(db, "users", user.uid));
-    if (userDoc.data().role !== "Employer") {
-      throw new Error("Only employers can post jobs");
-    }
+    // 👇 Critical: Show loading state (disable button)
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Posting...";
 
-    await addDoc(collection(db, "jobs"), {
+    // 👇 Atomic write operation
+    const newJobRef = await addDoc(collection(db, "jobs"), {
       Title: title,
       description: description,
       location: location,
       salary: salary,
       jobType: jobType,
       Employer: user.email,
-      employerId: user.uid, // Added for easier querying
+      employerId: user.uid, // Must match rules
       createdAt: new Date().toISOString(),
-      status: "active",
-      applications: 0
+      status: "active"
     });
+
+    // 👇 Wait for Firestore to propagate
+    await new Promise(resolve => setTimeout(resolve, 500));
     
+    // 👇 Refresh data AFTER success
+    await loadEmployerJobs();
+    
+    // 👇 Only show SUCCESS alert after everything completes
     alert("Job posted successfully!");
-    document.getElementById('postJobForm').reset();
-    loadEmployerJobs();
-    loadEmployerStats();
     showEmployerSection('myJobs');
+
   } catch (error) {
-    console.error("Post job error:", error);
-    alert(`Error posting job: ${error.message}`);
+    console.error("Post error:", error);
+    alert(`Error: ${error.message}`);
+  } finally {
+    // 👇 Re-enable button whether success or fail
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Post Job";
+    }
   }
 };
+
 
 // Enhanced loadEmployerStats function
 

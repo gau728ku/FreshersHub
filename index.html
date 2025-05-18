@@ -528,7 +528,7 @@ button[disabled] {
     type="text" 
     class="search-input" 
     data-table-target="jobsTableBody" 
-    placeholder="Search jobs by title, employer..."
+    placeholder="Search jobs by title, Employer..."
   >
 
   <div class="table-container">
@@ -627,15 +627,15 @@ button[disabled] {
   <div class="stats-container">
     <div class="stat-card" onclick="showEmployerSection('myJobs')">
       <p>Active Jobs</p>
-      <h3 id="employerJobCount">-</h3>
+      <h3 id="EmployerJobCount">-</h3>
     </div>
     <div class="stat-card" onclick="loadApplicationsStats()">
       <p>Total Applications</p>
-      <h3 id="employerAppCount">-</h3>
+      <h3 id="EmployerAppCount">-</h3>
     </div>
     <div class="stat-card" onclick="showEmployerSection('myJobs')">
       <p>Total Jobs Posted</p>
-      <h3 id="employerTotalJobs">-</h3>
+      <h3 id="EmployerTotalJobs">-</h3>
     </div>
   </div>
 </div>
@@ -825,6 +825,9 @@ button[disabled] {
     const password = document.getElementById('password').value;
     const role = document.getElementById('role').value;
 
+ // Ensure role matches exactly what rules expect
+  const normalizedRole = role === "Employer" ? "Employer" : role.toLowerCase();
+
     if (!validateEmail(email)) {
       alert("Please enter a valid email address");
       return;
@@ -841,7 +844,7 @@ button[disabled] {
 
       await setDoc(doc(db, "users", user.uid), { 
         email, 
-        role,
+        role: normalizedRole, // Use consistent casing
         createdAt: new Date().toISOString(),
         isOriginalAdmin: email === ORIGINAL_ADMIN_EMAIL
       });
@@ -928,7 +931,7 @@ async function startEmployerSignupListener() {
     snapshot.docChanges().forEach((change) => {
       if (change.type === "added") {
         const data = change.doc.data();
-        if (data.role.toLowerCase() === "employer") {
+        if (data.role.toLowerCase() === "Employer") {
           const id = change.doc.id;
           if (!latestEmployerTimestamps[id]) {
             latestEmployerTimestamps[id] = true;
@@ -1140,11 +1143,11 @@ window.startUserAnnouncementListener = function() {
     }
 
     // Update Employer banner
-    const employerBanner = document.getElementById("announcementBannerEmployer");
-    const employerText = document.getElementById("announcementTextEmployer");
-    if (employerBanner && employerText) {
-      employerBanner.style.display = isActive ? "block" : "none";
-      employerText.textContent = text || "";
+    const EmployerBanner = document.getElementById("announcementBannerEmployer");
+    const EmployerText = document.getElementById("announcementTextEmployer");
+    if (EmployerBanner && EmployerText) {
+      EmployerBanner.style.display = isActive ? "block" : "none";
+      EmployerText.textContent = text || "";
     }
   }, (error) => {
     console.error("Announcement error:", error);
@@ -1503,16 +1506,16 @@ window.loadEmployerStats = async function() {
     const user = auth.currentUser;
     if (!user) return;
 
-    // Count employer's jobs
+    // Count Employer's jobs
     const jobsQuery = query(
       collection(db, "jobs"),
       where("Employer", "==", user.email)
     );
     const jobsSnapshot = await getDocs(jobsQuery);
-    document.getElementById('employerJobCount').textContent = jobsSnapshot.size;
+    document.getElementById('EmployerJobCount').textContent = jobsSnapshot.size;
 
     // Count applications (placeholder - will implement later)
-    document.getElementById('employerAppCount').textContent = "0";
+    document.getElementById('EmployerAppCount').textContent = "0";
   } catch (error) {
     console.error("Error loading stats:", error);
   }
@@ -1533,7 +1536,7 @@ window.loadEmployerJobs = function() {
   jobsListener = onSnapshot(
     query(
       collection(db, "jobs"),
-      where("employerId", "==", user.uid), // Make sure this matches your data
+      where("EmployerId", "==", user.uid), // Make sure this matches your data
       orderBy("createdAt", "desc")
     ),
     (snapshot) => {
@@ -1615,29 +1618,28 @@ window.postJob = async function(e) {
     const user = auth.currentUser;
     if (!user) throw new Error("Not authenticated");
 
+    // ⚠️ Key fix: Ensure these fields EXACTLY match Firestore rules
     await addDoc(collection(db, "jobs"), {
       Title: document.getElementById('jobTitle').value,
       description: document.getElementById('jobDescription').value,
       location: document.getElementById('jobLocation').value,
       salary: document.getElementById('jobSalary').value,
       jobType: document.getElementById('jobType').value,
-      Employer: user.email,
-      employerId: user.uid, // This is required by the rules
-      createdAt: new Date().toISOString(), // This is required by the rules
+      EmployerId: user.uid, // 🔥 Must match Firestore rules (case-sensitive)
+      createdAt: new Date().toISOString(), // 🔥 Required by rules
       status: "active",
       applications: []
     });
 
     showEmployerSection('myJobs');
   } catch (error) {
-    console.error("Post error:", error);
     alert(`Error: ${error.message}`);
+    console.error("Full error:", error);
   } finally {
     submitBtn.disabled = false;
     submitBtn.textContent = "Post Job";
   }
 };
-
 // Enhanced loadEmployerStats function
 
 window.loadEmployerStats = async function() {
@@ -1645,36 +1647,36 @@ window.loadEmployerStats = async function() {
     const user = auth.currentUser;
     if (!user) return;
 
-    // Count employer's ACTIVE jobs (existing)
+    // Count Employer's ACTIVE jobs (existing)
     const activeJobsQuery = query(
       collection(db, "jobs"),
-      where("employerId", "==", user.uid),
+      where("EmployerId", "==", user.uid),
       where("status", "==", "active")
     );
     const activeJobsSnapshot = await getDocs(activeJobsQuery);
-    document.getElementById('employerJobCount').textContent = activeJobsSnapshot.size;
+    document.getElementById('EmployerJobCount').textContent = activeJobsSnapshot.size;
 
     // NEW: Count ALL jobs (including inactive/closed)
     const totalJobsQuery = query(
       collection(db, "jobs"),
-      where("employerId", "==", user.uid)
+      where("EmployerId", "==", user.uid)
     );
     const totalJobsSnapshot = await getDocs(totalJobsQuery);
-    document.getElementById('employerTotalJobs').textContent = totalJobsSnapshot.size;
+    document.getElementById('EmployerTotalJobs').textContent = totalJobsSnapshot.size;
 
     // Count applications (placeholder - implement later)
-    document.getElementById('employerAppCount').textContent = "0";
+    document.getElementById('EmployerAppCount').textContent = "0";
 
   } catch (error) {
     console.error("Error loading stats:", error);
     // Show errors in UI
-    document.getElementById('employerJobCount').textContent = "Error";
-    document.getElementById('employerTotalJobs').textContent = "Error";
-    document.getElementById('employerAppCount').textContent = "Error";
+    document.getElementById('EmployerJobCount').textContent = "Error";
+    document.getElementById('EmployerTotalJobs').textContent = "Error";
+    document.getElementById('EmployerAppCount').textContent = "Error";
   }
 };
 
-// Initialize employer dashboard
+// Initialize Employer dashboard
 
 window.initEmployerDashboard = async function() {
   try {
@@ -1702,7 +1704,7 @@ window.initEmployerDashboard = async function() {
       });
     });
   } catch (error) {
-    console.error("Error initializing employer dashboard:", error);
+    console.error("Error initializing Employer dashboard:", error);
   }
 };
 
@@ -2145,7 +2147,7 @@ async function loadBannedUsers() {
         loadRecentActivity();
         loadAnnouncement();
       } else if (userData.role === 'Employer') {
-        initEmployerDashboard(); // Initialize employer-specific features
+        initEmployerDashboard(); // Initialize Employer-specific features
       } else if (userData.role === 'fresher') {
         // Initialize fresher-specific features if needed
       }
@@ -2221,11 +2223,11 @@ function startUserAnnouncementListener() {
     }
 
     // Employer
-    const employerBanner = document.getElementById("announcementBannerEmployer");
-    const employerText = document.getElementById("announcementTextEmployer");
-    if (employerBanner && employerText) {
-      employerBanner.style.display = isActive ? "block" : "none";
-      employerText.textContent = text || "";
+    const EmployerBanner = document.getElementById("announcementBannerEmployer");
+    const EmployerText = document.getElementById("announcementTextEmployer");
+    if (EmployerBanner && EmployerText) {
+      EmployerBanner.style.display = isActive ? "block" : "none";
+      EmployerText.textContent = text || "";
     }
   });
 }

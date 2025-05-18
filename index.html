@@ -4,9 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>FreshersHub - Job Portal</title>
-
+  
   <style>
-  /* Base styles */
+    /* Base styles */
     body {
       margin: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -343,34 +343,45 @@
   font-weight: bold;
 }
 
-/* Loading state for buttons */
-button[disabled] {
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-
-/* Job status indicators */
 .job-status[data-status="active"] {
   background-color: #28a74520;
   color: #28a745;
 }
+
 .job-status[data-status="closed"] {
   background-color: #dc354520;
   color: #dc3545;
 }
+
+/* Employer dashboard specific */
+#quickJobForm {
+  display: flex;
+  gap: 10px;
+}
+
+#quickJobForm input {
+  flex: 1;
+  margin: 0;
+}
+
+#quickJobForm button {
+  width: auto;
+  padding: 12px 24px;
+}
+
+
   </style>
 </head>
 <body>
 
-  
-  <!-- ==================== AUTHENTICATION SECTION ==================== -->
+  <!-- Authentication Section -->
   <div class="container" id="auth-section">
     <h2 id="form-title">FreshersHub - Signup</h2>
     <input type="email" id="email" placeholder="Email" required />
     <div class="password-wrapper">
-      <input type="password" id="password" placeholder="Password" required />
-      <span id="togglePasswordBtn" class="toggle-password-btn">👁‍🗨</span>
-    </div>
+  <input type="password" id="password" placeholder="Password" required />
+  <span id="togglePasswordBtn" class="toggle-password-btn">👁‍🗨</span>
+</div>
     <select id="role">
       <option value="fresher">Fresher</option>
       <option value="Employer">Employer</option>
@@ -379,8 +390,7 @@ button[disabled] {
     <p id="toggle-text">Already have an account? <a id="toggleLink">Login here</a></p>
   </div>
 
-  
-  <!-- ==================== ADMIN DASHBOARD ==================== -->
+  <!-- Admin Dashboard -->
   <div id="adminDashboard" style="display:none;">
     <div id="adminMenuBtn" onclick="toggleAdminMenu()">☰</div>
 
@@ -528,7 +538,7 @@ button[disabled] {
     type="text" 
     class="search-input" 
     data-table-target="jobsTableBody" 
-    placeholder="Search jobs by title, Employer..."
+    placeholder="Search jobs by title, employer..."
   >
 
   <div class="table-container">
@@ -599,10 +609,11 @@ button[disabled] {
     </div>
   </div>
 
-  
-  <!-- ==================== EMPLOYER DASHBOARD ==================== -->
+  <!-- Employer Dashboard -->
+
   <div id="EmployerDashboard" style="display:none;">
-   <div id="announcementBannerEmployer" class="announcement-banner" style="display: none; cursor: pointer;" onclick="showFullAnnouncement()">
+
+<div id="announcementBannerEmployer" class="announcement-banner" style="display: none; cursor: pointer;" onclick="showFullAnnouncement()">
   <div class="scrolling-text" id="announcementTextEmployer"></div>
 </div>
 
@@ -626,16 +637,29 @@ button[disabled] {
   <div class="stats-container">
     <div class="stat-card" onclick="showEmployerSection('myJobs')">
       <p>Active Jobs</p>
-      <h3 id="EmployerJobCount">-</h3>
+      <h3 id="employerJobCount">-</h3>
     </div>
     <div class="stat-card" onclick="loadApplicationsStats()">
       <p>Total Applications</p>
-      <h3 id="EmployerAppCount">-</h3>
+      <h3 id="employerAppCount">-</h3>
     </div>
-    <div class="stat-card" onclick="showEmployerSection('myJobs')">
-      <p>Total Jobs Posted</p>
-      <h3 id="EmployerTotalJobs">-</h3>
+  </div>
+
+  <!-- Announcement Card -->
+  <div class="card">
+    <h3>Platform Announcements</h3>
+    <div id="employerAnnouncement">
+      Loading announcements...
     </div>
+  </div>
+
+  <!-- Quick Post Job Card -->
+  <div class="card">
+    <h3>Quick Post Job</h3>
+    <form id="quickJobForm">
+      <input type="text" id="quickJobTitle" placeholder="Job Title" required>
+      <button type="submit" class="success">Post Job</button>
+    </form>
   </div>
 </div>
 
@@ -686,12 +710,13 @@ button[disabled] {
       <tbody id="EmployerJobsTable"></tbody>
     </table>
   </div>
-  </div>
+</div>
 
-    
-  <!-- ==================== FRESHER DASHBOARD ==================== -->
+  <!-- Fresher Dashboard -->
+
   <div id="fresherDashboard" style="display:none;">
-    <div id="announcementBannerFresher" class="announcement-banner" style="display: none; cursor: pointer;" onclick="showFullAnnouncement()">
+
+<div id="announcementBannerFresher" class="announcement-banner" style="display: none; cursor: pointer;" onclick="showFullAnnouncement()">
   <div class="scrolling-text" id="announcementTextFresher"></div>
 </div>
 
@@ -775,7 +800,6 @@ button[disabled] {
   </div>
 
 <script type="module">
-  // ==================== FIREBASE IMPORTS ====================
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
   import { 
     getAuth, 
@@ -796,12 +820,10 @@ button[disabled] {
     addDoc, 
     deleteDoc, 
     updateDoc, 
-    onSnapshot,
-    serverTimestamp,
-    orderBy
+    onSnapshot 
   } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-  // ==================== FIREBASE CONFIGURATION ====================
+  // Firebase configuration
   const firebaseConfig = {
     apiKey: "AIzaSyDrrAYywpFdd9iIzSSp2m6XcrGkGUgYY3Y",
     authDomain: "freshershub-33de8.firebaseapp.com",
@@ -816,12 +838,11 @@ button[disabled] {
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  // ==================== GLOBAL VARIABLES ====================
+  // Global variables
   let roleChangeUnsubscribe = null;
-  let jobsListener = null;
   const ORIGINAL_ADMIN_EMAIL = "gauravku7409@gmail.com";
 
-  // ==================== AUTHENTICATION FUNCTIONS ====================
+  // Authentication functions
   window.signup = async function() {
     const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value;
@@ -843,8 +864,8 @@ button[disabled] {
 
       await setDoc(doc(db, "users", user.uid), { 
         email, 
-        role: role === "Employer" ? "Employer" : role.toLowerCase(),
-        createdAt: serverTimestamp(),
+        role,
+        createdAt: new Date().toISOString(),
         isOriginalAdmin: email === ORIGINAL_ADMIN_EMAIL
       });
 
@@ -865,7 +886,10 @@ button[disabled] {
     }
 
     try {
-      if (roleChangeUnsubscribe) roleChangeUnsubscribe();
+      // Clean up previous listener if exists
+      if (roleChangeUnsubscribe) {
+        roleChangeUnsubscribe();
+      }
 
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
@@ -875,30 +899,35 @@ button[disabled] {
       if (docSnap.exists()) {
         const userData = docSnap.data();
 
-        if (userData.banned) {
-          alert("Your account has been banned. Contact support.");
-          await signOut(auth);
-          return;
-        }  
+      if (userData.banned) {
+        alert("Your account has been banned. Contact support.");
+        await signOut(auth);
+        return;
+      }  
 
         const initialRole = userData.role;
         showDashboard(initialRole);
         startUserAnnouncementListener();
         startEmployerSignupListener();
 
+
         // Set up role change listener
         roleChangeUnsubscribe = onSnapshot(docRef, (snapshot) => {
           const data = snapshot.data();
-          if (data?.banned) {
-            alert("You have been banned. You are now logged out.");
-            logout();
-            return;
-          }
-          if (data?.role !== initialRole) {
-            alert("Your role has changed. You'll be logged out.");
-            logout();
-          }
-        });
+
+    if (data?.banned) {
+     alert("You have been banned. You are now logged out.");
+      logout();
+       return;
+  }
+
+  const newRole = data?.role;
+  if (newRole !== initialRole) {
+    alert("Your role has changed. You'll be logged out.");
+    logout();
+  }
+});
+
       } else {
         alert("User data not found.");
       }
@@ -907,11 +936,41 @@ button[disabled] {
     }
   };
 
+
+async function startEmployerSignupListener() {
+  const currentUser = auth.currentUser;
+  if (!currentUser) return;
+
+  const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+  const isAdmin = userDoc.exists() && userDoc.data().isOriginalAdmin;
+  if (!isAdmin) return;
+
+  let latestEmployerTimestamps = {};
+
+  onSnapshot(collection(db, "users"), (snapshot) => {
+    snapshot.docChanges().forEach((change) => {
+      if (change.type === "added") {
+        const data = change.doc.data();
+        if (data.role.toLowerCase() === "employer") {
+          const id = change.doc.id;
+          if (!latestEmployerTimestamps[id]) {
+            latestEmployerTimestamps[id] = true;
+            showAdminToast(`New Employer: ${data.email}`);
+          }
+        }
+      }
+    });
+  });
+}
+
+
+
   window.logout = function() {
     if (roleChangeUnsubscribe) {
       roleChangeUnsubscribe();
       roleChangeUnsubscribe = null;
     }
+    
     signOut(auth).then(() => {
       document.getElementById('auth-section').style.display = 'block';
       document.getElementById('adminDashboard').style.display = 'none';
@@ -920,7 +979,7 @@ button[disabled] {
     });
   };
 
-  // ==================== FORM TOGGLE FUNCTION ====================
+  // Form toggle function
   window.toggleForm = function() {
     const formTitle = document.getElementById('form-title');
     const actionBtn = document.getElementById('actionBtn');
@@ -947,8 +1006,7 @@ button[disabled] {
     });
   };
 
-  
-  // ==================== DASHBOARD FUNCTIONS ====================
+  // Dashboard functions
   window.showDashboard = function(role) {
     document.getElementById('auth-section').style.display = 'none';
     document.getElementById('adminDashboard').style.display = 'none';
@@ -973,12 +1031,10 @@ button[disabled] {
       document.getElementById('EmployerDashboard').style.display = 'block';
       document.getElementById('EmployerMenuBtn').style.display = 'block';
       showEmployerSection('home');
-      initEmployerDashboard();
     }
   };
 
-  
-  // ==================== MENU TOGGLE FUNCTIONS ====================
+  // Menu toggle functions
   window.toggleAdminMenu = function() {
     document.getElementById('adminSideMenu').classList.toggle('open');
     document.getElementById('adminOverlay').classList.toggle('show');
@@ -994,8 +1050,7 @@ button[disabled] {
     document.getElementById('fresherOverlay').classList.toggle('show');
   };
 
-  
-  // ==================== ADMIN SECTION FUNCTIONS ====================
+  // Admin section functions
   window.showAdminSection = function(section) {
     document.getElementById('adminHomeSection').style.display = 'none';
     document.getElementById('adminUsersSection').style.display = 'none';
@@ -1004,24 +1059,23 @@ button[disabled] {
 
     if (section === 'home') {
       document.getElementById('adminHomeSection').style.display = 'block';
-      loadAdminStats();
-      loadRecentActivity(); 
-      loadAnnouncement();
+       loadAdminStats();
+       loadRecentActivity(); 
+       loadAnnouncement(); // Add this line    
     } else if (section === 'users') {
       document.getElementById('adminUsersSection').style.display = 'block';
       loadAllUsers();
-      loadDeletedUsers();
+      loadDeletedUsers(); // Add this line to load deleted users
     } else if (section === 'jobs') {
       document.getElementById('adminJobsSection').style.display = 'block';
       loadAllJobs();
     } else if (section === 'settings') {
       document.getElementById('adminSettingsSection').style.display = 'block';
       loadAdminManagement();
-      loadBannedUsers();
+      loadBannedUsers(); // Add this line
     }
   };
 
-  // loadAllUsers Function
   window.loadAllUsers = async function() {
     const table = document.getElementById('usersTableBody');
     table.innerHTML = '<tr><td colspan="3">Loading users...</td></tr>';
@@ -1088,39 +1142,6 @@ button[disabled] {
       table.innerHTML = '<tr><td colspan="5">Error loading jobs</td></tr>';
     }
   };
-
-
-// Announcement Listener (add this EXACTLY here)
-
-window.startUserAnnouncementListener = function() {
-  const announcementRef = doc(db, "announcements", "current");
-
-  onSnapshot(announcementRef, (docSnap) => {
-    const data = docSnap.data();
-    const text = data?.text?.trim();
-    const isActive = !!text;
-
-    // Update Fresher banner
-    const fresherBanner = document.getElementById("announcementBannerFresher");
-    const fresherText = document.getElementById("announcementTextFresher");
-    if (fresherBanner && fresherText) {
-      fresherBanner.style.display = isActive ? "block" : "none";
-      fresherText.textContent = text || "";
-    }
-
-    // Update Employer banner
-    const EmployerBanner = document.getElementById("announcementBannerEmployer");
-    const EmployerText = document.getElementById("announcementTextEmployer");
-    if (EmployerBanner && EmployerText) {
-      EmployerBanner.style.display = isActive ? "block" : "none";
-      EmployerText.textContent = text || "";
-    }
-  }, (error) => {
-    console.error("Announcement error:", error);
-  });
-};
-
-
 
 //delete users
 
@@ -1463,162 +1484,205 @@ window.postAnnouncementV2 = async function(text) {
       table.innerHTML = '<tr><td colspan="2">Error loading admins</td></tr>';
     }
   };
-  // ... loadAllUsers(), loadAllJobs(), etc ...
 
-  // ==================== EMPLOYER SECTION FUNCTIONS ====================
-  window.loadEmployerStats = async function() {
+//loadEmployerstats
+
+// Add to your existing JavaScript
+window.loadEmployerStats = async function() {
   try {
     const user = auth.currentUser;
     if (!user) return;
 
-    // Count Employer's jobs
+    // Count employer's jobs
     const jobsQuery = query(
       collection(db, "jobs"),
       where("Employer", "==", user.email)
     );
     const jobsSnapshot = await getDocs(jobsQuery);
-    document.getElementById('EmployerJobCount').textContent = jobsSnapshot.size;
+    document.getElementById('employerJobCount').textContent = jobsSnapshot.size;
 
     // Count applications (placeholder - will implement later)
-    document.getElementById('EmployerAppCount').textContent = "0";
+    document.getElementById('employerAppCount').textContent = "0";
   } catch (error) {
     console.error("Error loading stats:", error);
   }
-    };
-  
-  window.showEmployerSection = function(section) {
-    document.getElementById('EmployerHomeSection').style.display = 'none';
-    document.getElementById('EmployerPostJobSection').style.display = 'none';
-    document.getElementById('EmployerMyJobsSection').style.display = 'none';
+};
 
-    if (section === 'home') {
-      document.getElementById('EmployerHomeSection').style.display = 'block';
-    } else if (section === 'postJob') {
-      document.getElementById('EmployerPostJobSection').style.display = 'block';
-    } else if (section === 'myJobs') {
-      document.getElementById('EmployerMyJobsSection').style.display = 'block';
-      loadEmployerJobs();
-    }
-  };
+window.loadEmployerJobs = async function() {
+  const table = document.getElementById('EmployerJobsTable');
+  table.innerHTML = '<tr><td colspan="6">Loading your jobs...</td></tr>';
 
-  // ==================== POST JOB FUNCTION (FIXED) ====================
-  window.postJob = async function(e) {
-    e.preventDefault();
-    
-    const submitBtn = e.target.querySelector('button[type="submit"]');
-    submitBtn.disabled = true;
-    submitBtn.textContent = "Posting...";
-
-    try {
-      const user = auth.currentUser;
-      if (!user) throw new Error("Not authenticated");
-
-      // Verify user is actually an employer
-      const userDoc = await getDoc(doc(db, "users", user.uid));
-      if (!userDoc.exists() || userDoc.data().role !== "Employer") {
-        throw new Error("Only employers can post jobs");
-      }
-
-      // Create job data with required fields
-      const jobData = {
-        Title: document.getElementById('jobTitle').value,
-        description: document.getElementById('jobDescription').value,
-        location: document.getElementById('jobLocation').value,
-        salary: document.getElementById('jobSalary').value,
-        jobType: document.getElementById('jobType').value,
-        Employer: user.email,
-        EmployerId: user.uid, // Critical field for security rules
-        createdAt: serverTimestamp(), // Use server timestamp
-        status: "active",
-        applications: []
-      };
-
-      await addDoc(collection(db, "jobs"), jobData);
-      showEmployerSection('myJobs');
-    } catch (error) {
-      console.error("Post error:", error);
-      alert(`Error: ${error.message}`);
-    } finally {
-      submitBtn.disabled = false;
-      submitBtn.textContent = "Post Job";
-    }
-  };
-
-  // ==================== LOAD EMPLOYER JOBS (FIXED) ====================
-  window.loadEmployerJobs = function() {
-    const table = document.getElementById('EmployerJobsTable');
+  try {
     const user = auth.currentUser;
+    const querySnapshot = await getDocs(query(
+      collection(db, "jobs"),
+      where("Employer", "==", user.email)
+    ));
 
-    if (jobsListener) jobsListener();
-
-    table.innerHTML = '<tr><td colspan="6">Loading jobs...</td></tr>';
-
-    jobsListener = onSnapshot(
-      query(
-        collection(db, "jobs"),
-        where("EmployerId", "==", user.uid),
-        orderBy("createdAt", "desc")
-      ),
-      (snapshot) => {
-        try {
-          if (snapshot.empty) {
-            table.innerHTML = '<tr><td colspan="6">No jobs posted yet</td></tr>';
-            return;
-          }
-
-          table.innerHTML = '';
-          snapshot.forEach(doc => {
-            const data = doc.data();
-            const row = `
-              <tr>
-                <td>${data.Title || 'Untitled'}</td>
-                <td>${data.applications?.length || 0}</td>
-                <td>${data.jobType || 'N/A'}</td>
-                <td>${data.createdAt?.toDate().toLocaleDateString() || 'N/A'}</td>
-                <td><span class="job-status">${data.status || 'active'}</span></td>
-                <td>
-                  <button onclick="viewJobApplications('${doc.id}')" class="success">View</button>
-                  <button onclick="editJob('${doc.id}')">Edit</button>
-                  <button onclick="deleteJob('${doc.id}')" class="danger">Delete</button>
-                </td>
-              </tr>`;
-            table.innerHTML += row;
-          });
-        } catch (error) {
-          console.error("Error processing snapshot:", error);
-          table.innerHTML = '<tr><td colspan="6">Error loading jobs</td></tr>';
-        }
-      },
-      (error) => {
-        console.error("Listener error:", error);
-        table.innerHTML = '<tr><td colspan="6">Error loading jobs</td></tr>';
-      }
-    );
-  };
-
-  // ==================== INITIALIZE EMPLOYER DASHBOARD ====================
-  window.initEmployerDashboard = async function() {
-    try {
-      await loadEmployerStats();
-      loadEmployerJobs();
-      
-      document.getElementById('postJobForm').addEventListener('submit', async (e) => {
-        await postJob(e);
-        e.target.reset();
-      });
-      
-      document.getElementById('searchMyJobs')?.addEventListener('input', (e) => {
-        const term = e.target.value.toLowerCase();
-        const table = document.getElementById('EmployerJobsTable');
-        const rows = table?.querySelectorAll('tr');
-        rows?.forEach(row => {
-          row.style.display = row.textContent.toLowerCase().includes(term) ? '' : 'none';
-        });
-      });
-    } catch (error) {
-      console.error("Error initializing Employer dashboard:", error);
+    table.innerHTML = '';
+    if (querySnapshot.empty) {
+      table.innerHTML = '<tr><td colspan="6">You haven\'t posted any jobs yet</td></tr>';
+      return;
     }
-  };
+
+    querySnapshot.forEach(doc => {
+      const data = doc.data();
+      const row = `
+        <tr>
+          <td>${data.Title || 'Untitled'}</td>
+          <td>0</td> <!-- Applications count placeholder -->
+          <td>${data.jobType || 'N/A'}</td>
+          <td>${new Date(data.createdAt).toLocaleDateString()}</td>
+          <td><span class="job-status">Active</span></td>
+          <td>
+            <button onclick="viewJobApplications('${doc.id}')" class="success">View</button>
+            <button onclick="editJob('${doc.id}')">Edit</button>
+            <button onclick="deleteJob('${doc.id}')" class="danger">Delete</button>
+          </td>
+        </tr>`;
+      table.innerHTML += row;
+    });
+
+    // Add search functionality
+    document.getElementById('searchMyJobs').addEventListener('input', (e) => {
+      const term = e.target.value.toLowerCase();
+      const rows = table.querySelectorAll('tr');
+      rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(term) ? '' : 'none';
+      });
+    });
+  } catch (error) {
+    console.error("Error loading jobs:", error);
+    table.innerHTML = '<tr><td colspan="6">Error loading your jobs</td></tr>';
+  }
+};
+
+// Enhanced post job function
+// Enhanced post job function with better error handling
+window.postJob = async function(e) {
+  e.preventDefault();
+  
+  const title = document.getElementById('jobTitle').value;
+  const description = document.getElementById('jobDescription').value;
+  const location = document.getElementById('jobLocation').value;
+  const salary = document.getElementById('jobSalary').value;
+  const jobType = document.getElementById('jobType').value;
+  
+  if (!title || !description || !location || !salary || !jobType) {
+    alert("Please fill all fields");
+    return;
+  }
+
+  try {
+    const user = auth.currentUser;
+    if (!user) throw new Error("Not authenticated");
+
+    // Verify the user is still an employer
+    const userDoc = await getDoc(doc(db, "users", user.uid));
+    if (userDoc.data().role !== "Employer") {
+      throw new Error("Only employers can post jobs");
+    }
+
+    await addDoc(collection(db, "jobs"), {
+      Title: title,
+      description: description,
+      location: location,
+      salary: salary,
+      jobType: jobType,
+      Employer: user.email,
+      employerId: user.uid, // Added for easier querying
+      createdAt: new Date().toISOString(),
+      status: "active",
+      applications: 0
+    });
+    
+    alert("Job posted successfully!");
+    document.getElementById('postJobForm').reset();
+    loadEmployerJobs();
+    loadEmployerStats();
+    showEmployerSection('myJobs');
+  } catch (error) {
+    console.error("Post job error:", error);
+    alert(`Error posting job: ${error.message}`);
+  }
+};
+
+// Enhanced loadEmployerStats function
+window.loadEmployerStats = async function() {
+  try {
+    const user = auth.currentUser;
+    if (!user) return;
+
+    // Count employer's active jobs
+    const jobsQuery = query(
+      collection(db, "jobs"),
+      where("employerId", "==", user.uid),
+      where("status", "==", "active")
+    );
+    const jobsSnapshot = await getDocs(jobsQuery);
+    document.getElementById('employerJobCount').textContent = jobsSnapshot.size;
+
+    // Count applications (placeholder - will implement later)
+    document.getElementById('employerAppCount').textContent = "0";
+  } catch (error) {
+    console.error("Error loading stats:", error);
+    document.getElementById('employerJobCount').textContent = "Error";
+    document.getElementById('employerAppCount').textContent = "Error";
+  }
+};
+
+// Initialize employer dashboard
+// Add this function to your existing JavaScript
+window.initEmployerDashboard = async function() {
+  try {
+    // Load stats
+    await loadEmployerStats();
+    
+    // Load jobs
+    await loadEmployerJobs();
+    
+    // Set up form listeners
+    document.getElementById('postJobForm')?.addEventListener('submit', postJob);
+    document.getElementById('quickJobForm')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const quickTitle = document.getElementById('quickJobTitle').value;
+      if (quickTitle) {
+        document.getElementById('jobTitle').value = quickTitle;
+        showEmployerSection('postJob');
+      }
+    });
+    
+    // Load announcement
+    const announcementRef = doc(db, "announcements", "current");
+    onSnapshot(announcementRef, (doc) => {
+      const announcementDiv = document.getElementById('employerAnnouncement');
+      if (doc.exists()) {
+        announcementDiv.innerHTML = `
+          <p><strong>${doc.data().text}</strong></p>
+          <small>Posted by Admin on ${new Date(doc.data().timestamp).toLocaleString()}</small>
+        `;
+      } else {
+        announcementDiv.innerHTML = "<p>No current announcements</p>";
+      }
+    });
+    
+    // Add search functionality
+    document.getElementById('searchMyJobs')?.addEventListener('input', (e) => {
+      const term = e.target.value.toLowerCase();
+      const table = document.getElementById('EmployerJobsTable');
+      const rows = table?.querySelectorAll('tr');
+      rows?.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(term) ? '' : 'none';
+      });
+    });
+  } catch (error) {
+    console.error("Error initializing employer dashboard:", error);
+  }
+};
+
+
 
   // Stats and activity functions
   async function loadAdminStats() {
@@ -1641,7 +1705,6 @@ window.postAnnouncementV2 = async function(text) {
     }
   }
 
- // loadRecentActivity
   async function loadRecentActivity() {
     try {
       // Recent Users
@@ -1711,7 +1774,135 @@ function loadAnnouncement() {
     actionsDiv.style.display = "none";
   });
 }
-   // Fresher section functions
+
+
+
+
+  //show announcement modal
+
+window.showAnnouncementModal = async function() {
+  const user = auth.currentUser;
+  const userDoc = await getDoc(doc(db, "users", user.uid));
+
+  if (!userDoc.data().isOriginalAdmin) {
+    alert("Only original admin can post announcements");
+    return;
+  }
+
+  const text = prompt("Enter announcement text:");
+  if (text) {
+    try {
+      const userData = userDoc.data();
+      const authorRole = userData.role.charAt(0).toUpperCase() + userData.role.slice(1);
+
+      await setDoc(doc(db, "announcements", "current"), {
+        text: text,
+        timestamp: new Date().toISOString(),
+        author: authorRole
+      });
+
+      alert("Announcement posted!");
+    } catch (err) {
+      alert("Error: " + err.message);
+    }
+  }
+};
+
+
+// delete announcements
+
+window.deleteAnnouncement = async function() {
+  if (!confirm("Are you sure you want to delete the current announcement?")) return;
+
+  try {
+    await deleteDoc(doc(db, "announcements", "current"));
+    alert("Announcement deleted.");
+    loadAnnouncement();
+  } catch (err) {
+    console.error("Delete error:", err);
+    alert("Failed to delete announcement: " + err.message);
+  }
+};
+
+//showfullannouncement
+
+window.showFullAnnouncement = async function() {
+  const snap = await getDoc(doc(db, "announcements", "current"));
+  const data = snap.exists() ? snap.data() : null;
+  const fullText = data?.text || "No announcement.";
+
+  alert("📢 Announcement:\n\n" + fullText);
+};
+
+
+// Unban user
+window.unbanUser = async function(userId) {
+  if (!confirm("Are you sure you want to unban this user?")) return;
+  
+  try {
+    await updateDoc(doc(db, "users", userId), { 
+      banned: false,
+      bannedAt: null
+    });
+    alert("User unbanned successfully");
+    loadBannedUsers();
+  } catch (err) {
+    console.error("Error unbanning user:", err);
+    alert("Error unbanning user: " + err.message);
+  }
+};
+
+// Load banned users
+async function loadBannedUsers() {
+  try {
+    const bannedUsersQuery = query(
+      collection(db, "users"),
+      where("banned", "==", true)
+    );
+    const bannedUsersSnapshot = await getDocs(bannedUsersQuery);
+    
+    const table = document.getElementById("bannedUsersTable");
+    table.innerHTML = "";
+    
+    if (bannedUsersSnapshot.empty) {
+      table.innerHTML = "<tr><td colspan='3'>No banned users found</td></tr>";
+      return;
+    }
+    
+    bannedUsersSnapshot.forEach(doc => {
+      const userData = doc.data();
+      table.innerHTML += `
+        <tr>
+          <td>${userData.email}</td>
+          <td>${userData.bannedAt ? new Date(userData.bannedAt).toLocaleString() : 'N/A'}</td>
+          <td><button onclick="unbanUser('${doc.id}')" class="success">Unban</button></td>
+        </tr>`;
+    });
+  } catch (err) {
+    console.error("Error loading banned users:", err);
+    document.getElementById("bannedUsersTable").innerHTML = 
+      "<tr><td colspan='3'>Error loading banned users</td></tr>";
+  }
+}
+
+
+  // Employer section functions
+  window.showEmployerSection = function(section) {
+    document.getElementById('EmployerHomeSection').style.display = 'none';
+    document.getElementById('EmployerPostJobSection').style.display = 'none';
+    document.getElementById('EmployerMyJobsSection').style.display = 'none';
+
+    if (section === 'home') {
+      document.getElementById('EmployerHomeSection').style.display = 'block';
+    } else if (section === 'postJob') {
+      document.getElementById('EmployerPostJobSection').style.display = 'block';
+    } else if (section === 'myJobs') {
+      document.getElementById('EmployerMyJobsSection').style.display = 'block';
+      loadEmployerJobs();
+    }
+  };
+
+  // Fresher section functions
   window.showFresherSection = function(section) {
     document.getElementById('fresherHomeSection').style.display = 'none';
     document.getElementById('fresherJobsSection').style.display = 'none';
@@ -1731,9 +1922,8 @@ function loadAnnouncement() {
       loadFresherProfile();
     }
   };
-  // ... showFresherSection(), loadAvailableJobs(), etc ...
 
-  // ==================== UTILITY FUNCTIONS ====================
+  // Validation functions
   function validateEmail(email) {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email);
@@ -1743,6 +1933,7 @@ function loadAnnouncement() {
     return password.length >= 8;
   }
 
+  // Utility functions
   function animateValue(element, target, duration = 1000) {
     const start = 0;
     const increment = target / (duration / 16);
@@ -1758,7 +1949,27 @@ function loadAnnouncement() {
     }, 16);
   }
 
-  // ==================== EVENT LISTENERS ====================
+  // Placeholder functions (to be implemented)
+  window.loadEmployerJobs = function() {
+    document.getElementById('EmployerJobsTable').innerHTML = `
+      <tr><td colspan="4">Job listings will appear here</td></tr>`;
+  };
+
+  window.loadAvailableJobs = function() {
+    document.getElementById('availableJobsTable').innerHTML = `
+      <tr><td colspan="5">Available jobs will appear here</td></tr>`;
+  };
+
+  window.loadMyApplications = function() {
+    document.getElementById('myApplicationsTable').innerHTML = `
+      <tr><td colspan="4">Your applications will appear here</td></tr>`;
+  };
+
+  window.loadFresherProfile = function() {
+    // Would load profile data here
+  };
+
+  // Event Listeners
   document.addEventListener('DOMContentLoaded', () => {
     // Toggle between login/signup forms
     document.getElementById('toggleLink').addEventListener('click', (e) => {
@@ -1766,123 +1977,284 @@ function loadAnnouncement() {
       toggleForm();
     });
 
-    // Password Toggle
-    const toggleBtn = document.getElementById('togglePasswordBtn');
-    if (toggleBtn) {
-      toggleBtn.addEventListener('click', () => {
-        const passwordInput = document.getElementById('password');
-        if (passwordInput) {
-          passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
+    // Admin menu navigation
+    document.getElementById('adminMenuHome').addEventListener('click', (e) => {
+      e.preventDefault();
+      showAdminSection('home');
+      toggleAdminMenu();
+    });
+
+    document.getElementById('adminMenuUsers').addEventListener('click', (e) => {
+      e.preventDefault();
+      showAdminSection('users');
+      toggleAdminMenu();
+    });
+
+    document.getElementById('adminMenuJobs').addEventListener('click', (e) => {
+      e.preventDefault();
+      showAdminSection('jobs');
+      toggleAdminMenu();
+    });
+
+    document.getElementById('adminMenuSettings').addEventListener('click', (e) => {
+      e.preventDefault();
+      showAdminSection('settings');
+      toggleAdminMenu();
+    });
+
+    // Employer menu navigation
+    document.getElementById('EmployerMenuHome').addEventListener('click', (e) => {
+      e.preventDefault();
+      showEmployerSection('home');
+      toggleEmployerMenu();
+    });
+
+    document.getElementById('EmployerMenuPostJob').addEventListener('click', (e) => {
+      e.preventDefault();
+      showEmployerSection('postJob');
+      toggleEmployerMenu();
+    });
+
+    document.getElementById('EmployerMenuMyJobs').addEventListener('click', (e) => {
+      e.preventDefault();
+      showEmployerSection('myJobs');
+      toggleEmployerMenu();
+    });
+
+    // Fresher menu navigation
+    document.getElementById('fresherMenuHome').addEventListener('click', (e) => {
+      e.preventDefault();
+      showFresherSection('home');
+      toggleFresherMenu();
+    });
+
+    document.getElementById('fresherMenuJobs').addEventListener('click', (e) => {
+      e.preventDefault();
+      showFresherSection('jobs');
+      toggleFresherMenu();
+    });
+
+    document.getElementById('fresherMenuApplications').addEventListener('click', (e) => {
+      e.preventDefault();
+      showFresherSection('applications');
+      toggleFresherMenu();
+    });
+
+    document.getElementById('fresherMenuProfile').addEventListener('click', (e) => {
+      e.preventDefault();
+      showFresherSection('profile');
+      toggleFresherMenu();
+    });
+
+    // Post Job Form submission
+    const postJobForm = document.getElementById('postJobForm');
+    if (postJobForm) {
+      postJobForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const title = document.getElementById('jobTitle').value;
+        const description = document.getElementById('jobDescription').value;
+        const location = document.getElementById('jobLocation').value;
+        const salary = document.getElementById('jobSalary').value;
+        
+        try {
+          const user = auth.currentUser;
+          if (!user) throw new Error("Not authenticated");
+          
+          await addDoc(collection(db, "jobs"), {
+            Title: title,
+            description: description,
+            location: location,
+            salary: salary,
+            Employer: user.email,
+            createdAt: new Date().toISOString()
+          });
+          
+          alert("Job posted successfully!");
+          postJobForm.reset();
+        } catch (error) {
+          alert("Error posting job: " + error.message);
         }
       });
     }
 
-    // Search Tables
-    document.addEventListener('input', (e) => {
-      if (e.target?.classList?.contains('search-input')) {
-        const searchTerm = e.target.value.toLowerCase();
-        const tableId = e.target.getAttribute('data-table-target');
-        const rows = document.querySelectorAll(`#${tableId} tr`);
-        rows?.forEach(row => {
-          row.style.display = row.textContent.toLowerCase().includes(searchTerm) ? '' : 'none';
-        });
-      }
-    });
+    // Profile Form submission
+    const profileForm = document.getElementById('fresherProfileForm');
+    if (profileForm) {
+      profileForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        alert("Profile updated successfully!");
+      });
+    }
 
     // Auth state change handler
     onAuthStateChanged(auth, async (user) => {
-      if (!user) {
-        document.getElementById('auth-section').style.display = 'block';
+  if (!user) {
+    document.getElementById('auth-section').style.display = 'block';
+    return;
+  }
+
+  try {
+    const userDoc = await getDoc(doc(db, "users", user.uid));
+    if (userDoc.exists()) {
+      const userData = userDoc.data();
+
+      if (userData.banned) {
+        alert("Your account has been banned.");
+        await signOut(auth);
         return;
       }
 
-      try {
-        const userDoc = await getDoc(doc(db, "users", user.uid));
-        if (userDoc.exists()) {
-          const userData = userDoc.data();
+      showDashboard(userData.role);
+      startUserAnnouncementListener();
+      startEmployerSignupListener();
 
-          if (userData.banned) {
-            alert("Your account has been banned.");
-            await signOut(auth);
-            return;
-          }
+      // Initialize role-specific dashboard components
+      if (userData.role === 'admin') {
+        loadAdminStats();
+        loadRecentActivity();
+        loadAnnouncement();
+      } else if (userData.role === 'Employer') {
+        initEmployerDashboard(); // Initialize employer-specific features
+      } else if (userData.role === 'fresher') {
+        // Initialize fresher-specific features if needed
+      }
 
-          showDashboard(userData.role);
-          startUserAnnouncementListener();
-          startEmployerSignupListener();
-
-          if (typeof startUserAnnouncementListener === 'function') {
-            startUserAnnouncementListener();
-          }
-
-          if (roleChangeUnsubscribe) {
-            roleChangeUnsubscribe();
-          }
-          
-          roleChangeUnsubscribe = onSnapshot(userDoc.ref, (snapshot) => {
-            const newData = snapshot.data();
-            if (newData?.banned) {
-              alert("Your account has been banned. You are now logged out.");
-              logout();
-              return;
-            }
-            if (newData?.role !== userData.role) {
-              alert("Your role has changed. Please log in again.");
-              logout();
-            }
-          });
+      // Set up role change listener
+      if (roleChangeUnsubscribe) {
+        roleChangeUnsubscribe();
+      }
+      
+      roleChangeUnsubscribe = onSnapshot(userDoc.ref, (snapshot) => {
+        const newData = snapshot.data();
+        if (newData?.banned) {
+          alert("Your account has been banned. You are now logged out.");
+          logout();
+          return;
         }
-      } catch (error) {
-        console.error("Error checking user role:", error);
-        alert("Error loading user data. Please try again.");
+        
+        const newRole = newData?.role;
+        if (newRole !== userData.role) {
+          alert("Your role has changed. Please log in again.");
+          logout();
+        }
+      });
+    }
+  } catch (error) {
+    console.error("Error checking user role:", error);
+    alert("Error loading user data. Please try again.");
+  }
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Password Toggle
+  const toggleBtn = document.getElementById('togglePasswordBtn');
+  if (toggleBtn) {
+    toggleBtn.addEventListener('click', () => {
+      const passwordInput = document.getElementById('password');
+      if (passwordInput) {
+        passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
       }
     });
-  });
-
-  // ==================== ANNOUNCEMENT LISTENER ====================
-  window.startUserAnnouncementListener = function() {
-    const announcementRef = doc(db, "announcements", "current");
-
-    onSnapshot(announcementRef, (docSnap) => {
-      const data = docSnap.data();
-      const text = data?.text?.trim();
-      const isActive = !!text;
-
-      // Update Fresher banner
-      const fresherBanner = document.getElementById("announcementBannerFresher");
-      const fresherText = document.getElementById("announcementTextFresher");
-      if (fresherBanner && fresherText) {
-        fresherBanner.style.display = isActive ? "block" : "none";
-        fresherText.textContent = text || "";
-      }
-
-      // Update Employer banner
-      const EmployerBanner = document.getElementById("announcementBannerEmployer");
-      const EmployerText = document.getElementById("announcementTextEmployer");
-      if (EmployerBanner && EmployerText) {
-        EmployerBanner.style.display = isActive ? "block" : "none";
-        EmployerText.textContent = text || "";
-      }
-    }, (error) => {
-      console.error("Announcement error:", error);
-    });
-  };
-
-  // ==================== ADMIN TOAST NOTIFICATION ====================
-  function showAdminToast(message) {
-    const toast = document.getElementById('adminToast');
-    toast.innerText = message;
-    toast.style.display = 'block';
-    toast.style.opacity = '1';
-
-    setTimeout(() => {
-      toast.style.opacity = '0';
-      setTimeout(() => {
-        toast.style.display = 'none';
-      }, 500);
-    }, 4000);
   }
 
+  // Search Tables
+  document.addEventListener('input', (e) => {
+    if (e.target?.classList?.contains('search-input')) {
+      const searchTerm = e.target.value.toLowerCase();
+      const tableId = e.target.getAttribute('data-table-target');
+      const rows = document.querySelectorAll(`#${tableId} tr`);
+      
+      rows?.forEach(row => {
+        row.style.display = row.textContent.toLowerCase().includes(searchTerm) ? '' : 'none';
+      });
+    }
+  });
+});
+
+function startUserAnnouncementListener() {
+  const announcementRef = doc(db, "announcements", "current");
+
+  onSnapshot(announcementRef, (docSnap) => {
+    const data = docSnap.data();
+    console.log("Live announcement received:", data);  // 👈 Add this
+
+    const text = data?.text?.trim();
+    const isActive = !!text;
+
+    // Fresher
+    const fresherBanner = document.getElementById("announcementBannerFresher");
+    const fresherText = document.getElementById("announcementTextFresher");
+    if (fresherBanner && fresherText) {
+      fresherBanner.style.display = isActive ? "block" : "none";
+      fresherText.textContent = text || "";
+    }
+
+    // Employer
+    const employerBanner = document.getElementById("announcementBannerEmployer");
+    const employerText = document.getElementById("announcementTextEmployer");
+    if (employerBanner && employerText) {
+      employerBanner.style.display = isActive ? "block" : "none";
+      employerText.textContent = text || "";
+    }
+  });
+}
+
+function showAdminToast(message) {
+  const toast = document.getElementById('adminToast');
+  toast.innerText = message;
+  toast.style.display = 'block';
+  toast.style.opacity = '1';
+
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    setTimeout(() => {
+      toast.style.display = 'none';
+    }, 500);
+  }, 4000);
+}
+
+//loaddeletedusers
+
+async function loadDeletedUsers() {
+  try {
+    const querySnapshot = await getDocs(collection(db, "deleted_users"));
+    const table = document.getElementById('deletedUsersTable');
+    table.innerHTML = '';
+    
+    if (querySnapshot.empty) {
+      table.innerHTML = '<tr><td colspan="3">No deleted users yet</td></tr>';
+      return;
+    }
+    
+    querySnapshot.forEach(doc => {
+      const data = doc.data();
+      const firebaseAuthLink = `https://console.firebase.google.com/u/0/project/${firebaseConfig.projectId}/authentication/users`;
+      
+      table.innerHTML += `
+        <tr>
+          <td>
+            <a href="${firebaseAuthLink}" target="_blank" 
+               style="color: #00c6ff; text-decoration: underline;">
+              ${data.email}
+            </a>
+          </td>
+          <td>${new Date(data.deletedAt).toLocaleString()}</td>
+          <td>
+            <button onclick="confirmFullDeletion('${doc.id}', '${data.email}')" 
+                    class="danger" style="padding: 5px 10px;">
+              Confirm Deletion
+            </button>
+          </td>
+        </tr>`;
+    });
+  } catch (error) {
+    console.error("Error loading deleted users:", error);
+    document.getElementById('deletedUsersTable').innerHTML = 
+      '<tr><td colspan="3">Error loading deleted users</td></tr>';
+  }
+}
+})
 </script>
 
 <!-- 🔔 Admin Notification Toast -->
@@ -1901,5 +2273,6 @@ function loadAnnouncement() {
   transition: opacity 0.4s ease;
 "></div>
 
+  
 </body>
 </html>

@@ -406,6 +406,14 @@
 }
 
 
+.clickable-row {
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.clickable-row:hover {
+  background-color: #1e1e1e;
+}
 
 
     .job-status {
@@ -1570,17 +1578,18 @@
     querySnapshot.forEach((doc) => {
       const data = doc.data();
       const row = `
-        <tr>
-          <td title="${data.Title || 'Untitled'}">${data.Title || 'Untitled'}</td>
-          <td>${data.applications || 0}</td>
-          <td>${data.jobType || 'N/A'}</td>
-          <td>${data.createdAt ? new Date(data.createdAt).toLocaleDateString() : 'N/A'}</td>
-          <td><span class="job-status" data-status="${data.status || 'active'}">${data.status || 'active'}</span></td>
-          <td>
-            <button onclick="viewJobDetails('${doc.id}')">View</button>
-            <button class="danger" onclick="deleteEmployerJob('${doc.id}')">Delete</button>
-          </td>
-        </tr>`;
+  <tr class="clickable-row" onclick="viewJobDetails('${doc.id}')">
+    <td title="${data.Title || 'Untitled'}">${data.Title || 'Untitled'}</td>
+    <td>${data.applications || 0}</td>
+    <td>${data.jobType || 'N/A'}</td>
+    <td>${data.createdAt ? new Date(data.createdAt).toLocaleDateString() : 'N/A'}</td>
+    <td><span class="job-status" data-status="${data.status || 'active'}">${data.status || 'active'}</span></td>
+    <td>
+      <button class="edit-btn" onclick="event.stopPropagation(); editJob('${doc.id}')">Edit</button>
+      <button class="danger" onclick="event.stopPropagation(); deleteEmployerJob('${doc.id}')">Delete</button>
+    </td>
+  </tr>`;
+
       table.innerHTML += row;
     });
 

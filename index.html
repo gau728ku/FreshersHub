@@ -1873,32 +1873,7 @@ window.closeJobModal = function() {
 };
 
 
-
-
-
-    window.loadEmployerStats = async function() {
-      try {
-        const user = auth.currentUser;
-        if (!user) return;
-
-        // Count employer's active jobs
-        const jobsQuery = query(
-          collection(db, "jobs"),
-          where("employerId", "==", user.uid),
-          where("status", "==", "active")
-        );
-        const jobsSnapshot = await getDocs(jobsQuery);
-        document.getElementById('employerJobCount').textContent = jobsSnapshot.size;
-
-        // Count applications (placeholder - will implement later)
-        document.getElementById('employerAppCount').textContent = "0";
-      } catch (error) {
-        console.error("Error loading stats:", error);
-        document.getElementById('employerJobCount').textContent = "Error";
-        document.getElementById('employerAppCount').textContent = "Error";
-      }
-    };
-
+    
     // ==================== INITIALIZE EMPLOYER DASHBOARD ====================
     window.initEmployerDashboard = async function() {
       try {

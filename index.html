@@ -363,14 +363,15 @@
     }
 
     #EmployerJobsTable {
-      width: 100%;
-    }
+  width: 100%;
+  table-layout: auto; /* previously fixed */
+}
 
-    #EmployerJobsTable td:nth-child(1) {
-      white-space: normal; /* ✅ allow line breaks */
-      word-break: break-word;
-      width: auto; /* Optional: or set 40% to give more space */
-    }
+#EmployerJobsTable td:nth-child(1) {
+  white-space: normal;
+  word-break: break-word;
+}
+
 
 
     .job-status {
@@ -1655,6 +1656,32 @@ async function deleteEmployerJob(jobId) {
   }
 }
 
+//viewjobdetails
+
+window.viewJobDetails = async function(jobId) {
+  const modal = document.getElementById("jobModal");
+  const docRef = doc(db, "jobs", jobId);
+  const docSnap = await getDoc(docRef);
+
+  if (docSnap.exists()) {
+    const data = docSnap.data();
+    document.getElementById("modalJobTitle").textContent = data.Title || "N/A";
+    document.getElementById("modalJobDescription").textContent = data.description || "N/A";
+    document.getElementById("modalJobLocation").textContent = data.location || "N/A";
+    document.getElementById("modalJobSalary").textContent = data.salary || "N/A";
+    document.getElementById("modalJobType").textContent = data.jobType || "N/A";
+    modal.style.display = "block";
+  } else {
+    alert("Job not found.");
+  }
+};
+
+window.closeJobModal = function() {
+  document.getElementById("jobModal").style.display = "none";
+};
+
+
+
 
 
     window.loadEmployerStats = async function() {
@@ -2377,6 +2404,21 @@ window.deleteSelectedJobs = async function() {
     alert("Error deleting jobs: " + error.message);
   }
 };
+
+window.deleteEmployerJob = async function(jobId) {
+  if (!confirm("Are you sure you want to delete this job?")) return;
+
+  try {
+    await deleteDoc(doc(db, "jobs", jobId));
+    alert("Job deleted.");
+    loadEmployerJobs(); // Refresh table
+  } catch (err) {
+    console.error("Delete failed:", err);
+    alert("Error: " + err.message);
+  }
+};
+
+
     </script> 
   <!-- 🔔 Admin Notification Toast -->
   <div id="adminToast" style=" 

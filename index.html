@@ -759,20 +759,33 @@ label {
       
       <!-- Quick Stats -->
       <div class="stats-container">
-  <div class="stat-card" onclick="showEmployerSection('myJobs')">
-    <p>Total Jobs</p>
-    <h3 id="employerTotalJobs">-</h3>
-  </div>
-  <div class="stat-card" onclick="showEmployerSection('myJobs')">
-    <p>Active Jobs</p>
-    <h3 id="employerJobCount">-</h3>
-  </div>
-  <div class="stat-card" onclick="loadApplicationsStats()">
-    <p>Total Applications</p>
-    <h3 id="employerAppCount">-</h3>
-  </div>
-</div>
+        <div class="stat-card" onclick="showEmployerSection('myJobs')">
+          <p>Active Jobs</p>
+          <h3 id="employerJobCount">-</h3>
+        </div>
+        <div class="stat-card" onclick="loadApplicationsStats()">
+          <p>Total Applications</p>
+          <h3 id="employerAppCount">-</h3>
+        </div>
+      </div>
 
+      <!-- Announcement Card -->
+      <div class="card">
+        <h3>Platform Announcements</h3>
+        <div id="employerAnnouncement">
+          Loading announcements...
+        </div>
+      </div>
+
+      <!-- Quick Post Job Card -->
+      <div class="card">
+        <h3>Quick Post Job</h3>
+        <form id="quickJobForm">
+          <input type="text" id="quickJobTitle" placeholder="Job Title" required>
+          <button type="submit" class="success">Post Job</button>
+        </form>
+      </div>
+    </div>
 
     <!-- ==================== POST JOB SECTION ==================== -->
     <div class="dashboard-section" id="EmployerPostJobSection">
@@ -1208,9 +1221,7 @@ label {
         document.getElementById('fresherMenuBtn').style.display = 'block';
         showFresherSection('home');
       } else if (role === 'Employer') {
-        document.getElementById('employerDashboard').style.display = 'block';
-        initEmployerDashboard();
-        showEmployerSection('home');
+        document.getElementById('EmployerDashboard').style.display = 'block';
         document.getElementById('EmployerMenuBtn').style.display = 'block';
         showEmployerSection('home');
       }
@@ -1648,35 +1659,25 @@ label {
     };
 
     // ==================== EMPLOYER DASHBOARD FUNCTIONS ====================
-   window.loadEmployerStats = async function () {
-  const user = auth.currentUser;
-  if (!user) return;
+    window.loadEmployerStats = async function() {
+      try {
+        const user = auth.currentUser;
+        if (!user) return;
 
-  const q = query(
-    collection(db, "jobs"),
-    where("employerId", "==", user.uid)
-  );
+        // Count employer's jobs
+        const jobsQuery = query(
+          collection(db, "jobs"),
+          where("Employer", "==", user.email)
+        );
+        const jobsSnapshot = await getDocs(jobsQuery);
+        document.getElementById('employerJobCount').textContent = jobsSnapshot.size;
 
-  const snapshot = await getDocs(q);
-
-  let totalJobs = 0;
-  let activeJobs = 0;
-  let totalApplications = 0;
-
-  snapshot.forEach((doc) => {
-    const data = doc.data();
-    totalJobs++;
-    if (data.status === 'active') activeJobs++;
-    totalApplications += parseInt(data.applications || 0);
-  });
-
-  document.getElementById('employerTotalJobs').textContent = totalJobs;
-  document.getElementById('employerJobCount').textContent = activeJobs;
-  document.getElementById('employerAppCount').textContent = totalApplications;
-};
-
-
-//loadEmployerJobs
+        // Count applications (placeholder - will implement later)
+        document.getElementById('employerAppCount').textContent = "0";
+      } catch (error) {
+        console.error("Error loading stats:", error);
+      }
+    };
 
    window.loadEmployerJobs = async function () {
   const table = document.getElementById('EmployerJobsTableBody');
@@ -1873,13 +1874,35 @@ window.closeJobModal = function() {
 };
 
 
-    
+
+
+
+    window.loadEmployerStats = async function() {
+      try {
+        const user = auth.currentUser;
+        if (!user) return;
+
+        // Count employer's active jobs
+        const jobsQuery = query(
+          collection(db, "jobs"),
+          where("employerId", "==", user.uid),
+          where("status", "==", "active")
+        );
+        const jobsSnapshot = await getDocs(jobsQuery);
+        document.getElementById('employerJobCount').textContent = jobsSnapshot.size;
+
+        // Count applications (placeholder - will implement later)
+        document.getElementById('employerAppCount').textContent = "0";
+      } catch (error) {
+        console.error("Error loading stats:", error);
+        document.getElementById('employerJobCount').textContent = "Error";
+        document.getElementById('employerAppCount').textContent = "Error";
+      }
+    };
+
     // ==================== INITIALIZE EMPLOYER DASHBOARD ====================
-   window.initEmployerDashboard = async function() {
-  window.addEventListener('DOMContentLoaded', async () => {
-    try {
-      await loadEmployerStats();
-      await loadEmployerJobs();
+    window.initEmployerDashboard = async function() {
+      try {
         // Load stats
         await loadEmployerStats();
         
@@ -1914,7 +1937,7 @@ window.closeJobModal = function() {
         // Add search functionality
         document.getElementById('searchMyJobs')?.addEventListener('input', (e) => {
           const term = e.target.value.toLowerCase();
-          const table = document.getElementById('EmployerJobsTableBody');
+          const table = document.getElementById('EmployerJobsTable');
           const rows = table?.querySelectorAll('tr');
           rows?.forEach(row => {
             const text = row.textContent.toLowerCase();
@@ -1922,10 +1945,9 @@ window.closeJobModal = function() {
           });
         });
       } catch (error) {
-      console.error("Error initializing employer dashboard:", error);
-    }
-  });
-};
+        console.error("Error initializing employer dashboard:", error);
+      }
+    };
 
     // ==================== STATS AND ACTIVITY FUNCTIONS ====================
     async function loadAdminStats() {
@@ -2235,7 +2257,11 @@ window.closeEditJobModal = function () {
     }
 
     // ==================== PLACEHOLDER FUNCTIONS ====================
-  
+   // window.loadEmployerJobs = function() {
+   // document.getElementById('EmployerJobsTable').innerHTML = `
+   // <tr><td colspan="4">Job listings will appear here</td></tr>`;
+  //};
+
     window.loadAvailableJobs = function() {
       document.getElementById('availableJobsTable').innerHTML = `
         <tr><td colspan="5">Available jobs will appear here</td></tr>`;

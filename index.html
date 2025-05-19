@@ -1674,7 +1674,7 @@ label {
 };
 
 
-
+//loadEmployerJobs
 
    window.loadEmployerJobs = async function () {
   const table = document.getElementById('EmployerJobsTableBody');
@@ -1909,7 +1909,7 @@ window.closeJobModal = function() {
         // Add search functionality
         document.getElementById('searchMyJobs')?.addEventListener('input', (e) => {
           const term = e.target.value.toLowerCase();
-          const table = document.getElementById('EmployerJobsTable');
+          const table = document.getElementById('EmployerJobsTableBody');
           const rows = table?.querySelectorAll('tr');
           rows?.forEach(row => {
             const text = row.textContent.toLowerCase();
@@ -2229,11 +2229,7 @@ window.closeEditJobModal = function () {
     }
 
     // ==================== PLACEHOLDER FUNCTIONS ====================
-   // window.loadEmployerJobs = function() {
-   // document.getElementById('EmployerJobsTable').innerHTML = `
-   // <tr><td colspan="4">Job listings will appear here</td></tr>`;
-  //};
-
+  
     window.loadAvailableJobs = function() {
       document.getElementById('availableJobsTable').innerHTML = `
         <tr><td colspan="5">Available jobs will appear here</td></tr>`;

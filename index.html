@@ -857,6 +857,8 @@
   </div>
 
 
+   <!--JobModel-->
+
   <div id="jobModal" class="overlay" style="display:none;">
   <div class="card" style="max-width:600px; margin:100px auto; background:white; color:black;">
     <h3 id="modalJobTitle">Job Title</h3>
@@ -865,6 +867,47 @@
     <p><strong>Salary:</strong> <span id="modalJobSalary"></span></p>
     <p><strong>Type:</strong> <span id="modalJobType"></span></p>
     <button onclick="closeJobModal()">Close</button>
+  </div>
+</div>
+
+
+<!--editJobModel-->
+
+<div id="editJobModal" class="overlay" style="display:none; z-index:2000;">
+  <div class="card" style="max-width:600px; margin:10% auto; background:white; color:black; padding:20px; border-radius:12px;">
+    <h2>Edit Job</h2>
+    <form id="editJobForm">
+      <input type="hidden" id="editJobId" />
+
+      <label>Title:</label>
+      <input type="text" id="editTitle" required />
+
+      <label>Description:</label>
+      <textarea id="editDescription" required></textarea>
+
+      <label>Location:</label>
+      <input type="text" id="editLocation" required />
+
+      <label>Salary:</label>
+      <input type="text" id="editSalary" required />
+
+      <label>Type:</label>
+      <select id="editJobType">
+        <option value="Full-time">Full-time</option>
+        <option value="Part-time">Part-time</option>
+        <option value="Contract">Contract</option>
+      </select>
+
+      <label>Status:</label>
+      <select id="editStatus">
+        <option value="active">Active</option>
+        <option value="closed">Closed</option>
+      </select>
+
+      <br><br>
+      <button type="submit">Save Changes</button>
+      <button type="button" onclick="closeEditJobModal()">Cancel</button>
+    </form>
   </div>
 </div>
 
@@ -1610,7 +1653,37 @@
   });
 });
 
-        
+     
+//editjobform
+
+document.getElementById("editJobForm").addEventListener("submit", async function (e) {
+  e.preventDefault();
+
+  const jobId = document.getElementById("editJobId").value;
+
+  const updatedData = {
+    Title: document.getElementById("editTitle").value.trim(),
+    description: document.getElementById("editDescription").value.trim(),
+    location: document.getElementById("editLocation").value.trim(),
+    salary: document.getElementById("editSalary").value.trim(),
+    jobType: document.getElementById("editJobType").value,
+    status: document.getElementById("editStatus").value,
+  };
+
+  try {
+    await updateDoc(doc(db, "jobs", jobId), updatedData);
+    alert("Job updated successfully.");
+    closeEditJobModal();
+    loadEmployerJobs(); // Refresh table
+  } catch (err) {
+    console.error("Update failed:", err);
+    alert("Error updating job: " + err.message);
+  }
+});
+
+
+
+
 
   window.postJob = async function(e) {
   e.preventDefault();
@@ -2017,6 +2090,34 @@ function closeJobModal() {
   document.getElementById("jobModal").style.display = "none";
 }
  
+
+//editjob
+
+window.editJob = async function (jobId) {
+  const docRef = doc(db, "jobs", jobId);
+  const docSnap = await getDoc(docRef);
+  if (!docSnap.exists()) {
+    alert("Job not found.");
+    return;
+  }
+
+  const data = docSnap.data();
+
+  document.getElementById("editJobId").value = jobId;
+  document.getElementById("editTitle").value = data.Title || "";
+  document.getElementById("editDescription").value = data.description || "";
+  document.getElementById("editLocation").value = data.location || "";
+  document.getElementById("editSalary").value = data.salary || "";
+  document.getElementById("editJobType").value = data.jobType || "Full-time";
+  document.getElementById("editStatus").value = data.status || "active";
+
+  document.getElementById("editJobModal").style.display = "block";
+};
+
+window.closeEditJobModal = function () {
+  document.getElementById("editJobModal").style.display = "none";
+};
+
 
 
     // ==================== FRESHER SECTION FUNCTIONS ====================

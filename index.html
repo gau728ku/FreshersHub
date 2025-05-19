@@ -362,15 +362,49 @@
       padding: 12px 24px;
     }
 
-    #EmployerJobsTable {
+   #EmployerJobsTable {
+  table-layout: fixed;
   width: 100%;
-  table-layout: auto; /* previously fixed */
 }
 
-#EmployerJobsTable td:nth-child(1) {
+#EmployerJobsTable td, #EmployerJobsTable th {
+  padding: 12px;
+  text-align: left;
   white-space: normal;
-  word-break: break-word;
+  overflow-wrap: anywhere;
 }
+
+/* Set column widths */
+#EmployerJobsTable th:nth-child(1),
+#EmployerJobsTable td:nth-child(1) {
+  width: 30%; /* Title */
+}
+
+#EmployerJobsTable th:nth-child(2),
+#EmployerJobsTable td:nth-child(2) {
+  width: 10%; /* Applications */
+}
+
+#EmployerJobsTable th:nth-child(3),
+#EmployerJobsTable td:nth-child(3) {
+  width: 15%; /* Type */
+}
+
+#EmployerJobsTable th:nth-child(4),
+#EmployerJobsTable td:nth-child(4) {
+  width: 15%; /* Posted */
+}
+
+#EmployerJobsTable th:nth-child(5),
+#EmployerJobsTable td:nth-child(5) {
+  width: 10%; /* Status */
+}
+
+#EmployerJobsTable th:nth-child(6),
+#EmployerJobsTable td:nth-child(6) {
+  width: 20%; /* Actions */
+}
+
 
 
 
@@ -711,19 +745,20 @@
       </div>
       
       <div class="table-container">
-        <table>
-          <thead>
-            <tr>
-              <th>Title</th>
-              <th>Applications</th>
-              <th>Type</th>
-              <th>Posted</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody id="EmployerJobsTable"></tbody>
-        </table>
+        <table id="EmployerJobsTable">
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Applications</th>
+      <th>Type</th>
+      <th>Posted</th>
+      <th>Status</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody id="EmployerJobsTableBody"></tbody>
+</table>
+
       </div>
     </div>
   </div>
@@ -1510,16 +1545,14 @@
       }
     };
 
-   window.loadEmployerJobs = async function() {
-  const table = document.getElementById('EmployerJobsTable');
+   window.loadEmployerJobs = async function () {
+  const table = document.getElementById('EmployerJobsTableBody');
   table.innerHTML = '<tr><td colspan="6">Loading jobs...</td></tr>';
 
   try {
     const user = auth.currentUser;
     if (!user) throw new Error("User not logged in");
 
-    console.log("[DEBUG] Loading jobs for employerId:", user.uid); // Debug line
-    
     const q = query(
       collection(db, "jobs"),
       where("employerId", "==", user.uid),
@@ -1527,10 +1560,8 @@
     );
 
     const querySnapshot = await getDocs(q);
-    console.log("[DEBUG] Found jobs:", querySnapshot.size); // Debug line
+    table.innerHTML = '';
 
-    table.innerHTML = ''; // Clear loading message
-    
     if (querySnapshot.empty) {
       table.innerHTML = '<tr><td colspan="6">No jobs found</td></tr>';
       return;
@@ -1538,11 +1569,9 @@
 
     querySnapshot.forEach((doc) => {
       const data = doc.data();
-      console.log("[DEBUG] Processing job:", doc.id, data); // Debug line
-      
       const row = `
         <tr>
-          <td>${data.Title || 'Untitled'}</td>
+          <td title="${data.Title || 'Untitled'}">${data.Title || 'Untitled'}</td>
           <td>${data.applications || 0}</td>
           <td>${data.jobType || 'N/A'}</td>
           <td>${data.createdAt ? new Date(data.createdAt).toLocaleDateString() : 'N/A'}</td>
@@ -1550,11 +1579,8 @@
           <td>
             <button onclick="viewJobDetails('${doc.id}')">View</button>
             <button class="danger" onclick="deleteEmployerJob('${doc.id}')">Delete</button>
-            <button onclick="editJob('${doc.id}')">Edit</button>
-            <button onclick="deleteJob('${doc.id}')">Delete</button>
           </td>
         </tr>`;
-      
       table.innerHTML += row;
     });
 
@@ -1564,15 +1590,17 @@
   }
 };
 
+
         // Add search functionality
         document.getElementById('searchMyJobs').addEventListener('input', (e) => {
-          const term = e.target.value.toLowerCase();
-          const rows = table.querySelectorAll('tr');
-          rows.forEach(row => {
-            const text = row.textContent.toLowerCase();
-            row.style.display = text.includes(term) ? '' : 'none';
-          });
-        });
+  const term = e.target.value.toLowerCase();
+  const rows = document.querySelectorAll('#EmployerJobsTableBody tr');
+  rows.forEach(row => {
+    const text = row.textContent.toLowerCase();
+    row.style.display = text.includes(term) ? '' : 'none';
+  });
+});
+
         
 
   window.postJob = async function(e) {

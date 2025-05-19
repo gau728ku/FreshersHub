@@ -2322,36 +2322,57 @@ window.closeEditJobModal = function () {
       });
 
       // Post Job Form submission
-      const postJobForm = document.getElementById('postJobForm');
-      if (postJobForm) {
-        postJobForm.addEventListener('submit', async (e) => {
-          e.preventDefault();
-          
-          const title = document.getElementById('jobTitle').value;
-          const description = document.getElementById('jobDescription').value;
-          const location = document.getElementById('jobLocation').value;
-          const salary = document.getElementById('jobSalary').value;
-          
-          try {
-            const user = auth.currentUser;
-            if (!user) throw new Error("Not authenticated");
-            
-            await addDoc(collection(db, "jobs"), {
-              Title: title,
-              description: description,
-              location: location,
-              salary: salary,
-              Employer: user.email,
-              createdAt: new Date().toISOString()
-            });
-            
-            alert("Job posted successfully!");
-            postJobForm.reset();
-          } catch (error) {
-            alert("Error posting job: " + error.message);
-          }
-        });
+     const postForm = document.getElementById("postJobForm");
+
+if (postForm) {
+  postForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const user = auth.currentUser;
+    if (!user) {
+      alert("You must be logged in to post a job.");
+      return;
+    }
+
+    const title = document.getElementById("jobTitle").value.trim();
+    const description = document.getElementById("jobDescription").value.trim();
+    const location = document.getElementById("jobLocation").value.trim();
+    const salary = document.getElementById("jobSalary").value.trim();
+    const jobType = document.getElementById("jobType").value;
+    const status = document.getElementById("jobStatus").value;
+
+    if (!title || !description || !location || !salary) {
+      alert("Please fill in all required fields.");
+      return;
+    }
+
+    const jobData = {
+      employerId: user.uid,
+      Employer: user.email,
+      Title: title,
+      description: description,
+      location: location,
+      salary: salary,
+      jobType: jobType,
+      status: status,
+      applications: 0,
+      createdAt: new Date().toISOString(),
+    };
+
+    try {
+      await addDoc(collection(db, "jobs"), jobData);
+      alert("Job posted successfully!");
+      if (typeof loadEmployerJobs === "function") {
+        loadEmployerJobs(); // Refresh job table
       }
+      postForm.reset(); // Clear form
+    } catch (err) {
+      console.error("Error posting job:", err);
+      alert("Failed to post job. Please try again.");
+    }
+  });
+}
+
 
       // Profile Form submission
       const profileForm = document.getElementById('fresherProfileForm');

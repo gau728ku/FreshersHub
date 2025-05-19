@@ -362,6 +362,22 @@
       padding: 12px 24px;
     }
 
+    #EmployerJobsTable {
+      width: 100%;
+    }
+
+    #EmployerJobsTable tr td {
+      padding: 8px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .job-status {
+      padding: 3px 8px;
+      border-radius: 12px;
+      background: #e1f5fe;
+    }
+
+
     /* ==================== RESPONSIVE STYLES ==================== */
     @media (max-width: 768px) {
       .stats-container {
@@ -1477,46 +1493,43 @@
       }
     };
 
-    window.loadEmployerJobs = async function() {
+   window.loadEmployerJobs = async function() {
   const table = document.getElementById('EmployerJobsTable');
-  table.innerHTML = '<tr><td colspan="6">Loading your jobs...</td></tr>';
+  table.innerHTML = '<tr><td colspan="6">Loading...</td></tr>';
 
   try {
-    const user = auth.currentUser;
-    if (!user) throw new Error("Not authenticated");
-
-    const querySnapshot = await getDocs(query(
+    const q = query(
       collection(db, "jobs"),
-      where("employerId", "==", user.uid),
+      where("employerId", "==", auth.currentUser.uid),
       orderBy("createdAt", "desc")
-    ));
-
+    );
+    
+    const querySnapshot = await getDocs(q);
+    
     table.innerHTML = '';
-    if (querySnapshot.empty) {
-      table.innerHTML = '<tr><td colspan="6">You haven\'t posted any jobs yet</td></tr>';
-      return;
-    }
-
     querySnapshot.forEach(doc => {
       const data = doc.data();
-      const row = `
+      table.innerHTML += `
         <tr>
-          <td>${data.Title || 'Untitled'}</td>
+          <td>${data.Title}</td>
           <td>${data.applications || 0}</td>
-          <td>${data.jobType || 'N/A'}</td>
-          <td>${data.createdAt ? new Date(data.createdAt).toLocaleDateString() : 'N/A'}</td>
-          <td><span class="job-status" data-status="${data.status || 'active'}">${data.status || 'active'}</span></td>
+          <td>${data.jobType}</td>
+          <td>${new Date(data.createdAt).toLocaleDateString()}</td>
+          <td><span class="job-status">${data.status || 'active'}</span></td>
           <td>
-            <button onclick="viewJobApplications('${doc.id}')" class="success">View</button>
+            <button onclick="viewJobApplications('${doc.id}')">View</button>
             <button onclick="editJob('${doc.id}')">Edit</button>
-            <button onclick="deleteJob('${doc.id}')" class="danger">Delete</button>
+            <button onclick="deleteJob('${doc.id}')">Delete</button>
           </td>
         </tr>`;
-      table.innerHTML += row;
     });
+    
+    if (querySnapshot.empty) {
+      table.innerHTML = '<tr><td colspan="6">No jobs posted yet</td></tr>';
+    }
   } catch (error) {
-    console.error("Error loading jobs:", error);
-    table.innerHTML = '<tr><td colspan="6">Error loading your jobs</td></tr>';
+    console.error("Load jobs error:", error);
+    table.innerHTML = '<tr><td colspan="6">Failed to load jobs</td></tr>';
   }
 };
 
@@ -1534,52 +1547,47 @@
   window.postJob = async function(e) {
   e.preventDefault();
   
+console.log("Posting job with data:", jobData);
+console.log("Current user UID:", auth.currentUser.uid);
+
+  // Disable button to prevent duplicate submissions
+  const submitBtn = document.getElementById('postJobBtn');
+  submitBtn.disabled = true;
+  
   try {
-    const title = document.getElementById('jobTitle').value;
-    const description = document.getElementById('jobDescription').value;
-    const location = document.getElementById('jobLocation').value;
-    const salary = document.getElementById('jobSalary').value;
-    const jobType = document.getElementById('jobType').value;
-    
-    if (!title || !description || !location || !salary || !jobType) {
-      alert("Please fill all fields");
-      return;
-    }
-
-    const user = auth.currentUser;
-    if (!user) throw new Error("Not authenticated");
-
-    // Verify the user is still an employer
-    const userDoc = await getDoc(doc(db, "users", user.uid));
-    if (!userDoc.exists() || userDoc.data().role !== "Employer") {
-      throw new Error("Only employers can post jobs");
-    }
-
-    // Create job with all required fields
     const jobData = {
-      Title: title,
-      description: description,
-      location: location,
-      salary: salary,
-      jobType: jobType,
-      Employer: user.email,
-      employerId: user.uid,
+      Title: document.getElementById('jobTitle').value,
+      description: document.getElementById('jobDescription').value,
+      location: document.getElementById('jobLocation').value,
+      salary: document.getElementById('jobSalary').value,
+      jobType: document.getElementById('jobType').value,
+      Employer: auth.currentUser.email,
+      employerId: auth.currentUser.uid,
       createdAt: new Date().toISOString(),
       status: "active",
       applications: 0
     };
 
-    // Single database operation
-    await addDoc(collection(db, "jobs"), jobData);
+    // Single atomic operation
+    const docRef = await addDoc(collection(db, "jobs"), jobData);
     
-    // Only show success message if everything worked
+    // Only show success if we get here
     alert("Job posted successfully!");
+    
+    // Reset form
     document.getElementById('postJobForm').reset();
-    await loadEmployerJobs(); // Wait for jobs to load
+    
+    // Force refresh the jobs list
+    await loadEmployerJobs();
+    
+    // Switch view
     showEmployerSection('myJobs');
+    
   } catch (error) {
-    console.error("Post job error:", error);
-    alert(`Error posting job: ${error.message}`);
+    console.error("Actual error:", error);
+    alert("Job posting failed. Please check console for details.");
+  } finally {
+    submitBtn.disabled = false;
   }
 };
 

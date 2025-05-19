@@ -1208,7 +1208,9 @@ label {
         document.getElementById('fresherMenuBtn').style.display = 'block';
         showFresherSection('home');
       } else if (role === 'Employer') {
-        document.getElementById('EmployerDashboard').style.display = 'block';
+        document.getElementById('employerDashboard').style.display = 'block';
+        initEmployerDashboard();
+        showEmployerSection('home');
         document.getElementById('EmployerMenuBtn').style.display = 'block';
         showEmployerSection('home');
       }

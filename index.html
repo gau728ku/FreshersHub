@@ -773,6 +773,7 @@ label {
   </div>
 </div>
 
+
     
 
     <!-- ==================== POST JOB SECTION ==================== -->
@@ -1647,7 +1648,7 @@ label {
     };
 
     // ==================== EMPLOYER DASHBOARD FUNCTIONS ====================
-    window.loadEmployerStats = async function () {
+   window.loadEmployerStats = async function () {
   const user = auth.currentUser;
   if (!user) return;
 
@@ -1669,10 +1670,11 @@ label {
     totalApplications += parseInt(data.applications || 0);
   });
 
-  document.getElementById('totalJobsStat').textContent = totalJobs;
-  document.getElementById('activeJobsStat').textContent = activeJobs;
-  document.getElementById('totalApplicationsStat').textContent = totalApplications;
+  document.getElementById('employerTotalJobs').textContent = totalJobs;
+  document.getElementById('employerJobCount').textContent = activeJobs;
+  document.getElementById('employerAppCount').textContent = totalApplications;
 };
+
 
 
 
@@ -1886,15 +1888,6 @@ window.closeJobModal = function() {
           where("status", "==", "active")
         );
         const jobsSnapshot = await getDocs(jobsQuery);
-        if (document.getElementById('employerTotalJobs')) {
-  document.getElementById('employerTotalJobs').textContent = totalJobs;
-}
-if (document.getElementById('employerJobCount')) {
-  document.getElementById('employerJobCount').textContent = activeJobs;
-}
-if (document.getElementById('employerAppCount')) {
-  document.getElementById('employerAppCount').textContent = totalApplications;
-}
         document.getElementById('employerJobCount').textContent = jobsSnapshot.size;
 
         // Count applications (placeholder - will implement later)

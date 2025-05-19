@@ -1886,6 +1886,15 @@ window.closeJobModal = function() {
           where("status", "==", "active")
         );
         const jobsSnapshot = await getDocs(jobsQuery);
+        if (document.getElementById('employerTotalJobs')) {
+  document.getElementById('employerTotalJobs').textContent = totalJobs;
+}
+if (document.getElementById('employerJobCount')) {
+  document.getElementById('employerJobCount').textContent = activeJobs;
+}
+if (document.getElementById('employerAppCount')) {
+  document.getElementById('employerAppCount').textContent = totalApplications;
+}
         document.getElementById('employerJobCount').textContent = jobsSnapshot.size;
 
         // Count applications (placeholder - will implement later)

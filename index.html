@@ -1873,8 +1873,11 @@ window.closeJobModal = function() {
 
     
     // ==================== INITIALIZE EMPLOYER DASHBOARD ====================
-    window.initEmployerDashboard = async function() {
-      try {
+   window.initEmployerDashboard = async function() {
+  window.addEventListener('DOMContentLoaded', async () => {
+    try {
+      await loadEmployerStats();
+      await loadEmployerJobs();
         // Load stats
         await loadEmployerStats();
         
@@ -1917,9 +1920,10 @@ window.closeJobModal = function() {
           });
         });
       } catch (error) {
-        console.error("Error initializing employer dashboard:", error);
-      }
-    };
+      console.error("Error initializing employer dashboard:", error);
+    }
+  });
+};
 
     // ==================== STATS AND ACTIVITY FUNCTIONS ====================
     async function loadAdminStats() {

@@ -423,6 +423,48 @@
     }
 
 
+input, textarea, select {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  background: #f9f9f9;
+}
+
+label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.save-btn {
+  background-color: #00bfff;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.save-btn:hover {
+  background-color: #0099cc;
+}
+
+.danger {
+  background-color: #e74c3c;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.danger:hover {
+  background-color: #c0392b;
+}
+
+
+
     /* ==================== RESPONSIVE STYLES ==================== */
     @media (max-width: 768px) {
       .stats-container {
@@ -874,42 +916,57 @@
 <!--editJobModel-->
 
 <div id="editJobModal" class="overlay" style="display:none; z-index:2000;">
-  <div class="card" style="max-width:600px; margin:10% auto; background:white; color:black; padding:20px; border-radius:12px;">
-    <h2>Edit Job</h2>
-    <form id="editJobForm">
+  <div class="card" style="max-width:600px; margin:10% auto; background:white; color:black; padding:30px; border-radius:12px;">
+    <h2 style="text-align: center;">Edit Job</h2>
+    <form id="editJobForm" style="display: flex; flex-direction: column; gap: 15px;">
+
       <input type="hidden" id="editJobId" />
 
-      <label>Title:</label>
-      <input type="text" id="editTitle" required />
+      <div>
+        <label for="editTitle">Title</label>
+        <input type="text" id="editTitle" required style="width:100%;" />
+      </div>
 
-      <label>Description:</label>
-      <textarea id="editDescription" required></textarea>
+      <div>
+        <label for="editDescription">Description</label>
+        <textarea id="editDescription" required style="width:100%; min-height:80px;"></textarea>
+      </div>
 
-      <label>Location:</label>
-      <input type="text" id="editLocation" required />
+      <div>
+        <label for="editLocation">Location</label>
+        <input type="text" id="editLocation" required style="width:100%;" />
+      </div>
 
-      <label>Salary:</label>
-      <input type="text" id="editSalary" required />
+      <div>
+        <label for="editSalary">Salary</label>
+        <input type="text" id="editSalary" required style="width:100%;" />
+      </div>
 
-      <label>Type:</label>
-      <select id="editJobType">
-        <option value="Full-time">Full-time</option>
-        <option value="Part-time">Part-time</option>
-        <option value="Contract">Contract</option>
-      </select>
+      <div>
+        <label for="editJobType">Type</label>
+        <select id="editJobType" style="width:100%;">
+          <option value="Full-time">Full-time</option>
+          <option value="Part-time">Part-time</option>
+          <option value="Contract">Contract</option>
+        </select>
+      </div>
 
-      <label>Status:</label>
-      <select id="editStatus">
-        <option value="active">Active</option>
-        <option value="closed">Closed</option>
-      </select>
+      <div>
+        <label for="editStatus">Status</label>
+        <select id="editStatus" style="width:100%;">
+          <option value="active">Active</option>
+          <option value="closed">Closed</option>
+        </select>
+      </div>
 
-      <br><br>
-      <button type="submit">Save Changes</button>
-      <button type="button" onclick="closeEditJobModal()">Cancel</button>
+      <div style="display:flex; justify-content: space-between; margin-top: 20px;">
+        <button type="submit" class="save-btn">Save Changes</button>
+        <button type="button" onclick="closeEditJobModal()" class="danger">Cancel</button>
+      </div>
     </form>
   </div>
 </div>
+
 
 
   <!-- ==================== FIREBASE INITIALIZATION ==================== -->

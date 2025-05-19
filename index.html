@@ -1495,41 +1495,54 @@
 
    window.loadEmployerJobs = async function() {
   const table = document.getElementById('EmployerJobsTable');
-  table.innerHTML = '<tr><td colspan="6">Loading...</td></tr>';
+  table.innerHTML = '<tr><td colspan="6">Loading jobs...</td></tr>';
 
   try {
+    const user = auth.currentUser;
+    if (!user) throw new Error("User not logged in");
+
+    console.log("[DEBUG] Loading jobs for employerId:", user.uid); // Debug line
+    
     const q = query(
       collection(db, "jobs"),
-      where("employerId", "==", auth.currentUser.uid),
+      where("employerId", "==", user.uid),
       orderBy("createdAt", "desc")
     );
-    
+
     const querySnapshot = await getDocs(q);
+    console.log("[DEBUG] Found jobs:", querySnapshot.size); // Debug line
+
+    table.innerHTML = ''; // Clear loading message
     
-    table.innerHTML = '';
-    querySnapshot.forEach(doc => {
+    if (querySnapshot.empty) {
+      table.innerHTML = '<tr><td colspan="6">No jobs found</td></tr>';
+      return;
+    }
+
+    querySnapshot.forEach((doc) => {
       const data = doc.data();
-      table.innerHTML += `
+      console.log("[DEBUG] Processing job:", doc.id, data); // Debug line
+      
+      const row = `
         <tr>
-          <td>${data.Title}</td>
+          <td>${data.Title || 'Untitled'}</td>
           <td>${data.applications || 0}</td>
-          <td>${data.jobType}</td>
-          <td>${new Date(data.createdAt).toLocaleDateString()}</td>
-          <td><span class="job-status">${data.status || 'active'}</span></td>
+          <td>${data.jobType || 'N/A'}</td>
+          <td>${data.createdAt ? new Date(data.createdAt).toLocaleDateString() : 'N/A'}</td>
+          <td><span class="job-status" data-status="${data.status || 'active'}">${data.status || 'active'}</span></td>
           <td>
             <button onclick="viewJobApplications('${doc.id}')">View</button>
             <button onclick="editJob('${doc.id}')">Edit</button>
             <button onclick="deleteJob('${doc.id}')">Delete</button>
           </td>
         </tr>`;
+      
+      table.innerHTML += row;
     });
-    
-    if (querySnapshot.empty) {
-      table.innerHTML = '<tr><td colspan="6">No jobs posted yet</td></tr>';
-    }
+
   } catch (error) {
-    console.error("Load jobs error:", error);
-    table.innerHTML = '<tr><td colspan="6">Failed to load jobs</td></tr>';
+    console.error("[ERROR] loadEmployerJobs failed:", error);
+    table.innerHTML = `<tr><td colspan="6">Error: ${error.message}</td></tr>`;
   }
 };
 

@@ -1528,52 +1528,54 @@
     };
 
     window.postJob = async function(e) {
-      e.preventDefault();
-      
-      const title = document.getElementById('jobTitle').value;
-      const description = document.getElementById('jobDescription').value;
-      const location = document.getElementById('jobLocation').value;
-      const salary = document.getElementById('jobSalary').value;
-      const jobType = document.getElementById('jobType').value;
-      
-      if (!title || !description || !location || !salary || !jobType) {
-        alert("Please fill all fields");
-        return;
-      }
+  e.preventDefault();
+  
+  const title = document.getElementById('jobTitle').value;
+  const description = document.getElementById('jobDescription').value;
+  const location = document.getElementById('jobLocation').value;
+  const salary = document.getElementById('jobSalary').value;
+  const jobType = document.getElementById('jobType').value;
+  
+  if (!title || !description || !location || !salary || !jobType) {
+    alert("Please fill all fields");
+    return;
+  }
 
-      try {
-        const user = auth.currentUser;
-        if (!user) throw new Error("Not authenticated");
+  try {
+    const user = auth.currentUser;
+    if (!user) throw new Error("Not authenticated");
 
-        // Verify the user is still an employer
-        const userDoc = await getDoc(doc(db, "users", user.uid));
-        if (userDoc.data().role !== "Employer") {
-          throw new Error("Only employers can post jobs");
-        }
+    // Verify the user is still an employer
+    const userDoc = await getDoc(doc(db, "users", user.uid));
+    if (userDoc.data().role !== "Employer") {
+      throw new Error("Only employers can post jobs");
+    }
 
-        await addDoc(collection(db, "jobs"), {
-          Title: title,
-          description: description,
-          location: location,
-          salary: salary,
-          jobType: jobType,
-          Employer: user.email,
-          employerId: user.uid,
-          createdAt: new Date().toISOString(),
-          status: "active",
-          applications: 0
-        });
-        
-        alert("Job posted successfully!");
-        document.getElementById('postJobForm').reset();
-        loadEmployerJobs();
-        loadEmployerStats();
-        showEmployerSection('myJobs');
-      } catch (error) {
-        console.error("Post job error:", error);
-        alert(`Error posting job: ${error.message}`);
-      }
+    // Create job with all required fields
+    const jobData = {
+      Title: title,
+      description: description,
+      location: location,
+      salary: salary,
+      jobType: jobType,
+      Employer: user.email,  // Must match request.auth.token.email
+      employerId: user.uid,  // Must match request.auth.uid
+      createdAt: new Date().toISOString(),
+      status: "active",
+      applications: 0
     };
+
+    await addDoc(collection(db, "jobs"), jobData);
+    
+    alert("Job posted successfully!");
+    document.getElementById('postJobForm').reset();
+    loadEmployerJobs();
+    showEmployerSection('myJobs');
+  } catch (error) {
+    console.error("Post job error:", error);
+    alert(`Error posting job: ${error.message}`);
+  }
+};
 
     window.loadEmployerStats = async function() {
       try {

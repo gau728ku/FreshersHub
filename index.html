@@ -1688,7 +1688,6 @@ label {
     <td>${data.jobType || 'N/A'}</td>
     <td>${data.createdAt ? new Date(data.createdAt).toLocaleDateString() : 'N/A'}</td>
     <td><span class="job-status" data-status="${data.status || 'active'}">${data.status || 'active'}</span></td>
-    // Inside the row generation in loadEmployerJobs
     <td>
       <button class="edit-btn" onclick="event.stopPropagation(); editJob('${doc.id}')">Edit</button>
       <button class="danger" onclick="deleteEmployerJob('${doc.id}', event)">Delete</button>

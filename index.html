@@ -1645,7 +1645,7 @@ label {
         // Count employer's jobs
         const jobsQuery = query(
           collection(db, "jobs"),
-          where("employer", "==", user.email)
+          where("Employer", "==", user.email)
         );
         const jobsSnapshot = await getDocs(jobsQuery);
         document.getElementById('employerJobCount').textContent = jobsSnapshot.size;

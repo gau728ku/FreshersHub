@@ -1688,9 +1688,10 @@ label {
     <td>${data.jobType || 'N/A'}</td>
     <td>${data.createdAt ? new Date(data.createdAt).toLocaleDateString() : 'N/A'}</td>
     <td><span class="job-status" data-status="${data.status || 'active'}">${data.status || 'active'}</span></td>
+    // Inside the row generation in loadEmployerJobs
     <td>
       <button class="edit-btn" onclick="event.stopPropagation(); editJob('${doc.id}')">Edit</button>
-      <button class="danger" onclick="event.stopPropagation(); deleteEmployerJob('${doc.id}')">Delete</button>
+      <button class="danger" onclick="deleteEmployerJob('${doc.id}', event)">Delete</button>
     </td>
   </tr>`;
 
@@ -1771,8 +1772,19 @@ document.getElementById("editJobForm").addEventListener("submit", async function
       applications: 0
     };
 
-    await addDoc(collection(db, "jobs"), jobData);
+// Add debug log
+    console.log("Posting new job:", jobData);
     
+    const docRef = await addDoc(collection(db, "jobs"), jobData);
+    
+    // Verify the job was created
+    const newJob = await getDoc(docRef);
+    if (!newJob.exists()) {
+      throw new Error("Failed to verify job creation");
+    }
+
+    await addDoc(collection(db, "jobs"), jobData);
+     console.log("Job posted successfully with ID:", docRef.id);
     alert("Job posted successfully!");
     document.getElementById('postJobForm').reset();
     showEmployerSection('myJobs');
@@ -1894,6 +1906,10 @@ function setupEmployerStatsListeners() {
   const user = auth.currentUser;
   if (!user) return;
 
+   // Debug log to verify user
+  console.log("Setting up stats listeners for employer:", user.uid, user.email);
+  
+
   // Real-time listener for active jobs count
   const activeJobsQuery = query(
     collection(db, "jobs"),
@@ -1902,6 +1918,7 @@ function setupEmployerStatsListeners() {
   );
   
   onSnapshot(activeJobsQuery, (snapshot) => {
+     console.log("Active jobs count update:", snapshot.size);
     document.getElementById('employerActiveJobCount').textContent = snapshot.size;
   });
 
@@ -1912,6 +1929,7 @@ function setupEmployerStatsListeners() {
   );
   
   onSnapshot(totalJobsQuery, (snapshot) => {
+     console.log("Total jobs count update:", snapshot.size);
     document.getElementById('employerTotalJobCount').textContent = snapshot.size;
   });
 
@@ -2226,6 +2244,43 @@ window.closeEditJobModal = function () {
         el.textContent = Math.floor(current);
       }, 16);
     }
+
+
+    window.cleanupOrphanedJobs = async function() {
+      if (!confirm("This will permanently delete all jobs not linked to existing employers. Continue?")) return;
+    
+      try {
+        // Get all employer user IDs
+        const employersQuery = query(
+          collection(db, "users"),
+          where("role", "==", "Employer")
+        );
+        const employersSnapshot = await getDocs(employersQuery);
+        const employerIds = employersSnapshot.docs.map(doc => doc.id);
+    
+        // Get all jobs
+        const jobsSnapshot = await getDocs(collection(db, "jobs"));
+        const deletePromises = [];
+        
+        jobsSnapshot.forEach(doc => {
+          const jobData = doc.data();
+          if (!employerIds.includes(jobData.employerId)) {
+            deletePromises.push(deleteDoc(doc.ref));
+          }
+        });
+    
+        if (deletePromises.length > 0) {
+          await Promise.all(deletePromises);
+          alert(`Deleted ${deletePromises.length} orphaned jobs.`);
+        } else {
+          alert("No orphaned jobs found.");
+        }
+      } catch (err) {
+        console.error("Cleanup failed:", err);
+        alert("Error during cleanup: " + err.message);
+      }
+    };
+
 
     // ==================== PLACEHOLDER FUNCTIONS ====================
    // window.loadEmployerJobs = function() {
@@ -2603,16 +2658,23 @@ window.deleteSelectedJobs = async function() {
   }
 };
 
-window.deleteEmployerJob = async function(jobId) {
-  if (!confirm("Are you sure you want to delete this job?")) return;
+window.deleteEmployerJob = async function(jobId, event) {
+  if (event) event.stopPropagation(); // Prevent row click if triggered from button
+  
+  if (!confirm("Are you sure you want to permanently delete this job?")) return;
 
   try {
+    // First delete the job document
     await deleteDoc(doc(db, "jobs", jobId));
-    alert("Job deleted.");
-    loadEmployerJobs(); // Refresh table
+    
+    // Then delete any associated applications (if you have this collection)
+    // await deleteApplicationsForJob(jobId); // Uncomment if you have this function
+    
+    alert("Job deleted permanently from database.");
+    loadEmployerJobs(); // Refresh the table
   } catch (err) {
-    console.error("Delete failed:", err);
-    alert("Error: " + err.message);
+    console.error("Failed to delete job:", err);
+    alert("Error deleting job: " + err.message);
   }
 };
 

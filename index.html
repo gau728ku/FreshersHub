@@ -1299,7 +1299,7 @@ label {
           const row = `
             <tr>
               <td><input type="checkbox" class="job-checkbox" data-id="${doc.id}"></td>
-              <td>${data.Title || 'N/A'}</td>
+              <td>${data.title || 'N/A'}</td>
               <td>${data.Employer || 'N/A'}</td>
               <td>${data.location || 'N/A'}</td>
               <td>${data.salary || 'N/A'}</td>
@@ -1681,9 +1681,10 @@ label {
 
     querySnapshot.forEach((doc) => {
       const data = doc.data();
+
       const row = `
   <tr class="clickable-row" onclick="viewJobDetails('${doc.id}')">
-    <td title="${data.Title || 'Untitled'}">${data.Title || 'Untitled'}</td>
+    <td title="${data.title || 'Untitled'}">${data.title || 'Untitled'}</td>
     <td>${data.applications || 0}</td>
     <td>${data.jobType || 'N/A'}</td>
     <td>${data.createdAt ? new Date(data.createdAt).toLocaleDateString() : 'N/A'}</td>
@@ -1819,7 +1820,7 @@ window.viewJobDetails = async function(jobId) {
 
   if (docSnap.exists()) {
     const data = docSnap.data();
-    document.getElementById("modalJobTitle").textContent = data.Title || "N/A";
+    document.getElementById("modalJobTitle").textContent = data.title || "N/A";
     document.getElementById("modalJobDescription").textContent = data.description || "N/A";
     document.getElementById("modalJobLocation").textContent = data.location || "N/A";
     document.getElementById("modalJobSalary").textContent = data.salary || "N/A";
@@ -2148,7 +2149,7 @@ function setupEmployerStatsListeners() {
   getDoc(docRef).then((docSnap) => {
     if (docSnap.exists()) {
       const data = docSnap.data();
-      document.getElementById("modalJobTitle").textContent = data.Title;
+      document.getElementById("modalJobTitle").textContent = data.title;
       document.getElementById("modalJobDescription").textContent = data.description;
       document.getElementById("modalJobLocation").textContent = data.location;
       document.getElementById("modalJobSalary").textContent = data.salary;
@@ -2176,7 +2177,7 @@ window.editJob = async function (jobId) {
   const data = docSnap.data();
 
   document.getElementById("editJobId").value = jobId;
-  document.getElementById("editTitle").value = data.Title || "";
+  document.getElementById("editTitle").value = data.title || "";
   document.getElementById("editDescription").value = data.description || "";
   document.getElementById("editLocation").value = data.location || "";
   document.getElementById("editSalary").value = data.salary || "";

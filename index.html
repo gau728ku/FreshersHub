@@ -1299,8 +1299,8 @@ label {
           const row = `
             <tr>
               <td><input type="checkbox" class="job-checkbox" data-id="${doc.id}"></td>
-              <td>${data.title || 'N/A'}</td>
-              <td>${data.employer || 'N/A'}</td>
+              <td>${data.Title || 'N/A'}</td>
+              <td>${data.employerEmail || 'N/A'}</td>
               <td>${data.location || 'N/A'}</td>
               <td>${data.salary || 'N/A'}</td>
               <td>
@@ -1992,7 +1992,7 @@ function setupemployerStatsListeners() {
           jobsTable.innerHTML += `
             <tr>
               <td>${job.Title || 'N/A'}</td>
-              <td>${job.employer || 'N/A'}</td>
+              <td>${job.employerEmail || 'N/A'}</td>
               <td>${job.location || 'N/A'}</td>
             </tr>`;
         });

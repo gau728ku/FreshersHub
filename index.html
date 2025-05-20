@@ -1764,16 +1764,17 @@ document.getElementById("editJobForm").addEventListener("submit", async function
       location: document.getElementById('jobLocation').value,
       salary: document.getElementById('jobSalary').value,
       jobType: document.getElementById('jobType').value,
-      Employer: user.email,
+      employerEmail: user.email,
       employerId: user.uid,
       createdAt: new Date().toISOString(),
       status: "active",
       applications: 0
     };
 
-// Add debug log
+     // Add debug log
     console.log("Posting new job:", jobData);
     
+    // Only call addDoc once
     const docRef = await addDoc(collection(db, "jobs"), jobData);
     
     // Verify the job was created
@@ -1782,8 +1783,8 @@ document.getElementById("editJobForm").addEventListener("submit", async function
       throw new Error("Failed to verify job creation");
     }
 
-    await addDoc(collection(db, "jobs"), jobData);
-     console.log("Job posted successfully with ID:", docRef.id);
+    
+    console.log("Job posted successfully with ID:", docRef.id);
     alert("Job posted successfully!");
     document.getElementById('postJobForm').reset();
     showEmployerSection('myJobs');

@@ -740,25 +740,28 @@ label {
     
     <div class="overlay" id="EmployerOverlay" onclick="toggleEmployerMenu()"></div>
     
+
     <!-- ==================== EMPLOYER HOME SECTION ==================== -->
     <div class="dashboard-section" id="EmployerHomeSection">
-      <h2>Employer Dashboard</h2>
-      
-      <!-- Quick Stats -->
-      <div class="stats-container">
-        <div class="stat-card" onclick="showEmployerSection('myJobs')">
-          <p>Active Jobs</p>
-          <h3 id="employerJobCount">-</h3>
-        </div>
-        <div class="stat-card" onclick="loadApplicationsStats()">
-          <p>Total Applications</p>
-          <h3 id="employerAppCount">-</h3>
-        </div>
-      </div>
+  <h2>Employer Dashboard</h2>
+  
+  <!-- Quick Stats -->
+  <div class="stats-container">
+    <div class="stat-card" onclick="showEmployerSection('myJobs')">
+      <p>Active Jobs</p>
+      <h3 id="employerActiveJobCount">-</h3>
+    </div>
+    <div class="stat-card" onclick="showEmployerSection('myJobs')">
+      <p>Total Jobs</p>
+      <h3 id="employerTotalJobCount">-</h3>
+    </div>
+    <div class="stat-card" onclick="loadApplicationsStats()">
+      <p>Total Applications</p>
+      <h3 id="employerAppCount">-</h3>
+    </div>
+  </div>
 
-      <!-- Announcement Card -->
-
-      <!-- Quick Post Job Card -->
+    
     
     </div>
 
@@ -1747,64 +1750,35 @@ document.getElementById("editJobForm").addEventListener("submit", async function
   e.preventDefault();
   
   try {
-    // Debug 1: Verify user authentication
-    console.log("[DEBUG] Current user:", auth.currentUser);
-    if (!auth.currentUser) {
-      throw new Error("No authenticated user");
-    }
+    const user = auth.currentUser;
+    if (!user) throw new Error("No authenticated user");
 
-    // Debug 2: Verify user role
-    const userDoc = await getDoc(doc(db, "users", auth.currentUser.uid));
-    console.log("[DEBUG] User document:", userDoc.exists() ? userDoc.data() : "MISSING");
-    
+    const userDoc = await getDoc(doc(db, "users", user.uid));
     if (!userDoc.exists() || userDoc.data().role !== "Employer") {
       throw new Error("User is not an employer");
     }
 
-    // Prepare job data
     const jobData = {
       Title: document.getElementById('jobTitle').value,
       description: document.getElementById('jobDescription').value,
       location: document.getElementById('jobLocation').value,
       salary: document.getElementById('jobSalary').value,
       jobType: document.getElementById('jobType').value,
-      Employer: auth.currentUser.email,
-      employerId: auth.currentUser.uid,
+      Employer: user.email,
+      employerId: user.uid,
       createdAt: new Date().toISOString(),
       status: "active",
       applications: 0
     };
 
-    // Debug 3: Log the complete job data before sending
-    console.log("[DEBUG] Job data being sent:", jobData);
-
-    // Debug 4: Time the write operation
-    console.time("[PERF] Job write operation");
-    const docRef = await addDoc(collection(db, "jobs"), jobData);
-    console.timeEnd("[PERF] Job write operation");
+    await addDoc(collection(db, "jobs"), jobData);
     
-    // Debug 5: Verify document was created
-    console.log("[DEBUG] New job ID:", docRef.id);
-    const newJob = await getDoc(docRef);
-    console.log("[DEBUG] Created job:", newJob.exists() ? newJob.data() : "FAILED");
-
     alert("Job posted successfully!");
     document.getElementById('postJobForm').reset();
-    
-    // Debug 6: Verify jobs list refresh
-    console.time("[PERF] Load jobs list");
-    await loadEmployerJobs();
-    console.timeEnd("[PERF] Load jobs list");
-    
     showEmployerSection('myJobs');
-    
   } catch (error) {
-    // Debug 7: Detailed error logging
-    console.error("[ERROR] Full error object:", error);
-    console.error("[ERROR] Firestore error code:", error.code);
-    console.error("[ERROR] Firestore error message:", error.message);
-    
-    alert("Job posting failed. Check console for details.");
+    console.error("Job posting failed:", error);
+    alert("Job posting failed: " + error.message);
   }
 };
 
@@ -1877,45 +1851,74 @@ window.closeJobModal = function() {
 
     // ==================== INITIALIZE EMPLOYER DASHBOARD ====================
     window.initEmployerDashboard = async function() {
-      try {
-        // Load stats
-        await loadEmployerStats();
-        
-        // Load jobs
-        await loadEmployerJobs();
-        
-        // Set up form listeners
-        document.getElementById('postJobForm')?.addEventListener('submit', postJob);
-       
-        
-        // Load announcement
-        const announcementRef = doc(db, "announcements", "current");
-        onSnapshot(announcementRef, (doc) => {
-          const announcementDiv = document.getElementById('employerAnnouncement');
-          if (doc.exists()) {
-            announcementDiv.innerHTML = `
-              <p><strong>${doc.data().text}</strong></p>
-              <small>Posted by Admin on ${new Date(doc.data().timestamp).toLocaleString()}</small>
-            `;
-          } else {
-            announcementDiv.innerHTML = "<p>No current announcements</p>";
-          }
-        });
-        
-        // Add search functionality
-        document.getElementById('searchMyJobs')?.addEventListener('input', (e) => {
-          const term = e.target.value.toLowerCase();
-          const table = document.getElementById('EmployerJobsTable');
-          const rows = table?.querySelectorAll('tr');
-          rows?.forEach(row => {
-            const text = row.textContent.toLowerCase();
-            row.style.display = text.includes(term) ? '' : 'none';
-          });
-        });
-      } catch (error) {
-        console.error("Error initializing employer dashboard:", error);
+  try {
+    // Set up real-time stats listeners
+    setupEmployerStatsListeners();
+    
+    // Load jobs
+    await loadEmployerJobs();
+    
+    // Set up form listeners
+    document.getElementById('postJobForm')?.addEventListener('submit', postJob);
+    
+    // Load announcement
+    const announcementRef = doc(db, "announcements", "current");
+    onSnapshot(announcementRef, (doc) => {
+      const announcementDiv = document.getElementById('employerAnnouncement');
+      if (doc.exists()) {
+        announcementDiv.innerHTML = `
+          <p><strong>${doc.data().text}</strong></p>
+          <small>Posted by Admin on ${new Date(doc.data().timestamp).toLocaleString()}</small>
+        `;
+      } else {
+        announcementDiv.innerHTML = "<p>No current announcements</p>";
       }
-    };
+    });
+    
+    // Add search functionality
+    document.getElementById('searchMyJobs')?.addEventListener('input', (e) => {
+      const term = e.target.value.toLowerCase();
+      const table = document.getElementById('EmployerJobsTable');
+      const rows = table?.querySelectorAll('tr');
+      rows?.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(term) ? '' : 'none';
+      });
+    });
+  } catch (error) {
+    console.error("Error initializing employer dashboard:", error);
+  }
+};
+
+function setupEmployerStatsListeners() {
+  const user = auth.currentUser;
+  if (!user) return;
+
+  // Real-time listener for active jobs count
+  const activeJobsQuery = query(
+    collection(db, "jobs"),
+    where("employerId", "==", user.uid),
+    where("status", "==", "active")
+  );
+  
+  onSnapshot(activeJobsQuery, (snapshot) => {
+    document.getElementById('employerActiveJobCount').textContent = snapshot.size;
+  });
+
+  // Real-time listener for total jobs count
+  const totalJobsQuery = query(
+    collection(db, "jobs"),
+    where("employerId", "==", user.uid)
+  );
+  
+  onSnapshot(totalJobsQuery, (snapshot) => {
+    document.getElementById('employerTotalJobCount').textContent = snapshot.size;
+  });
+
+  // Placeholder for applications count (you can implement this later)
+  document.getElementById('employerAppCount').textContent = "0";
+}
+
 
     // ==================== STATS AND ACTIVITY FUNCTIONS ====================
     async function loadAdminStats() {

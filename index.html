@@ -975,6 +975,22 @@ label {
 
   <!-- ==================== FIREBASE INITIALIZATION ==================== -->
   <script type="module">
+
+    // 🔁 Add these two at the top
+  function getField(data, keys = []) {
+    for (let key of keys) {
+      if (data[key] !== undefined && data[key] !== null) {
+        return data[key];
+      }
+    }
+    return null;
+  }
+
+  function capitalize(text) {
+    if (!text || typeof text !== 'string') return '';
+    return text.charAt(0).toUpperCase() + text.slice(1);
+  }
+
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { 
       getAuth, 
@@ -1657,8 +1673,8 @@ label {
       }
     };
 
-   window.loademployerJobs = async function () {
-  const table = document.getElementById('employerJobsTableBody');
+  window.loadEmployerJobs = async function () {
+  const table = document.getElementById('EmployerJobsTableBody');
   table.innerHTML = '<tr><td colspan="6">Loading jobs...</td></tr>';
 
   try {
@@ -1683,26 +1699,26 @@ label {
       const data = doc.data();
 
       const row = `
-  <tr class="clickable-row" onclick="viewJobDetails('${doc.id}')">
-    <td title="${data.title || 'Untitled'}">${data.title || 'Untitled'}</td>
-    <td>${data.applications || 0}</td>
-    <td>${data.jobType || 'N/A'}</td>
-    <td>${data.createdAt ? new Date(data.createdAt).toLocaleDateString() : 'N/A'}</td>
-    <td><span class="job-status" data-status="${data.status || 'active'}">${data.status || 'active'}</span></td>
-    <td>
-      <button class="edit-btn" onclick="event.stopPropagation(); editJob('${doc.id}')">Edit</button>
-      <button class="danger" onclick="deleteemployerJob('${doc.id}', event)">Delete</button>
-    </td>
-  </tr>`;
-
+        <tr class="clickable-row" onclick="viewJobDetails('${doc.id}')">
+          <td title="${getField(data, ['title', 'Title']) || 'Untitled'}">${capitalize(getField(data, ['title', 'Title'])) || 'Untitled'}</td>
+          <td>${getField(data, ['applications']) || 0}</td>
+          <td>${capitalize(getField(data, ['jobType', 'jobtype'])) || 'N/A'}</td>
+          <td>${getField(data, ['createdAt']) ? new Date(getField(data, ['createdAt'])).toLocaleDateString() : 'N/A'}</td>
+          <td><span class="job-status">${capitalize(getField(data, ['status'])) || 'active'}</span></td>
+          <td>
+            <button onclick="editJob('${doc.id}')">Edit</button>
+            <button class="danger" onclick="deleteEmployerJob('${doc.id}')">Delete</button>
+          </td>
+        </tr>`;
       table.innerHTML += row;
     });
 
   } catch (error) {
-    console.error("[ERROR] loademployerJobs failed:", error);
+    console.error("[ERROR] loadEmployerJobs failed:", error);
     table.innerHTML = `<tr><td colspan="6">Error: ${error.message}</td></tr>`;
   }
 };
+
 
 
         // Add search functionality
@@ -1813,27 +1829,26 @@ async function deleteemployerJob(jobId) {
 
 //viewjobdetails
 
-window.viewJobDetails = async function(jobId) {
-  const modal = document.getElementById("jobModal");
+window.viewJobDetails = async function (jobId) {
   const docRef = doc(db, "jobs", jobId);
   const docSnap = await getDoc(docRef);
-
-  if (docSnap.exists()) {
-    const data = docSnap.data();
-    document.getElementById("modalJobTitle").textContent = data.title || "N/A";
-    document.getElementById("modalJobDescription").textContent = data.description || "N/A";
-    document.getElementById("modalJobLocation").textContent = data.location || "N/A";
-    document.getElementById("modalJobSalary").textContent = data.salary || "N/A";
-    document.getElementById("modalJobType").textContent = data.jobType || "N/A";
-    modal.style.display = "block";
-  } else {
+  if (!docSnap.exists()) {
     alert("Job not found.");
+    return;
   }
+
+  const data = docSnap.data();
+
+  document.getElementById("modalJobTitle").textContent = capitalize(getField(data, ['title', 'Title']) || 'N/A');
+  document.getElementById("modalJobDescription").textContent = getField(data, ['description', 'Description']) || 'N/A';
+  document.getElementById("modalJobLocation").textContent = capitalize(getField(data, ['location', 'Location']) || 'N/A');
+  document.getElementById("modalJobSalary").textContent = getField(data, ['salary', 'Salary']) || 'N/A';
+  document.getElementById("modalJobType").textContent = capitalize(getField(data, ['jobType', 'JobType']) || 'N/A');
+  document.getElementById("modalJobStatus").textContent = capitalize(getField(data, ['status', 'Status']) || 'N/A');
+
+  document.getElementById("viewJobModal").classList.add("active");
 };
 
-window.closeJobModal = function() {
-  document.getElementById("jobModal").style.display = "none";
-};
 
 
 
@@ -1991,9 +2006,10 @@ function setupemployerStatsListeners() {
         last5Jobs.forEach(job => {
           jobsTable.innerHTML += `
             <tr>
-              <td>${job.Title || 'N/A'}</td>
-              <td>${job.employerEmail || 'N/A'}</td>
-              <td>${job.location || 'N/A'}</td>
+              <td>${capitalize(getField(job, ['title', 'Title']) || 'N/A')}</td>
+<td>${getField(job, ['employer', 'Employer', 'employerEmail']) || 'N/A'}</td>
+<td>${capitalize(getField(job, ['location', 'Location']) || 'N/A')}</td>
+
             </tr>`;
         });
       } catch (error) {
@@ -2176,25 +2192,15 @@ window.editJob = async function (jobId) {
 
   const data = docSnap.data();
 
-  document.getElementById("editJobId").value = jobId;
-  document.getElementById("editTitle").value = data.title || "";
-  document.getElementById("editDescription").value = data.description || "";
-  document.getElementById("editLocation").value = data.location || "";
-  document.getElementById("editSalary").value = data.salary || "";
-  document.getElementById("editJobType").value = data.jobType || "Full-time";
-  document.getElementById("editStatus").value = data.status || "active";
+  document.getElementById("editTitle").value = getField(data, ['title', 'Title']) || '';
+  document.getElementById("editDescription").value = getField(data, ['description', 'Description']) || '';
+  document.getElementById("editLocation").value = getField(data, ['location', 'Location']) || '';
+  document.getElementById("editSalary").value = getField(data, ['salary', 'Salary']) || '';
+  document.getElementById("editJobType").value = getField(data, ['jobType', 'JobType']) || 'Full-time';
+  document.getElementById("editStatus").value = getField(data, ['status', 'Status']) || 'active';
 
- // ✅ ADD THIS LINE HERE
-  document.body.style.overflow = 'hidden';
-  document.getElementById("editJobModal").style.display = "block";
-};
-
-window.closeEditJobModal = function () {
-
- // ✅ ADD THIS LINE
-  document.body.style.overflow = 'auto';
-
-  document.getElementById("editJobModal").style.display = "none";
+  document.getElementById("editJobModal").setAttribute("data-id", jobId);
+  document.getElementById("editJobModal").classList.add("active");
 };
 
 
@@ -2281,6 +2287,27 @@ window.closeEditJobModal = function () {
         alert("Error during cleanup: " + err.message);
       }
     };
+
+
+    window.saveJobChanges = async function () {
+  const jobId = document.getElementById("editJobModal").getAttribute("data-id");
+  const docRef = doc(db, "jobs", jobId);
+
+  const updatedData = {
+    title: document.getElementById("editTitle").value.trim(),
+    description: document.getElementById("editDescription").value.trim(),
+    location: document.getElementById("editLocation").value.trim(),
+    salary: document.getElementById("editSalary").value.trim(),
+    jobType: document.getElementById("editJobType").value,
+    status: document.getElementById("editStatus").value,
+  };
+
+  await updateDoc(docRef, updatedData);
+  document.getElementById("editJobModal").classList.remove("active");
+  loadEmployerJobs();
+};
+
+
 
 
     // ==================== PLACEHOLDER FUNCTIONS ====================
@@ -2644,6 +2671,7 @@ window.deleteemployerJob = async function(jobId, event) {
     alert("Error deleting job: " + err.message);
   }
 };
+
 
 
     </script> 

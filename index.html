@@ -85,7 +85,7 @@
     }
 
     /* ==================== MENU STYLES ==================== */
-    #adminMenuBtn, #fresherMenuBtn, #EmployerMenuBtn {
+    #adminMenuBtn, #fresherMenuBtn, #employerMenuBtn {
       position: fixed;
       top: 20px;
       left: 20px;
@@ -281,7 +281,7 @@
     /* Jobs Table Specific Styling */
     #jobsTableBody td:nth-child(1) { width: 40px; text-align: center; } /* Checkbox */
     #jobsTableBody td:nth-child(2) { width: 25%; } /* Title */
-    #jobsTableBody td:nth-child(3) { width: 20%; } /* Employer */
+    #jobsTableBody td:nth-child(3) { width: 20%; } /* employer */
     #jobsTableBody td:nth-child(4) { width: 15%; } /* Location */
     #jobsTableBody td:nth-child(5) { width: 15%; } /* Salary */
     #jobsTableBody td:nth-child(6) { width: 15%; } /* Actions */
@@ -349,12 +349,12 @@
     /* ==================== EMPLOYER DASHBOARD SPECIFIC ==================== */
 
 
-   #EmployerJobsTable {
+   #employerJobsTable {
   table-layout: fixed;
   width: 100%;
 }
 
-#EmployerJobsTable td, #EmployerJobsTable th {
+#employerJobsTable td, #employerJobsTable th {
   padding: 12px;
   text-align: left;
   white-space: normal;
@@ -362,33 +362,33 @@
 }
 
 /* Set column widths */
-#EmployerJobsTable th:nth-child(1),
-#EmployerJobsTable td:nth-child(1) {
+#employerJobsTable th:nth-child(1),
+#employerJobsTable td:nth-child(1) {
   width: 30%; /* Title */
 }
 
-#EmployerJobsTable th:nth-child(2),
-#EmployerJobsTable td:nth-child(2) {
+#employerJobsTable th:nth-child(2),
+#employerJobsTable td:nth-child(2) {
   width: 10%; /* Applications */
 }
 
-#EmployerJobsTable th:nth-child(3),
-#EmployerJobsTable td:nth-child(3) {
+#employerJobsTable th:nth-child(3),
+#employerJobsTable td:nth-child(3) {
   width: 15%; /* Type */
 }
 
-#EmployerJobsTable th:nth-child(4),
-#EmployerJobsTable td:nth-child(4) {
+#employerJobsTable th:nth-child(4),
+#employerJobsTable td:nth-child(4) {
   width: 15%; /* Posted */
 }
 
-#EmployerJobsTable th:nth-child(5),
-#EmployerJobsTable td:nth-child(5) {
+#employerJobsTable th:nth-child(5),
+#employerJobsTable td:nth-child(5) {
   width: 10%; /* Status */
 }
 
-#EmployerJobsTable th:nth-child(6),
-#EmployerJobsTable td:nth-child(6) {
+#employerJobsTable th:nth-child(6),
+#employerJobsTable td:nth-child(6) {
   width: 20%; /* Actions */
 }
 
@@ -501,7 +501,7 @@ label {
     </div>
     <select id="role">
       <option value="fresher">Fresher</option>
-      <option value="Employer">Employer</option>
+      <option value="employer">employer</option>
     </select>
     <button id="actionBtn" onclick="signup()">Signup</button>
     <p id="toggle-text">Already have an account? <a id="toggleLink">Login here</a></p>
@@ -540,8 +540,8 @@ label {
           <h3 id="totalFreshers">-</h3>
         </div>
         <div class="stat-card">
-          <p>Total Employers</p>
-          <h3 id="totalEmployers">-</h3>
+          <p>Total employers</p>
+          <h3 id="totalemployers">-</h3>
         </div>
         <div class="stat-card">
           <p>Total Jobs</p>
@@ -582,7 +582,7 @@ label {
             <div class="table-container">
               <table>
                 <thead>
-                  <tr><th>Title</th><th>Employer</th><th>Location</th></tr>
+                  <tr><th>Title</th><th>employer</th><th>Location</th></tr>
                 </thead>
                 <tbody id="recentJobsTable"></tbody>
               </table>
@@ -661,7 +661,7 @@ label {
             <tr>
               <th><input type="checkbox" id="selectAllJobs" class="table-checkbox"></th>
               <th>Title</th>
-              <th>Employer</th>
+              <th>employer</th>
               <th>Location</th>
               <th>Salary</th>
               <th>Actions</th>
@@ -723,35 +723,35 @@ label {
   </div>
 
   <!-- ==================== EMPLOYER DASHBOARD ==================== -->
-  <div id="EmployerDashboard" style="display:none;">
+  <div id="employerDashboard" style="display:none;">
 
-    <div id="announcementBannerEmployer" class="announcement-banner" style="display: none; cursor: pointer;" onclick="showFullAnnouncement()">
-      <div class="scrolling-text" id="announcementTextEmployer"></div>
+    <div id="announcementBanneremployer" class="announcement-banner" style="display: none; cursor: pointer;" onclick="showFullAnnouncement()">
+      <div class="scrolling-text" id="announcementTextemployer"></div>
     </div>
 
-    <div id="EmployerMenuBtn" onclick="toggleEmployerMenu()">☰</div>
+    <div id="employerMenuBtn" onclick="toggleemployerMenu()">☰</div>
     
-    <div class="sideMenu" id="EmployerSideMenu">
-      <a href="#" id="EmployerMenuHome">Dashboard</a>
-      <a href="#" id="EmployerMenuPostJob">Post Job</a>
-      <a href="#" id="EmployerMenuMyJobs">My Jobs</a>
+    <div class="sideMenu" id="employerSideMenu">
+      <a href="#" id="employerMenuHome">Dashboard</a>
+      <a href="#" id="employerMenuPostJob">Post Job</a>
+      <a href="#" id="employerMenuMyJobs">My Jobs</a>
       <a href="#" onclick="logout()">Logout</a>
     </div>
     
-    <div class="overlay" id="EmployerOverlay" onclick="toggleEmployerMenu()"></div>
+    <div class="overlay" id="employerOverlay" onclick="toggleemployerMenu()"></div>
     
 
     <!-- ==================== EMPLOYER HOME SECTION ==================== -->
-    <div class="dashboard-section" id="EmployerHomeSection">
-  <h2>Employer Dashboard</h2>
+    <div class="dashboard-section" id="employerHomeSection">
+  <h2>employer Dashboard</h2>
   
   <!-- Quick Stats -->
   <div class="stats-container">
-    <div class="stat-card" onclick="showEmployerSection('myJobs')">
+    <div class="stat-card" onclick="showemployerSection('myJobs')">
       <p>Active Jobs</p>
       <h3 id="employerActiveJobCount">-</h3>
     </div>
-    <div class="stat-card" onclick="showEmployerSection('myJobs')">
+    <div class="stat-card" onclick="showemployerSection('myJobs')">
       <p>Total Jobs</p>
       <h3 id="employerTotalJobCount">-</h3>
     </div>
@@ -766,9 +766,9 @@ label {
     </div>
 
     <!-- ==================== POST JOB SECTION ==================== -->
-    <div class="dashboard-section" id="EmployerPostJobSection">
+    <div class="dashboard-section" id="employerPostJobSection">
       <h2>Post New Job</h2>
-      <button onclick="showEmployerSection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
+      <button onclick="showemployerSection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
       
       <div class="card">
         <form id="postJobForm">
@@ -790,15 +790,15 @@ label {
     </div>
 
     <!-- ==================== MY JOBS SECTION ==================== -->
-    <div class="dashboard-section" id="EmployerMyJobsSection">
+    <div class="dashboard-section" id="employerMyJobsSection">
       <h2>My Job Postings</h2>
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <button onclick="showEmployerSection('home')">← Back to Dashboard</button>
+        <button onclick="showemployerSection('home')">← Back to Dashboard</button>
         <input type="text" class="search-input" placeholder="Search my jobs..." id="searchMyJobs">
       </div>
       
       <div class="table-container">
-        <table id="EmployerJobsTable">
+        <table id="employerJobsTable">
   <thead>
     <tr>
       <th>Title</th>
@@ -809,7 +809,7 @@ label {
       <th>Actions</th>
     </tr>
   </thead>
-  <tbody id="EmployerJobsTableBody"></tbody>
+  <tbody id="employerJobsTableBody"></tbody>
 </table>
 
       </div>
@@ -853,7 +853,7 @@ label {
           <thead>
             <tr>
               <th>Title</th>
-              <th>Employer</th>
+              <th>employer</th>
               <th>Location</th>
               <th>Salary</th>
               <th>Actions</th>
@@ -874,7 +874,7 @@ label {
           <thead>
             <tr>
               <th>Job Title</th>
-              <th>Employer</th>
+              <th>employer</th>
               <th>Status</th>
               <th>Applied On</th>
             </tr>
@@ -1084,7 +1084,7 @@ label {
           const initialRole = userData.role;
           showDashboard(initialRole);
           startUserAnnouncementListener();
-          startEmployerSignupListener();
+          startemployerSignupListener();
 
           // Set up role change listener
           roleChangeUnsubscribe = onSnapshot(docRef, (snapshot) => {
@@ -1110,7 +1110,7 @@ label {
       }
     };
 
-    async function startEmployerSignupListener() {
+    async function startemployerSignupListener() {
       const currentUser = auth.currentUser;
       if (!currentUser) return;
 
@@ -1118,7 +1118,7 @@ label {
       const isAdmin = userDoc.exists() && userDoc.data().isOriginalAdmin;
       if (!isAdmin) return;
 
-      let latestEmployerTimestamps = {};
+      let latestemployerTimestamps = {};
 
       onSnapshot(collection(db, "users"), (snapshot) => {
         snapshot.docChanges().forEach((change) => {
@@ -1126,9 +1126,9 @@ label {
             const data = change.doc.data();
             if (data.role.toLowerCase() === "employer") {
               const id = change.doc.id;
-              if (!latestEmployerTimestamps[id]) {
-                latestEmployerTimestamps[id] = true;
-                showAdminToast(`New Employer: ${data.email}`);
+              if (!latestemployerTimestamps[id]) {
+                latestemployerTimestamps[id] = true;
+                showAdminToast(`New employer: ${data.email}`);
               }
             }
           }
@@ -1145,7 +1145,7 @@ label {
       signOut(auth).then(() => {
         document.getElementById('auth-section').style.display = 'block';
         document.getElementById('adminDashboard').style.display = 'none';
-        document.getElementById('EmployerDashboard').style.display = 'none';
+        document.getElementById('employerDashboard').style.display = 'none';
         document.getElementById('fresherDashboard').style.display = 'none';
       });
     };
@@ -1181,11 +1181,11 @@ label {
     window.showDashboard = function(role) {
       document.getElementById('auth-section').style.display = 'none';
       document.getElementById('adminDashboard').style.display = 'none';
-      document.getElementById('EmployerDashboard').style.display = 'none';
+      document.getElementById('employerDashboard').style.display = 'none';
       document.getElementById('fresherDashboard').style.display = 'none';
       
       document.getElementById('adminMenuBtn').style.display = 'none';
-      document.getElementById('EmployerMenuBtn').style.display = 'none';
+      document.getElementById('employerMenuBtn').style.display = 'none';
       document.getElementById('fresherMenuBtn').style.display = 'none';
 
       if (role === 'admin') {
@@ -1198,10 +1198,10 @@ label {
         document.getElementById('fresherDashboard').style.display = 'block';
         document.getElementById('fresherMenuBtn').style.display = 'block';
         showFresherSection('home');
-      } else if (role === 'Employer') {
-        document.getElementById('EmployerDashboard').style.display = 'block';
-        document.getElementById('EmployerMenuBtn').style.display = 'block';
-        showEmployerSection('home');
+      } else if (role === 'employer') {
+        document.getElementById('employerDashboard').style.display = 'block';
+        document.getElementById('employerMenuBtn').style.display = 'block';
+        showemployerSection('home');
       }
     };
 
@@ -1211,9 +1211,9 @@ label {
       document.getElementById('adminOverlay').classList.toggle('show');
     };
 
-    window.toggleEmployerMenu = function() {
-      document.getElementById('EmployerSideMenu').classList.toggle('open');
-      document.getElementById('EmployerOverlay').classList.toggle('show');
+    window.toggleemployerMenu = function() {
+      document.getElementById('employerSideMenu').classList.toggle('open');
+      document.getElementById('employerOverlay').classList.toggle('show');
     };
 
     window.toggleFresherMenu = function() {
@@ -1300,7 +1300,7 @@ label {
             <tr>
               <td><input type="checkbox" class="job-checkbox" data-id="${doc.id}"></td>
               <td>${data.title || 'N/A'}</td>
-              <td>${data.Employer || 'N/A'}</td>
+              <td>${data.employer || 'N/A'}</td>
               <td>${data.location || 'N/A'}</td>
               <td>${data.salary || 'N/A'}</td>
               <td>
@@ -1532,7 +1532,7 @@ label {
           throw new Error("Only original admin can post announcements");
         }
 
-        // Format role (Admin, Employer, etc.)
+        // Format role (Admin, employer, etc.)
         const authorRole = userData.role
           ? userData.role.charAt(0).toUpperCase() + userData.role.slice(1)
           : "Admin";
@@ -1637,7 +1637,7 @@ label {
     };
 
     // ==================== EMPLOYER DASHBOARD FUNCTIONS ====================
-    window.loadEmployerStats = async function() {
+    window.loademployerStats = async function() {
       try {
         const user = auth.currentUser;
         if (!user) return;
@@ -1645,7 +1645,7 @@ label {
         // Count employer's jobs
         const jobsQuery = query(
           collection(db, "jobs"),
-          where("Employer", "==", user.email)
+          where("employer", "==", user.email)
         );
         const jobsSnapshot = await getDocs(jobsQuery);
         document.getElementById('employerJobCount').textContent = jobsSnapshot.size;
@@ -1657,8 +1657,8 @@ label {
       }
     };
 
-   window.loadEmployerJobs = async function () {
-  const table = document.getElementById('EmployerJobsTableBody');
+   window.loademployerJobs = async function () {
+  const table = document.getElementById('employerJobsTableBody');
   table.innerHTML = '<tr><td colspan="6">Loading jobs...</td></tr>';
 
   try {
@@ -1691,7 +1691,7 @@ label {
     <td><span class="job-status" data-status="${data.status || 'active'}">${data.status || 'active'}</span></td>
     <td>
       <button class="edit-btn" onclick="event.stopPropagation(); editJob('${doc.id}')">Edit</button>
-      <button class="danger" onclick="deleteEmployerJob('${doc.id}', event)">Delete</button>
+      <button class="danger" onclick="deleteemployerJob('${doc.id}', event)">Delete</button>
     </td>
   </tr>`;
 
@@ -1699,7 +1699,7 @@ label {
     });
 
   } catch (error) {
-    console.error("[ERROR] loadEmployerJobs failed:", error);
+    console.error("[ERROR] loademployerJobs failed:", error);
     table.innerHTML = `<tr><td colspan="6">Error: ${error.message}</td></tr>`;
   }
 };
@@ -1708,7 +1708,7 @@ label {
         // Add search functionality
         document.getElementById('searchMyJobs').addEventListener('input', (e) => {
   const term = e.target.value.toLowerCase();
-  const rows = document.querySelectorAll('#EmployerJobsTableBody tr');
+  const rows = document.querySelectorAll('#employerJobsTableBody tr');
   rows.forEach(row => {
     const text = row.textContent.toLowerCase();
     row.style.display = text.includes(term) ? '' : 'none';
@@ -1736,7 +1736,7 @@ document.getElementById("editJobForm").addEventListener("submit", async function
     await updateDoc(doc(db, "jobs", jobId), updatedData);
     alert("Job updated successfully.");
     closeEditJobModal();
-    loadEmployerJobs(); // Refresh table
+    loademployerJobs(); // Refresh table
   } catch (err) {
     console.error("Update failed:", err);
     alert("Error updating job: " + err.message);
@@ -1755,7 +1755,7 @@ document.getElementById("editJobForm").addEventListener("submit", async function
     if (!user) throw new Error("No authenticated user");
 
     const userDoc = await getDoc(doc(db, "users", user.uid));
-    if (!userDoc.exists() || userDoc.data().role !== "Employer") {
+    if (!userDoc.exists() || userDoc.data().role !== "employer") {
       throw new Error("User is not an employer");
     }
 
@@ -1788,7 +1788,7 @@ document.getElementById("editJobForm").addEventListener("submit", async function
     console.log("Job posted successfully with ID:", docRef.id);
     alert("Job posted successfully!");
     document.getElementById('postJobForm').reset();
-    showEmployerSection('myJobs');
+    showemployerSection('myJobs');
   } catch (error) {
     console.error("Job posting failed:", error);
     alert("Job posting failed: " + error.message);
@@ -1796,15 +1796,15 @@ document.getElementById("editJobForm").addEventListener("submit", async function
 };
 
 
-//deleteEmployerjob
+//deleteemployerjob
 
-async function deleteEmployerJob(jobId) {
+async function deleteemployerJob(jobId) {
   if (!confirm("Are you sure you want to delete this job?")) return;
 
   try {
     await deleteDoc(doc(db, "jobs", jobId));
     alert("Job deleted successfully");
-    loadEmployerJobs(); // refresh table
+    loademployerJobs(); // refresh table
   } catch (err) {
     console.error("Failed to delete job:", err);
     alert("Error deleting job: " + err.message);
@@ -1839,7 +1839,7 @@ window.closeJobModal = function() {
 
 
 
-    window.loadEmployerStats = async function() {
+    window.loademployerStats = async function() {
       try {
         const user = auth.currentUser;
         if (!user) return;
@@ -1863,13 +1863,13 @@ window.closeJobModal = function() {
     };
 
     // ==================== INITIALIZE EMPLOYER DASHBOARD ====================
-    window.initEmployerDashboard = async function() {
+    window.initemployerDashboard = async function() {
   try {
     // Set up real-time stats listeners
-    setupEmployerStatsListeners();
+    setupemployerStatsListeners();
     
     // Load jobs
-    await loadEmployerJobs();
+    await loademployerJobs();
     
     // Set up form listeners
     document.getElementById('postJobForm')?.addEventListener('submit', postJob);
@@ -1891,7 +1891,7 @@ window.closeJobModal = function() {
     // Add search functionality
     document.getElementById('searchMyJobs')?.addEventListener('input', (e) => {
       const term = e.target.value.toLowerCase();
-      const table = document.getElementById('EmployerJobsTable');
+      const table = document.getElementById('employerJobsTable');
       const rows = table?.querySelectorAll('tr');
       rows?.forEach(row => {
         const text = row.textContent.toLowerCase();
@@ -1903,7 +1903,7 @@ window.closeJobModal = function() {
   }
 };
 
-function setupEmployerStatsListeners() {
+function setupemployerStatsListeners() {
   const user = auth.currentUser;
   if (!user) return;
 
@@ -1947,10 +1947,10 @@ function setupEmployerStatsListeners() {
         const freshersSnapshot = await getDocs(freshersQuery);
         animateValue("totalFreshers", freshersSnapshot.size);
 
-        // Count Employers
-        const EmployersQuery = query(collection(db, "users"), where("role", "==", "Employer"));
-        const EmployersSnapshot = await getDocs(EmployersQuery);
-        animateValue("totalEmployers", EmployersSnapshot.size);
+        // Count employers
+        const employersQuery = query(collection(db, "users"), where("role", "==", "employer"));
+        const employersSnapshot = await getDocs(employersQuery);
+        animateValue("totalemployers", employersSnapshot.size);
 
         // Count Jobs
         const jobsSnapshot = await getDocs(collection(db, "jobs"));
@@ -1963,7 +1963,7 @@ function setupEmployerStatsListeners() {
     async function loadRecentActivity() {
       try {
         // Recent Users
-        const usersQuery = query(collection(db, "users"), where("role", "in", ["fresher", "Employer"]));
+        const usersQuery = query(collection(db, "users"), where("role", "in", ["fresher", "employer"]));
         const usersSnapshot = await getDocs(usersQuery);
         
         const usersData = [];
@@ -1992,7 +1992,7 @@ function setupEmployerStatsListeners() {
           jobsTable.innerHTML += `
             <tr>
               <td>${job.Title || 'N/A'}</td>
-              <td>${job.Employer || 'N/A'}</td>
+              <td>${job.employer || 'N/A'}</td>
               <td>${job.location || 'N/A'}</td>
             </tr>`;
         });
@@ -2128,18 +2128,18 @@ function setupEmployerStatsListeners() {
     }
 
     // ==================== EMPLOYER SECTION FUNCTIONS ====================
-    window.showEmployerSection = function(section) {
-      document.getElementById('EmployerHomeSection').style.display = 'none';
-      document.getElementById('EmployerPostJobSection').style.display = 'none';
-      document.getElementById('EmployerMyJobsSection').style.display = 'none';
+    window.showemployerSection = function(section) {
+      document.getElementById('employerHomeSection').style.display = 'none';
+      document.getElementById('employerPostJobSection').style.display = 'none';
+      document.getElementById('employerMyJobsSection').style.display = 'none';
 
       if (section === 'home') {
-        document.getElementById('EmployerHomeSection').style.display = 'block';
+        document.getElementById('employerHomeSection').style.display = 'block';
       } else if (section === 'postJob') {
-        document.getElementById('EmployerPostJobSection').style.display = 'block';
+        document.getElementById('employerPostJobSection').style.display = 'block';
       } else if (section === 'myJobs') {
-        document.getElementById('EmployerMyJobsSection').style.display = 'block';
-        loadEmployerJobs();
+        document.getElementById('employerMyJobsSection').style.display = 'block';
+        loademployerJobs();
       }
     };
 
@@ -2254,7 +2254,7 @@ window.closeEditJobModal = function () {
         // Get all employer user IDs
         const employersQuery = query(
           collection(db, "users"),
-          where("role", "==", "Employer")
+          where("role", "==", "employer")
         );
         const employersSnapshot = await getDocs(employersQuery);
         const employerIds = employersSnapshot.docs.map(doc => doc.id);
@@ -2333,23 +2333,23 @@ window.closeEditJobModal = function () {
         toggleAdminMenu();
       });
 
-      // Employer menu navigation
-      document.getElementById('EmployerMenuHome').addEventListener('click', (e) => {
+      // employer menu navigation
+      document.getElementById('employerMenuHome').addEventListener('click', (e) => {
         e.preventDefault();
-        showEmployerSection('home');
-        toggleEmployerMenu();
+        showemployerSection('home');
+        toggleemployerMenu();
       });
 
-      document.getElementById('EmployerMenuPostJob').addEventListener('click', (e) => {
+      document.getElementById('employerMenuPostJob').addEventListener('click', (e) => {
         e.preventDefault();
-        showEmployerSection('postJob');
-        toggleEmployerMenu();
+        showemployerSection('postJob');
+        toggleemployerMenu();
       });
 
-      document.getElementById('EmployerMenuMyJobs').addEventListener('click', (e) => {
+      document.getElementById('employerMenuMyJobs').addEventListener('click', (e) => {
         e.preventDefault();
-        showEmployerSection('myJobs');
-        toggleEmployerMenu();
+        showemployerSection('myJobs');
+        toggleemployerMenu();
       });
 
       // Fresher menu navigation
@@ -2406,15 +2406,15 @@ window.closeEditJobModal = function () {
 
         showDashboard(userData.role);
         startUserAnnouncementListener();
-        startEmployerSignupListener();
+        startemployerSignupListener();
 
         // Initialize role-specific dashboard components
         if (userData.role === 'admin') {
           loadAdminStats();
           loadRecentActivity();
           loadAnnouncement();
-        } else if (userData.role === 'Employer') {
-          initEmployerDashboard(); // Initialize employer-specific features
+        } else if (userData.role === 'employer') {
+          initemployerDashboard(); // Initialize employer-specific features
         } else if (userData.role === 'fresher') {
           // Initialize fresher-specific features if needed
         }
@@ -2488,9 +2488,9 @@ function startUserAnnouncementListener() {
       fresherText.textContent = text || "";
     }
 
-    // Employer
-    const employerBanner = document.getElementById("announcementBannerEmployer");
-    const employerText = document.getElementById("announcementTextEmployer");
+    // employer
+    const employerBanner = document.getElementById("announcementBanneremployer");
+    const employerText = document.getElementById("announcementTextemployer");
     if (employerBanner && employerText) {
       employerBanner.style.display = isActive ? "block" : "none";
       employerText.textContent = text || "";
@@ -2625,7 +2625,7 @@ window.deleteSelectedJobs = async function() {
   }
 };
 
-window.deleteEmployerJob = async function(jobId, event) {
+window.deleteemployerJob = async function(jobId, event) {
   if (event) event.stopPropagation(); // Prevent row click if triggered from button
   
   if (!confirm("Are you sure you want to permanently delete this job?")) return;
@@ -2638,7 +2638,7 @@ window.deleteEmployerJob = async function(jobId, event) {
     // await deleteApplicationsForJob(jobId); // Uncomment if you have this function
     
     alert("Job deleted permanently from database.");
-    loadEmployerJobs(); // Refresh the table
+    loademployerJobs(); // Refresh the table
   } catch (err) {
     console.error("Failed to delete job:", err);
     alert("Error deleting job: " + err.message);

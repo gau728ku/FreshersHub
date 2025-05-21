@@ -541,56 +541,6 @@
             position: relative;
         }
 
-
-        /* ==================== FRESHERS DASHBOARD SPECIFIC ==================== */
-
-        #availableJobsTable {
-            table-layout: fixed;
-            width: 100%;
-        }
-
-        #availableJobsTable th,
-        #availableJobsTable td {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            padding: 10px;
-            text-align: left;
-        }
-
-        #availableJobsTable th:nth-child(1),
-        #availableJobsTable td:nth-child(1) {
-            width: 40%;
-            /* Title */
-        }
-
-        #availableJobsTable th:nth-child(2),
-        #availableJobsTable td:nth-child(2) {
-            width: 20%;
-            /* Employer */
-        }
-
-        #availableJobsTable th:nth-child(3),
-        #availableJobsTable td:nth-child(3) {
-            width: 15%;
-            /* Location */
-        }
-
-        #availableJobsTable th:nth-child(4),
-        #availableJobsTable td:nth-child(4) {
-            width: 15%;
-            /* Salary */
-        }
-
-        #availableJobsTable th:nth-child(5),
-        #availableJobsTable td:nth-child(5) {
-            width: 10%;
-            /* Actions */
-        }
-
-
-
-
         /* ==================== RESPONSIVE STYLES ==================== */
         @media (max-width: 768px) {
             .stats-container {
@@ -964,7 +914,7 @@
             <button onclick="showFresherSection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
 
             <div class="table-container">
-                <table id="availableJobsTable">
+                <table>
                     <thead>
                         <tr>
                             <th>Title</th>
@@ -974,9 +924,8 @@
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody id="availableJobsBody"></tbody>
+                    <tbody id="availableJobsTable"></tbody>
                 </table>
-
             </div>
         </div>
 
@@ -1104,10 +1053,6 @@
             orderBy
         } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-
-        // 🔁 Global state for employer toast tracking
-        const knownEmployerIds = new Set();
-        let employerInitialLoadDone = false;
 
 
         // 🔁 Utility: fallback to first available key (handles case mismatch)
@@ -1420,16 +1365,12 @@
                     const data = doc.data();
                     if (data.isOriginalAdmin) return;
 
-                    const isEmployer = data.role?.toLowerCase() === 'employer';
-                    const isNew = !knownEmployerIds.has(doc.id);
+                    const isNew = !knownUserIds.has(doc.id);
+                    knownUserIds.add(doc.id);
 
-                    // ✅ Only show toast if this is a new employer and we're past the initial load
-                    if (employerInitialLoadDone && isEmployer && isNew) {
+                    // 🧠 Only show toast *after* initial load is done
+                    if (initialLoadComplete && isNew && data.role?.toLowerCase() === 'employer') {
                         showToast(`🎉 New Employer Joined: ${data.email}`);
-                    }
-
-                    if (isEmployer) {
-                        knownEmployerIds.add(doc.id); // add only employers to avoid polluting the set
                     }
 
                     const row = `
@@ -1444,10 +1385,9 @@
                     table.innerHTML += row;
                 });
 
-                // ✅ Mark the first snapshot processed (after loop)
-                employerInitialLoadDone = true;
+                // ✅ Mark initial batch complete
+                initialLoadComplete = true;
             });
-
 
         }, (error) => {
             console.error("Error loading users in real-time:", error);
@@ -2220,47 +2160,6 @@
         }
 
         // ==================== FRESHER SECTION FUNCTIONS ====================
-
-        window.loadAvailableJobs = async function () {
-            const tableBody = document.getElementById("availableJobsBody");
-            tableBody.innerHTML = "...";
-
-            try {
-                const q = query(
-                    collection(db, "jobs"),
-                    where("status", "==", "active"),
-                    orderBy("createdAt", "desc")
-                );
-
-                const querySnapshot = await getDocs(q);
-                tbody.innerHTML = '';
-
-                if (querySnapshot.empty) {
-                    tbody.innerHTML = '<tr><td colspan="5">No available jobs found</td></tr>';
-                    return;
-                }
-
-                querySnapshot.forEach(doc => {
-                    const data = doc.data();
-                    const row = `
-                <tr>
-                    <td>${data.title || 'Untitled'}</td>
-                    <td>${getField(data, ['employerEmail', 'Employer']) || 'N/A'}</td>
-                    <td>${data.location || 'N/A'}</td>
-                    <td>${data.salary || 'N/A'}</td>
-                    <td><button onclick="viewJobDetails('${doc.id}')">View</button></td>
-                </tr>`;
-                    tableBody.innerHTML += row;
-
-                });
-            } catch (error) {
-                console.error("Error loading available jobs:", error);
-                tbody.innerHTML = `<tr><td colspan="5">Error loading jobs</td></tr>`;
-            }
-        };
-
-
-
         window.showFresherSection = function (section) {
             document.getElementById('fresherHomeSection').style.display = 'none';
             document.getElementById('fresherJobsSection').style.display = 'none';
@@ -2305,7 +2204,7 @@
                     const row = `
         <tr>
           <td>${data.title || 'Untitled'}</td>
-          <td>${getField(data, ['employerEmail', 'Employer']) || 'N/A'}</td>
+          <td>${data.Employer || 'N/A'}</td>
           <td>${data.location || 'N/A'}</td>
           <td>${data.salary || 'N/A'}</td>
           <td><button onclick="viewJobDetails('${doc.id}')">View</button></td>

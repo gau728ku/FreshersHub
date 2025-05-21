@@ -1357,38 +1357,42 @@
             }
         };
 
-        window.loadAllJobs = async function () {
+        window.loadAllJobs = function () {
             const table = document.getElementById('jobsTableBody');
             table.innerHTML = '<tr><td colspan="6">Loading jobs...</td></tr>';
 
-            try {
-                const querySnapshot = await getDocs(collection(db, "jobs"));
+            const q = query(collection(db, "jobs"));
+
+            onSnapshot(q, (snapshot) => {
                 table.innerHTML = '';
 
-                if (querySnapshot.empty) {
-                    table.innerHTML = '<tr><td colspan="5">No jobs found</td></tr>';
+                if (snapshot.empty) {
+                    table.innerHTML = '<tr><td colspan="6">No jobs found</td></tr>';
                     return;
                 }
 
-                querySnapshot.forEach(doc => {
+                snapshot.forEach(doc => {
                     const data = doc.data();
+
                     const row = `
-            <tr>
-              <td><input type="checkbox" class="job-checkbox" data-id="${doc.id}"></td>
-              <td>${data.title || 'N/A'}</td>
-              <td>${data.employerEmail || 'N/A'}</td>
-              <td>${data.location || 'N/A'}</td>
-              <td>${data.salary || 'N/A'}</td>
-              <td>
-                <button onclick="deleteJob('${doc.id}')" class="danger">Delete</button>
-              </td>
-            </tr>`;
+        <tr>
+          <td><input type="checkbox" class="job-checkbox" data-id="${doc.id}"></td>
+          <td>${capitalize(getField(data, ['title', 'Title']) || 'N/A')}</td>
+          <td>${getField(data, ['employerEmail', 'employer']) || 'N/A'}</td>
+          <td>${capitalize(getField(data, ['location', 'Location']) || 'N/A')}</td>
+          <td>${getField(data, ['salary', 'Salary']) || 'N/A'}</td>
+          <td>
+            <button onclick="deleteJob('${doc.id}')" class="danger">Delete</button>
+          </td>
+        </tr>`;
                     table.innerHTML += row;
                 });
-            } catch (error) {
-                table.innerHTML = '<tr><td colspan="5">Error loading jobs</td></tr>';
-            }
+            }, (error) => {
+                console.error("Realtime job loading error:", error);
+                table.innerHTML = '<tr><td colspan="6">Error loading jobs</td></tr>';
+            });
         };
+
 
         // ==================== USER MANAGEMENT FUNCTIONS ====================
         window.deleteUser = async function (userId) {

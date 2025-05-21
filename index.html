@@ -554,21 +554,20 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            padding: 12px;
+            padding: 10px;
             text-align: left;
         }
 
-        /* 📐 Adjust Column Widths */
         #availableJobsTable th:nth-child(1),
         #availableJobsTable td:nth-child(1) {
             width: 40%;
-            /* Title gets more space */
+            /* Title */
         }
 
         #availableJobsTable th:nth-child(2),
         #availableJobsTable td:nth-child(2) {
             width: 20%;
-            /* Employer moved right */
+            /* Employer */
         }
 
         #availableJobsTable th:nth-child(3),
@@ -588,6 +587,7 @@
             width: 10%;
             /* Actions */
         }
+
 
 
 
@@ -964,7 +964,7 @@
             <button onclick="showFresherSection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
 
             <div class="table-container">
-                <table>
+                <table id="availableJobsTable">
                     <thead>
                         <tr>
                             <th>Title</th>
@@ -974,7 +974,7 @@
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody id="availableJobsTable"></tbody>
+                    <tbody id="availableJobsBody"></tbody>
                 </table>
             </div>
         </div>
@@ -2221,8 +2221,8 @@
         // ==================== FRESHER SECTION FUNCTIONS ====================
 
         window.loadAvailableJobs = function () {
-            const table = document.getElementById('availableJobsTable');
-            table.innerHTML = '<tr><td colspan="5">Loading jobs...</td></tr>';
+            const tableBody = document.getElementById('availableJobsBody');
+            tableBody.innerHTML = '<tr><td colspan="5">Loading jobs...</td></tr>';
 
             const q = query(
                 collection(db, "jobs"),

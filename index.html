@@ -2221,8 +2221,8 @@
         // ==================== FRESHER SECTION FUNCTIONS ====================
 
         window.loadAvailableJobs = async function () {
-            const table = document.getElementById("availableJobsBody");
-            table.innerHTML = `<tr><td colspan="5">Loading jobs...</td></tr>`;
+            const tbody = document.getElementById('availableJobsBody');
+            tbody.innerHTML = '<tr><td colspan="5">Loading jobs...</td></tr>';
 
             try {
                 const q = query(
@@ -2230,35 +2230,30 @@
                     where("status", "==", "active"),
                     orderBy("createdAt", "desc")
                 );
-                const snapshot = await getDocs(q);
 
-                table.innerHTML = "";
+                const querySnapshot = await getDocs(q);
+                tbody.innerHTML = '';
 
-                if (snapshot.empty) {
-                    table.innerHTML = `<tr><td colspan="5">No jobs available</td></tr>`;
+                if (querySnapshot.empty) {
+                    tbody.innerHTML = '<tr><td colspan="5">No available jobs found</td></tr>';
                     return;
                 }
 
-                snapshot.forEach((doc) => {
+                querySnapshot.forEach(doc => {
                     const data = doc.data();
-
                     const row = `
                 <tr>
-                    <td title="${getField(data, ['title', 'Title'])}">
-                        ${capitalize(getField(data, ['title', 'Title']) || 'Untitled')}
-                    </td>
-                    <td>${getField(data, ['employerEmail', 'employer', 'Employer']) || 'N/A'}</td>
-                    <td>${capitalize(getField(data, ['location', 'Location']) || 'N/A')}</td>
-                    <td>${getField(data, ['salary', 'Salary']) || 'N/A'}</td>
-                    <td>
-                        <button onclick="viewJobDetails('${doc.id}')">View</button>
-                    </td>
+                    <td>${data.title || 'Untitled'}</td>
+                    <td>${getField(data, ['employerEmail', 'Employer']) || 'N/A'}</td>
+                    <td>${data.location || 'N/A'}</td>
+                    <td>${data.salary || 'N/A'}</td>
+                    <td><button onclick="viewJobDetails('${doc.id}')">View</button></td>
                 </tr>`;
-                    table.innerHTML += row;
+                    tbody.innerHTML += row;
                 });
             } catch (error) {
                 console.error("Error loading available jobs:", error);
-                table.innerHTML = `<tr><td colspan="5">Error loading jobs</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5">Error loading jobs</td></tr>`;
             }
         };
 

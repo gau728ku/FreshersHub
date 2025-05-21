@@ -964,7 +964,7 @@
             <button onclick="showFresherSection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
 
             <div class="table-container">
-               
+                <table id="availableJobsTable">
                     <thead>
                         <tr>
                             <th>Title</th>
@@ -2223,7 +2223,7 @@
 
         window.loadAvailableJobs = async function () {
             const tableBody = document.getElementById("availableJobsBody");
-            tableBody.innerHTML = '<tr><td colspan="5">Loading jobs...</td></tr>';
+            tableBody.innerHTML = "...";
 
             try {
                 const q = query(

@@ -976,6 +976,7 @@
                     </thead>
                     <tbody id="availableJobsBody"></tbody>
                 </table>
+
             </div>
         </div>
 
@@ -2221,8 +2222,8 @@
         // ==================== FRESHER SECTION FUNCTIONS ====================
 
         window.loadAvailableJobs = async function () {
-            const tbody = document.getElementById('availableJobsBody');
-            tbody.innerHTML = '<tr><td colspan="5">Loading jobs...</td></tr>';
+            const tableBody = document.getElementById("availableJobsBody");
+            tableBody.innerHTML = '<tr><td colspan="5">Loading jobs...</td></tr>';
 
             try {
                 const q = query(
@@ -2249,7 +2250,8 @@
                     <td>${data.salary || 'N/A'}</td>
                     <td><button onclick="viewJobDetails('${doc.id}')">View</button></td>
                 </tr>`;
-                    tbody.innerHTML += row;
+                    tableBody.innerHTML += row;
+
                 });
             } catch (error) {
                 console.error("Error loading available jobs:", error);

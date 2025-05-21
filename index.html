@@ -2232,10 +2232,43 @@
             }
         };
 
-        window.loadAvailableJobs = function () {
-            document.getElementById('availableJobsTable').innerHTML = `
-        <tr><td colspan="5">Available jobs will appear here</td></tr>`;
+        window.loadAvailableJobs = async function () {
+            const table = document.getElementById('availableJobsTable');
+            table.innerHTML = '<tr><td colspan="5">Loading jobs...</td></tr>';
+
+            try {
+                const q = query(
+                    collection(db, "jobs"),
+                    where("status", "==", "active"),
+                    orderBy("createdAt", "desc")
+                );
+
+                const querySnapshot = await getDocs(q);
+                table.innerHTML = '';
+
+                if (querySnapshot.empty) {
+                    table.innerHTML = '<tr><td colspan="5">No available jobs found</td></tr>';
+                    return;
+                }
+
+                querySnapshot.forEach(doc => {
+                    const data = doc.data();
+                    const row = `
+        <tr>
+          <td>${data.title || 'Untitled'}</td>
+          <td>${data.Employer || 'N/A'}</td>
+          <td>${data.location || 'N/A'}</td>
+          <td>${data.salary || 'N/A'}</td>
+          <td><button onclick="viewJobDetails('${doc.id}')">View</button></td>
+        </tr>`;
+                    table.innerHTML += row;
+                });
+            } catch (error) {
+                console.error("Error loading available jobs:", error);
+                table.innerHTML = `<tr><td colspan="5">Error loading jobs</td></tr>`;
+            }
         };
+
 
         window.loadMyApplications = function () {
             document.getElementById('myApplicationsTable').innerHTML = `

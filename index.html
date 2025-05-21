@@ -541,6 +541,40 @@
             position: relative;
         }
 
+
+        /* ==================== FRESHERS DASHBOARD SPECIFIC ==================== */
+
+        #availableJobsTable td:nth-child(1),
+        #availableJobsTable th:nth-child(1) {
+            width: 35%;
+            /* Title - more space */
+        }
+
+        #availableJobsTable td:nth-child(2),
+        #availableJobsTable th:nth-child(2) {
+            width: 20%;
+            /* Employer */
+        }
+
+        #availableJobsTable td:nth-child(3),
+        #availableJobsTable th:nth-child(3) {
+            width: 20%;
+            /* Location */
+        }
+
+        #availableJobsTable td:nth-child(4),
+        #availableJobsTable th:nth-child(4) {
+            width: 15%;
+            /* Salary */
+        }
+
+        #availableJobsTable td:nth-child(5),
+        #availableJobsTable th:nth-child(5) {
+            width: 10%;
+            /* Actions */
+        }
+
+
         /* ==================== RESPONSIVE STYLES ==================== */
         @media (max-width: 768px) {
             .stats-container {
@@ -2256,7 +2290,7 @@
                     const row = `
         <tr>
           <td>${data.title || 'Untitled'}</td>
-          <td>${data.Employer || 'N/A'}</td>
+          <td>${getField(data, ['employerEmail', 'Employer']) || 'N/A'}</td>
           <td>${data.location || 'N/A'}</td>
           <td>${data.salary || 'N/A'}</td>
           <td><button onclick="viewJobDetails('${doc.id}')">View</button></td>

@@ -1323,39 +1323,41 @@
             }
         };
 
-        window.loadAllUsers = async function () {
+        window.loadAllUsers = function () {
             const table = document.getElementById('usersTableBody');
-            table.innerHTML = '<tr><td colspan="3">Loading users...</td></tr>';
+            table.innerHTML = '<tr><td colspan="4">Loading users...</td></tr>';
 
-            try {
-                const querySnapshot = await getDocs(collection(db, "users"));
+            const q = query(collection(db, "users"));
+
+            onSnapshot(q, (snapshot) => {
                 table.innerHTML = '';
 
-                if (querySnapshot.empty) {
-                    table.innerHTML = '<tr><td colspan="3">No users found</td></tr>';
+                if (snapshot.empty) {
+                    table.innerHTML = '<tr><td colspan="4">No users found</td></tr>';
                     return;
                 }
 
-                querySnapshot.forEach(doc => {
+                snapshot.forEach(doc => {
                     const data = doc.data();
-
                     if (data.isOriginalAdmin) return;
 
                     const row = `
-            <tr>
-              <td><input type="checkbox" class="user-checkbox" data-id="${doc.id}"></td>
-              <td>${data.email}</td>
-              <td>${data.role}</td>
-              <td>${!data.isOriginalAdmin ?
-                            `<button onclick="deleteUser('${doc.id}')" class="danger">Delete</button>` : ''}
-              </td>
-            </tr>`;
+        <tr>
+          <td><input type="checkbox" class="user-checkbox" data-id="${doc.id}"></td>
+          <td>${data.email}</td>
+          <td>${data.role}</td>
+          <td>
+            <button onclick="deleteUser('${doc.id}')" class="danger">Delete</button>
+          </td>
+        </tr>`;
                     table.innerHTML += row;
                 });
-            } catch (error) {
-                table.innerHTML = '<tr><td colspan="3">Error loading users</td></tr>';
-            }
+            }, (error) => {
+                console.error("Error loading users in real-time:", error);
+                table.innerHTML = '<tr><td colspan="4">Error loading users</td></tr>';
+            });
         };
+
 
         window.loadAllJobs = function () {
             const table = document.getElementById('jobsTableBody');
@@ -1373,7 +1375,6 @@
 
                 snapshot.forEach(doc => {
                     const data = doc.data();
-
                     const row = `
         <tr>
           <td><input type="checkbox" class="job-checkbox" data-id="${doc.id}"></td>
@@ -1388,10 +1389,11 @@
                     table.innerHTML += row;
                 });
             }, (error) => {
-                console.error("Realtime job loading error:", error);
+                console.error("Error loading jobs in real-time:", error);
                 table.innerHTML = '<tr><td colspan="6">Error loading jobs</td></tr>';
             });
         };
+
 
 
         // ==================== USER MANAGEMENT FUNCTIONS ====================

@@ -635,6 +635,21 @@
         }
 
 
+        #applyForm {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        #applyForm input,
+        #applyForm textarea {
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+
         /* ==================== RESPONSIVE STYLES ==================== */
         @media (max-width: 768px) {
             .stats-container {
@@ -2354,6 +2369,57 @@
         };
 
 
+        window.applyToJob = function (jobId) {
+            document.getElementById("applyModal").style.display = "block";
+            document.getElementById("applyJobId").value = jobId;
+        };
+
+        window.closeApplyModal = function () {
+            document.getElementById("applyModal").style.display = "none";
+        };
+
+        // Submit application
+        document.getElementById("applyForm").addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            const user = auth.currentUser;
+            if (!user) return alert("Please log in first.");
+
+            const jobId = document.getElementById("applyJobId").value;
+            const name = document.getElementById("applicantName").value.trim();
+            const resume = document.getElementById("resumeLink").value.trim();
+            const message = document.getElementById("applicationMessage").value.trim();
+
+            try {
+                const existing = await getDocs(query(
+                    collection(db, "applications"),
+                    where("jobId", "==", jobId),
+                    where("fresherId", "==", user.uid)
+                ));
+
+                if (!existing.empty) {
+                    alert("You've already applied to this job.");
+                    return;
+                }
+
+                await addDoc(collection(db, "applications"), {
+                    jobId,
+                    fresherId: user.uid,
+                    fresherEmail: user.email,
+                    name,
+                    resume,
+                    message,
+                    appliedAt: new Date().toISOString()
+                });
+
+                alert("Application submitted!");
+                document.getElementById("applyForm").reset();
+                closeApplyModal();
+            } catch (error) {
+                console.error("Application error:", error);
+                alert("Failed to submit application.");
+            }
+        });
 
 
 
@@ -2796,6 +2862,25 @@
             <p id="modalDescription"></p>
         </div>
     </div>
+
+    <!-- Apply Modal -->
+    <div id="applyModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeApplyModal()">&times;</span>
+            <h2>Apply for Job</h2>
+            <form id="applyForm">
+                <input type="hidden" id="applyJobId" />
+                <label>Name</label>
+                <input type="text" id="applicantName" required />
+                <label>Resume Link</label>
+                <input type="url" id="resumeLink" required />
+                <label>Message</label>
+                <textarea id="applicationMessage" required></textarea>
+                <button type="submit">Submit Application</button>
+            </form>
+        </div>
+    </div>
+
 
 
 </body>

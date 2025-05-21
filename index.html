@@ -543,36 +543,57 @@
 
         /* ==================== FRESHER DASHBOARD SPECIFIC  ==================== */
 
+        /* Add this to your existing styles */
+        #availableJobsTable {
+            table-layout: fixed;
+            width: 100%;
+        }
+
+        #availableJobsTable th,
+        #availableJobsTable td {
+            padding: 12px;
+            text-align: left;
+            white-space: normal;
+            word-wrap: break-word;
+        }
+
+        /* Column width adjustments */
         #availableJobsTable th:nth-child(1),
         #availableJobsTable td:nth-child(1) {
             width: 40%;
-            max-width: 40%;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            /* More space for title */
         }
 
         #availableJobsTable th:nth-child(2),
         #availableJobsTable td:nth-child(2) {
-            width: 25%;
-            max-width: 25%;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            width: 20%;
+            /* Employer */
         }
 
         #availableJobsTable th:nth-child(3),
-        #availableJobsTable td:nth-child(3),
-        #availableJobsTable th:nth-child(4),
-        #availableJobsTable td:nth-child(4),
-        #availableJobsTable th:nth-child(5),
-        #availableJobsTable td:nth-child(5) {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+        #availableJobsTable td:nth-child(3) {
+            width: 15%;
+            /* Location */
         }
 
+        #availableJobsTable th:nth-child(4),
+        #availableJobsTable td:nth-child(4) {
+            width: 15%;
+            /* Salary */
+        }
 
+        #availableJobsTable th:nth-child(5),
+        #availableJobsTable td:nth-child(5) {
+            width: 10%;
+            /* Actions */
+        }
+
+        /* Remove the ellipsis for this table */
+        #availableJobsTable td {
+            white-space: normal;
+            overflow: visible;
+            text-overflow: clip;
+        }
 
 
         /* ==================== RESPONSIVE STYLES ==================== */
@@ -948,7 +969,7 @@
             <button onclick="showFresherSection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
 
             <div class="table-container">
-                <table>
+                <table id="availableJobsTable">
                     <thead>
                         <tr>
                             <th>Title</th>
@@ -958,7 +979,7 @@
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody id="availableJobsTable"></tbody>
+                    <tbody id="availableJobsTableBody"></tbody>
                 </table>
             </div>
         </div>
@@ -2215,8 +2236,8 @@
         };
 
         window.loadAvailableJobs = async function () {
-            const table = document.getElementById('availableJobsTable');
-            table.innerHTML = '<tr><td colspan="5">Loading jobs...</td></tr>';
+            const tbody = document.getElementById('availableJobsTableBody');
+            tbody.innerHTML = '<tr><td colspan="5">Loading jobs...</td></tr>';
 
             try {
                 const q = query(
@@ -2226,28 +2247,28 @@
                 );
 
                 const querySnapshot = await getDocs(q);
-                table.innerHTML = '';
+                tbody.innerHTML = '';
 
                 if (querySnapshot.empty) {
-                    table.innerHTML = '<tr><td colspan="5">No available jobs found</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="5">No available jobs found</td></tr>';
                     return;
                 }
 
                 querySnapshot.forEach(doc => {
                     const data = doc.data();
                     const row = `
-        <tr>
-          <td>${data.title || 'Untitled'}</td>
-          <td>${getField(data, ['employerEmail', 'Employer']) || 'N/A'}</td>
-          <td>${data.location || 'N/A'}</td>
-          <td>${data.salary || 'N/A'}</td>
-          <td><button onclick="viewJobDetails('${doc.id}')">View</button></td>
-        </tr>`;
-                    table.innerHTML += row;
+                <tr>
+                    <td>${capitalize(getField(data, ['title', 'Title']) || 'Untitled')}</td>
+                    <td>${getField(data, ['employerEmail', 'employer', 'Employer']) || 'N/A'}</td>
+                    <td>${capitalize(getField(data, ['location', 'Location']) || 'N/A')}</td>
+                    <td>${getField(data, ['salary', 'Salary']) || 'N/A'}</td>
+                    <td><button onclick="viewJobDetails('${doc.id}')">View</button></td>
+                </tr>`;
+                    tbody.innerHTML += row;
                 });
             } catch (error) {
                 console.error("Error loading available jobs:", error);
-                table.innerHTML = `<tr><td colspan="5">Error loading jobs</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5">Error loading jobs</td></tr>`;
             }
         };
 

@@ -542,6 +542,20 @@
         }
 
         /* ==================== RESPONSIVE STYLES ==================== */
+
+        #availableJobsTable th:nth-child(1),
+        #availableJobsTable td:nth-child(1) {
+            width: 35%;
+        }
+
+        #availableJobsTable th:nth-child(2),
+        #availableJobsTable td:nth-child(2) {
+            width: 20%;
+        }
+
+
+
+        /* ==================== RESPONSIVE STYLES ==================== */
         @media (max-width: 768px) {
             .stats-container {
                 flex-direction: row;
@@ -2204,7 +2218,7 @@
                     const row = `
         <tr>
           <td>${data.title || 'Untitled'}</td>
-          <td>${data.Employer || 'N/A'}</td>
+          <td>${getField(data, ['employerEmail', 'Employer']) || 'N/A'}</td>
           <td>${data.location || 'N/A'}</td>
           <td>${data.salary || 'N/A'}</td>
           <td><button onclick="viewJobDetails('${doc.id}')">View</button></td>

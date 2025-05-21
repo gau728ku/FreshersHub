@@ -544,40 +544,51 @@
 
         /* ==================== FRESHERS DASHBOARD SPECIFIC ==================== */
 
-        #availableJobsTable td:nth-child(1),
-        #availableJobsTable th:nth-child(1) {
-            width: 35%;
-            /* Title - more space */
-        }
-
-        #availableJobsTable td:nth-child(2),
-        #availableJobsTable th:nth-child(2) {
-            width: 20%;
-            /* Employer */
-        }
-
-        #availableJobsTable td:nth-child(3),
-        #availableJobsTable th:nth-child(3) {
-            width: 20%;
-            /* Location */
-        }
-
-        #availableJobsTable td:nth-child(4),
-        #availableJobsTable th:nth-child(4) {
-            width: 15%;
-            /* Salary */
-        }
-
-        #availableJobsTable td:nth-child(5),
-        #availableJobsTable th:nth-child(5) {
-            width: 10%;
-            /* Actions */
-        }
-
         #availableJobsTable {
             table-layout: fixed;
             width: 100%;
         }
+
+        #availableJobsTable th,
+        #availableJobsTable td {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding: 12px;
+            text-align: left;
+        }
+
+        /* 📐 Adjust Column Widths */
+        #availableJobsTable th:nth-child(1),
+        #availableJobsTable td:nth-child(1) {
+            width: 40%;
+            /* Title gets more space */
+        }
+
+        #availableJobsTable th:nth-child(2),
+        #availableJobsTable td:nth-child(2) {
+            width: 20%;
+            /* Employer moved right */
+        }
+
+        #availableJobsTable th:nth-child(3),
+        #availableJobsTable td:nth-child(3) {
+            width: 15%;
+            /* Location */
+        }
+
+        #availableJobsTable th:nth-child(4),
+        #availableJobsTable td:nth-child(4) {
+            width: 15%;
+            /* Salary */
+        }
+
+        #availableJobsTable th:nth-child(5),
+        #availableJobsTable td:nth-child(5) {
+            width: 10%;
+            /* Actions */
+        }
+
 
 
         /* ==================== RESPONSIVE STYLES ==================== */

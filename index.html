@@ -541,17 +541,37 @@
             position: relative;
         }
 
-        /* ==================== RESPONSIVE STYLES ==================== */
+        /* ==================== FRESHER DASHBOARD SPECIFIC  ==================== */
 
         #availableJobsTable th:nth-child(1),
         #availableJobsTable td:nth-child(1) {
-            width: 35%;
+            width: 40%;
+            max-width: 40%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         #availableJobsTable th:nth-child(2),
         #availableJobsTable td:nth-child(2) {
-            width: 20%;
+            width: 25%;
+            max-width: 25%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
+
+        #availableJobsTable th:nth-child(3),
+        #availableJobsTable td:nth-child(3),
+        #availableJobsTable th:nth-child(4),
+        #availableJobsTable td:nth-child(4),
+        #availableJobsTable th:nth-child(5),
+        #availableJobsTable td:nth-child(5) {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
 
 
 

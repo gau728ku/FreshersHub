@@ -1122,6 +1122,31 @@
             }, 16);
         }
 
+
+        function showToast(message) {
+            const container = document.getElementById("toastContainer");
+
+            const toast = document.createElement("div");
+            toast.textContent = message;
+            toast.style.background = "#323232";
+            toast.style.color = "#fff";
+            toast.style.padding = "10px 20px";
+            toast.style.marginTop = "10px";
+            toast.style.borderRadius = "6px";
+            toast.style.boxShadow = "0 2px 6px rgba(0,0,0,0.3)";
+            toast.style.fontSize = "14px";
+            toast.style.transition = "opacity 0.5s ease";
+
+            container.appendChild(toast);
+
+            // Auto-remove after 2.5 seconds
+            setTimeout(() => {
+                toast.style.opacity = "0";
+                setTimeout(() => container.removeChild(toast), 500);
+            }, 2500);
+        }
+
+
         // ==================== AUTHENTICATION FUNCTIONS ====================
         window.signup = async function () {
             const email = document.getElementById('email').value.trim();
@@ -1329,6 +1354,7 @@
 
             const q = query(collection(db, "users"));
 
+            let knownUserIds = new Set(); // add this above or outside the snapshot listener (for first run)
             onSnapshot(q, (snapshot) => {
                 table.innerHTML = '';
 
@@ -1340,6 +1366,13 @@
                 snapshot.forEach(doc => {
                     const data = doc.data();
                     if (data.isOriginalAdmin) return;
+
+                    const isNew = !knownUserIds.has(doc.id);
+                    knownUserIds.add(doc.id);
+
+                    if (isNew && data.role?.toLowerCase() === 'employer') {
+                        showToast(`🎉 New Employer Joined: ${data.email}`);
+                    }
 
                     const row = `
         <tr>
@@ -2575,6 +2608,10 @@
     z-index: 9999; 
     transition: opacity 0.4s ease; 
   "></div>
+
+    <!-- 🔔 Toast Container -->
+    <div id="toastContainer" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999;"></div>
+
 </body>
 
 </html>

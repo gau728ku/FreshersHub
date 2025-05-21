@@ -2169,6 +2169,49 @@
         }
 
         // ==================== FRESHER SECTION FUNCTIONS ====================
+
+        window.loadAvailableJobs = function () {
+            const table = document.getElementById('availableJobsTable');
+            table.innerHTML = '<tr><td colspan="5">Loading jobs...</td></tr>';
+
+            const q = query(
+                collection(db, "jobs"),
+                where("status", "==", "active")
+            );
+
+            onSnapshot(q, (snapshot) => {
+                table.innerHTML = '';
+
+                if (snapshot.empty) {
+                    table.innerHTML = '<tr><td colspan="5">No available jobs right now</td></tr>';
+                    return;
+                }
+
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+
+                    const row = `
+        <tr>
+          <td>${capitalize(getField(data, ['title', 'Title']) || 'Untitled')}</td>
+          <td>${getField(data, ['employerEmail', 'employer']) || 'N/A'}</td>
+          <td>${capitalize(getField(data, ['location', 'Location']) || 'N/A')}</td>
+          <td>${getField(data, ['salary', 'Salary']) || 'N/A'}</td>
+          <td>
+            <button onclick="viewJobDetails('${doc.id}')">View</button>
+            <button class="success" onclick="applyToJob('${doc.id}')">Apply</button>
+          </td>
+        </tr>`;
+
+                    table.innerHTML += row;
+                });
+            }, (error) => {
+                console.error("Error loading available jobs:", error);
+                table.innerHTML = '<tr><td colspan="5">Error loading jobs</td></tr>';
+            });
+        };
+
+
+
         window.showFresherSection = function (section) {
             document.getElementById('fresherHomeSection').style.display = 'none';
             document.getElementById('fresherJobsSection').style.display = 'none';

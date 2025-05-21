@@ -1159,7 +1159,11 @@
             deleteDoc,
             updateDoc,
             onSnapshot,
-            orderBy
+            orderBy,
+            getStorage,
+            ref,
+            uploadBytes,
+            getDownloadURL
         } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 
@@ -1197,6 +1201,7 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
+        const storage = getStorage(app);
 
         // ==================== GLOBAL VARIABLES ====================
         let roleChangeUnsubscribe = null;
@@ -2387,8 +2392,14 @@
 
             const jobId = document.getElementById("applyJobId").value;
             const name = document.getElementById("applicantName").value.trim();
-            const resume = document.getElementById("resumeLink").value.trim();
             const message = document.getElementById("applicationMessage").value.trim();
+            const fileInput = document.getElementById("resumeFile");
+            const file = fileInput.files[0];
+
+            if (!file) {
+                alert("Please upload your resume.");
+                return;
+            }
 
             try {
                 const existing = await getDocs(query(
@@ -2402,12 +2413,18 @@
                     return;
                 }
 
+                // 🔼 Upload to Firebase Storage
+                const storageRef = ref(storage, `resumes/${user.uid}_${Date.now()}_${file.name}`);
+                await uploadBytes(storageRef, file);
+                const fileURL = await getDownloadURL(storageRef);
+
+                // 📄 Save in Firestore
                 await addDoc(collection(db, "applications"), {
                     jobId,
                     fresherId: user.uid,
                     fresherEmail: user.email,
                     name,
-                    resume,
+                    resumeURL: fileURL,
                     message,
                     appliedAt: new Date().toISOString()
                 });
@@ -2420,6 +2437,7 @@
                 alert("Failed to submit application.");
             }
         });
+
 
 
 
@@ -2872,8 +2890,8 @@
                 <input type="hidden" id="applyJobId" />
                 <label>Name</label>
                 <input type="text" id="applicantName" required />
-                <label>Resume Link</label>
-                <input type="url" id="resumeLink" required />
+                <label>Upload Resume (PDF or DOC)</label>
+                <input type="file" id="resumeFile" accept=".pdf,.doc,.docx" required />
                 <label>Message</label>
                 <textarea id="applicationMessage" required></textarea>
                 <button type="submit">Submit Application</button>

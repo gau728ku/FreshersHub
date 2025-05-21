@@ -1992,8 +1992,9 @@
         }
         
         bannedUsersSnapshot.forEach(doc => {
-          const userData
-                    table.innerHTML += `
+          const userData = doc.data();
+            table.innerHTML += `
+
             <tr>
               <td>${userData.email}</td>
               <td>${userData.bannedAt ? new Date(userData.bannedAt).toLocaleString() : 'N/A'}</td>

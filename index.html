@@ -595,6 +595,45 @@
             text-overflow: clip;
         }
 
+        .clickable-row {
+            cursor: pointer;
+        }
+
+        .clickable-row:hover {
+            background-color: #f4f4f4;
+        }
+
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.6);
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 10% auto;
+            padding: 20px;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 6px;
+            position: relative;
+        }
+
+        .close-button {
+            position: absolute;
+            right: 12px;
+            top: 10px;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
 
         /* ==================== RESPONSIVE STYLES ==================== */
         @media (max-width: 768px) {
@@ -2257,13 +2296,16 @@
                 querySnapshot.forEach(doc => {
                     const data = doc.data();
                     const row = `
-                <tr>
-                    <td>${capitalize(getField(data, ['title', 'Title']) || 'Untitled')}</td>
-                    <td>${getField(data, ['employerEmail', 'employer', 'Employer']) || 'N/A'}</td>
-                    <td>${capitalize(getField(data, ['location', 'Location']) || 'N/A')}</td>
-                    <td>${getField(data, ['salary', 'Salary']) || 'N/A'}</td>
-                    <td><button onclick="viewJobDetails('${doc.id}')">View</button></td>
-                </tr>`;
+  <tr class="clickable-row" onclick="viewJobDetails('${doc.id}')">
+    <td>${capitalize(getField(data, ['title', 'Title']) || 'Untitled')}</td>
+    <td>${getField(data, ['employerEmail', 'employer']) || 'N/A'}</td>
+    <td>${capitalize(getField(data, ['location', 'Location']) || 'N/A')}</td>
+    <td>${getField(data, ['salary', 'Salary']) || 'N/A'}</td>
+    <td>
+      <button class="success" onclick="event.stopPropagation(); applyToJob('${doc.id}')">Apply</button>
+    </td>
+  </tr>`;
+
                     tbody.innerHTML += row;
                 });
             } catch (error) {
@@ -2277,6 +2319,43 @@
             document.getElementById('myApplicationsTable').innerHTML = `
         <tr><td colspan="4">Your applications will appear here</td></tr>`;
         };
+
+
+        window.viewJobDetails = async function (jobId) {
+            const modal = document.getElementById("jobDetailModal");
+            modal.style.display = "block";
+
+            try {
+                const docRef = doc(db, "jobs", jobId);
+                const docSnap = await getDoc(docRef);
+
+                if (!docSnap.exists()) {
+                    alert("Job not found.");
+                    return;
+                }
+
+                const data = docSnap.data();
+
+                document.getElementById("modalJobTitle").textContent = capitalize(getField(data, ["title", "Title"]) || "Untitled");
+                document.getElementById("modalEmployer").textContent = getField(data, ["employerEmail", "employer"]) || "N/A";
+                document.getElementById("modalLocation").textContent = capitalize(getField(data, ["location", "Location"]) || "N/A");
+                document.getElementById("modalSalary").textContent = getField(data, ["salary", "Salary"]) || "N/A";
+                document.getElementById("modalType").textContent = capitalize(getField(data, ["jobType", "JobType"]) || "N/A");
+                document.getElementById("modalStatus").textContent = capitalize(getField(data, ["status", "Status"]) || "N/A");
+                document.getElementById("modalDescription").textContent = getField(data, ["description", "Description"]) || "No description.";
+            } catch (err) {
+                console.error("Error fetching job details:", err);
+                alert("Failed to load job details.");
+            }
+        };
+
+        window.closeJobModal = function () {
+            document.getElementById("jobDetailModal").style.display = "none";
+        };
+
+
+
+
 
         window.loadFresherProfile = function () {
             // Would load profile data here
@@ -2702,6 +2781,22 @@
 
     <!-- 🔔 Toast Container -->
     <div id="toastContainer" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999;"></div>
+
+    <!-- Fresher Job Detail Modal -->
+    <div id="jobDetailModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeJobModal()">&times;</span>
+            <h2 id="modalJobTitle">Job Title</h2>
+            <p><strong>Employer:</strong> <span id="modalEmployer"></span></p>
+            <p><strong>Location:</strong> <span id="modalLocation"></span></p>
+            <p><strong>Salary:</strong> <span id="modalSalary"></span></p>
+            <p><strong>Job Type:</strong> <span id="modalType"></span></p>
+            <p><strong>Status:</strong> <span id="modalStatus"></span></p>
+            <p><strong>Description:</strong></p>
+            <p id="modalDescription"></p>
+        </div>
+    </div>
+
 
 </body>
 

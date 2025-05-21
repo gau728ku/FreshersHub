@@ -1354,14 +1354,12 @@
 
             const q = query(collection(db, "users"));
 
-            let knownUserIds = new Set(); // add this above or outside the snapshot listener (for first run)
-            onSnapshot(q, (snapshot) => {
-                table.innerHTML = '';
+            let knownUserIds = new Set();
+            let initialLoadComplete = false;
 
-                if (snapshot.empty) {
-                    table.innerHTML = '<tr><td colspan="4">No users found</td></tr>';
-                    return;
-                }
+            onSnapshot(q, (snapshot) => {
+                const table = document.getElementById('usersTableBody');
+                table.innerHTML = '';
 
                 snapshot.forEach(doc => {
                     const data = doc.data();
@@ -1370,25 +1368,30 @@
                     const isNew = !knownUserIds.has(doc.id);
                     knownUserIds.add(doc.id);
 
-                    if (isNew && data.role?.toLowerCase() === 'employer') {
+                    // 🧠 Only show toast *after* initial load is done
+                    if (initialLoadComplete && isNew && data.role?.toLowerCase() === 'employer') {
                         showToast(`🎉 New Employer Joined: ${data.email}`);
                     }
 
                     const row = `
-        <tr>
-          <td><input type="checkbox" class="user-checkbox" data-id="${doc.id}"></td>
-          <td>${data.email}</td>
-          <td>${data.role}</td>
-          <td>
-            <button onclick="deleteUser('${doc.id}')" class="danger">Delete</button>
-          </td>
-        </tr>`;
+      <tr>
+        <td><input type="checkbox" class="user-checkbox" data-id="${doc.id}"></td>
+        <td>${data.email}</td>
+        <td>${data.role}</td>
+        <td>
+          <button onclick="deleteUser('${doc.id}')" class="danger">Delete</button>
+        </td>
+      </tr>`;
                     table.innerHTML += row;
                 });
-            }, (error) => {
-                console.error("Error loading users in real-time:", error);
-                table.innerHTML = '<tr><td colspan="4">Error loading users</td></tr>';
+
+                // ✅ Mark initial batch complete
+                initialLoadComplete = true;
             });
+
+        }, (error) => {
+            console.error("Error loading users in real-time:", error);
+            table.innerHTML = '<tr><td colspan="4">Error loading users</td></tr>';
         };
 
 

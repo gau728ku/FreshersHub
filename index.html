@@ -2399,33 +2399,29 @@
             const message = document.getElementById("applyMessage").value.trim();
             const fileInput = document.getElementById("resumeFile");
             const file = fileInput.files[0];
-
             const uploadStatus = document.getElementById("uploadStatus");
 
             if (!file) {
-                alert("Please upload your resume.");
+                alert("Please select your resume.");
                 return;
             }
 
             try {
-                // Show upload progress
                 uploadStatus.textContent = "Uploading resume...";
 
-                // Upload to transfer.sh
-                const formData = new FormData();
-                formData.append("file", file);
-                const uploadRes = await fetch(`https://transfer.sh/${file.name}`, {
-                    method: "POST",
-                    body: formData
+                const res = await uploadthing.upload({
+                    files: [file],
+                    endpoint: "resumesUploder", // this is what you named it
+                    apiKey: "sk_live_62e99e74bf5abb7f237bfa5873ce9261246ef2e2399453ac2acccb0fb4509f77", // REPLACE THIS with your new safe key
                 });
 
-                if (!uploadRes.ok) throw new Error("Upload failed.");
+                if (!res || !res[0] || !res[0].url) {
+                    throw new Error("Upload failed");
+                }
 
-                const resumeURL = await uploadRes.text();
-
+                const resumeURL = res[0].url;
                 uploadStatus.textContent = "Resume uploaded ✅";
 
-                // Save application to Firestore
                 await addDoc(collection(db, "applications"), {
                     jobId,
                     fresherId: user.uid,
@@ -2433,19 +2429,20 @@
                     name,
                     resumeURL,
                     message,
-                    appliedAt: new Date().toISOString()
+                    appliedAt: new Date().toISOString(),
                 });
 
                 alert("Application submitted!");
                 document.getElementById("applyForm").reset();
                 uploadStatus.textContent = "";
                 closeApplyModal();
-            } catch (error) {
-                console.error("Application error:", error);
-                alert("Failed to submit application.");
+            } catch (err) {
+                console.error("Upload failed:", err);
                 uploadStatus.textContent = "Upload failed ❌";
+                alert("Failed to submit application.");
             }
         });
+
 
 
 

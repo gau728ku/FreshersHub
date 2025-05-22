@@ -670,9 +670,10 @@
     <div class="container" id="auth-section">
         <h2 id="form-title">FreshersHub - Signup</h2>
 
-        <!-- ✅ Full Name field added -->
-        <input type="text" id="signupName" placeholder="Full Name" required />
-
+        <!-- ✅ Wrap this in a div -->
+        <div id="nameFieldContainer" style="display: none;">
+            <input type="text" id="signupName" placeholder="Full Name" required />
+        </div>
         <input type="email" id="email" placeholder="Email" required />
         <div class="password-wrapper">
             <input type="password" id="password" placeholder="Password" required />
@@ -1380,6 +1381,7 @@
             const formTitle = document.getElementById('form-title');
             const actionBtn = document.getElementById('actionBtn');
             const toggleText = document.getElementById('toggle-text');
+            const nameField = document.getElementById('nameFieldContainer');
             const roleSelect = document.getElementById('role');
 
             if (formTitle.textContent.includes('Signup')) {
@@ -1388,13 +1390,16 @@
                 actionBtn.onclick = login;
                 toggleText.innerHTML = `Don't have an account? <a id="toggleLink">Signup here</a>`;
                 roleSelect.style.display = 'none';
+                nameField.style.display = 'none'; // 🔥 HIDE on login
             } else {
                 formTitle.textContent = 'FreshersHub - Signup';
                 actionBtn.textContent = 'Signup';
                 actionBtn.onclick = signup;
                 toggleText.innerHTML = `Already have an account? <a id="toggleLink">Login here</a>`;
                 roleSelect.style.display = 'block';
+                nameField.style.display = 'block'; // ✅ SHOW on signup
             }
+
 
             document.getElementById('toggleLink').addEventListener('click', (e) => {
                 e.preventDefault();

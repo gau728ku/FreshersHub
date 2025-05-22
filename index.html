@@ -1461,13 +1461,17 @@
                     roleSelect.style.display = 'block';
                     nameField.style.display = 'block'; // ✅ SHOW on signup
                 }
+            }
 
-
-                document.getElementById('toggleLink').addEventListener('click', (e) => {
-                    e.preventDefault();
-                    toggleForm();
-                });
-            };
+            document.addEventListener("DOMContentLoaded", function () {
+                const toggleLink = document.getElementById("toggleLink");
+                if (toggleLink) {
+                    toggleLink.addEventListener("click", function (e) {
+                        e.preventDefault();
+                        toggleForm();
+                    });
+                }
+            });
 
             // ==================== DASHBOARD FUNCTIONS ====================
             window.showDashboard = function (role) {

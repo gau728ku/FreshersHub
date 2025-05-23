@@ -616,6 +616,7 @@
     <div class="container" id="auth-section">
         <h2 id="form-title">FreshersHub - Signup</h2>
         <input type="email" id="email" placeholder="Email" required />
+        <input type="text" id="fullNameSignup" placeholder="Full Name" required />
         <div class="password-wrapper">
             <input type="password" id="password" placeholder="Password" required />
             <span id="togglePasswordBtn" class="toggle-password-btn">👁‍🗨</span>
@@ -633,6 +634,14 @@
         <div id="adminMenuBtn" onclick="toggleAdminMenu()">☰</div>
 
         <div class="sideMenu" id="adminSideMenu">
+            <div id="adminProfileWidget" style="display: flex; align-items: center; padding: 12px 20px;">
+                <div
+                    style="width: 36px; height: 36px; border-radius: 50%; background: limegreen; display: flex; align-items: center; justify-content: center; overflow: hidden; font-weight: bold; font-size: 16px; color: black;">
+                    <span id="adminProfileInitial">?</span>
+                </div>
+                <span id="adminProfileFullName" style="margin-left: 10px;">Loading...</span>
+            </div>
+
             <a href="#" id="adminMenuHome">Dashboard</a>
             <a href="#" id="adminMenuUsers">Manage Users</a>
             <a href="#" id="adminMenuJobs">Manage Jobs</a>
@@ -856,6 +865,14 @@
         <div id="employerMenuBtn" onclick="toggleEmployerMenu()">☰</div>
 
         <div class="sideMenu" id="employerSideMenu">
+            <div id="employerProfileWidget" style="display: flex; align-items: center; padding: 12px 20px;">
+                <div
+                    style="width: 36px; height: 36px; border-radius: 50%; background: limegreen; display: flex; align-items: center; justify-content: center; overflow: hidden; font-weight: bold; font-size: 16px; color: black;">
+                    <span id="employerProfileInitial">?</span>
+                </div>
+                <span id="employerProfileFullName" style="margin-left: 10px;">Loading...</span>
+            </div>
+
             <a href="#" id="employerMenuHome">Dashboard</a>
             <a href="#" id="employerMenuPostJob">Post Job</a>
             <a href="#" id="employerMenuMyJobs">My Jobs</a>
@@ -946,6 +963,14 @@
         <div id="fresherMenuBtn" onclick="toggleFresherMenu()">☰</div>
 
         <div class="sideMenu" id="fresherSideMenu">
+            <div id="fresherProfileWidget" style="display: flex; align-items: center; padding: 12px 20px;">
+                <div
+                    style="width: 36px; height: 36px; border-radius: 50%; background: limegreen; display: flex; align-items: center; justify-content: center; overflow: hidden; font-weight: bold; font-size: 16px; color: black;">
+                    <span id="profileInitial">?</span>
+                </div>
+                <span id="profileFullName" style="margin-left: 10px;">Loading...</span>
+            </div>
+
             <a href="#" id="fresherMenuHome">Dashboard</a>
             <a href="#" id="fresherMenuJobs">Browse Jobs</a>
             <a href="#" id="fresherMenuApplications">My Applications</a>
@@ -1207,6 +1232,12 @@
             const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
             const role = document.getElementById('role').value;
+            const fullName = document.getElementById('fullNameSignup').value.trim();
+
+            if (!fullName) {
+                alert("Please enter your full name");
+                return;
+            }
 
             if (!validateEmail(email)) {
                 alert("Please enter a valid email address");
@@ -1224,6 +1255,7 @@
 
                 await setDoc(doc(db, "users", user.uid), {
                     email,
+                    fullName,
                     role: normalizeString(role),
                     createdAt: new Date().toISOString(),
                     isOriginalAdmin: normalizeString(email) === normalizeString(ORIGINAL_ADMIN_EMAIL)
@@ -1347,19 +1379,69 @@
             if (role === 'admin') {
                 document.getElementById('adminDashboard').style.display = 'block';
                 document.getElementById('adminMenuBtn').style.display = 'block';
+
+                (async () => {
+                    const user = auth.currentUser;
+                    if (user) {
+                        const userDoc = await getDoc(doc(db, "users", user.uid));
+                        if (userDoc.exists()) {
+                            const data = userDoc.data();
+                            const name = data.fullName || "My Profile";
+                            const initial = name.charAt(0).toUpperCase();
+                            document.getElementById("adminProfileFullName").textContent = capitalize(name);
+                            document.getElementById("adminProfileInitial").textContent = initial;
+                        }
+                    }
+                })();
+
                 showAdminSection('home');
                 loadAdminStats();
                 loadRecentActivity();
-            } else if (role === 'employer') {
+            }
+
+            else if (role === 'employer') {
                 document.getElementById('employerDashboard').style.display = 'block';
                 document.getElementById('employerMenuBtn').style.display = 'block';
+
+                (async () => {
+                    const user = auth.currentUser;
+                    if (user) {
+                        const userDoc = await getDoc(doc(db, "users", user.uid));
+                        if (userDoc.exists()) {
+                            const data = userDoc.data();
+                            const name = data.fullName || "My Profile";
+                            const initial = name.charAt(0).toUpperCase();
+                            document.getElementById("employerProfileFullName").textContent = capitalize(name);
+                            document.getElementById("employerProfileInitial").textContent = initial;
+                        }
+                    }
+                })();
+
                 showEmployerSection('home');
-            } else if (role === 'fresher') {
+            }
+
+            else if (role === 'fresher') {
                 document.getElementById('fresherDashboard').style.display = 'block';
                 document.getElementById('fresherMenuBtn').style.display = 'block';
+
+                (async () => {
+                    const user = auth.currentUser;
+                    if (user) {
+                        const userDoc = await getDoc(doc(db, "users", user.uid));
+                        if (userDoc.exists()) {
+                            const data = userDoc.data();
+                            const name = data.fullName || "My Profile";
+                            const initial = name.charAt(0).toUpperCase();
+                            document.getElementById("profileFullName").textContent = capitalize(name);
+                            document.getElementById("profileInitial").textContent = initial;
+                        }
+                    }
+                })();
+
                 showFresherSection('home');
             }
         };
+
 
         // ==================== MENU TOGGLE FUNCTIONS ====================
         window.toggleAdminMenu = function () {

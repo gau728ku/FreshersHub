@@ -988,10 +988,7 @@
                 ☰
             </div>
             <div style="margin-left: 10px;">
-                <div
-                    style="width: 36px; height: 36px; border-radius: 50%; background: limegreen; display: flex; align-items: center; justify-content: center; overflow: hidden; font-weight: bold; font-size: 16px; color: black;">
-                    <span id="fresherMenuAvatarInitial">?</span>
-                </div>
+
             </div>
         </div>
 
@@ -1430,13 +1427,11 @@
                                 const name = data.fullName || "My Profile";
                                 const initial = name.charAt(0).toUpperCase();
 
-                                const nameEl = document.getElementById("adminProfileFullName");
-                                const initialEl = document.getElementById("adminProfileInitial");
-                                const menuAvatarEl = document.getElementById("adminMenuAvatarInitial");
+                                const nameEl = document.getElementById("AdminProfileFullName");
+                                const initialEl = document.getElementById("AdminProfileInitial");
 
                                 if (nameEl) nameEl.textContent = capitalize(name);
                                 if (initialEl) initialEl.textContent = initial;
-                                if (menuAvatarEl) menuAvatarEl.textContent = initial;
                             }
                         }
                     })();
@@ -1461,11 +1456,10 @@
 
                                 const nameEl = document.getElementById("employerProfileFullName");
                                 const initialEl = document.getElementById("employerProfileInitial");
-                                const menuAvatarEl = document.getElementById("employerMenuAvatarInitial");
 
                                 if (nameEl) nameEl.textContent = capitalize(name);
                                 if (initialEl) initialEl.textContent = initial;
-                                if (menuAvatarEl) menuAvatarEl.textContent = initial;
+
                             }
                         }
                     })();
@@ -1488,11 +1482,10 @@
 
                                 const nameEl = document.getElementById("fresherProfileFullName");
                                 const initialEl = document.getElementById("fresherProfileInitial");
-                                const menuAvatarEl = document.getElementById("fresherMenuAvatarInitial");
 
                                 if (nameEl) nameEl.textContent = capitalize(name);
                                 if (initialEl) initialEl.textContent = initial;
-                                if (menuAvatarEl) menuAvatarEl.textContent = initial;
+
                             }
                         }
                     })();

@@ -1293,7 +1293,10 @@
                 });
 
                 alert("Signup successful!");
-                showDashboard(role);
+
+                setTimeout(() => {
+                    showDashboard(role);
+                }, 500); // Give Firebase time to update auth.currentUser
             } catch (err) {
                 alert(err.message);
             }

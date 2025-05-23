@@ -162,6 +162,13 @@
       doc,
       setDoc,
       getDoc,
+      collection,
+      query,
+      where,
+      getCountFromServer,
+      getDocs,
+      orderBy,
+      onSnapshot
     } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     // Your Firebase configuration
@@ -275,23 +282,86 @@
     });
 
 
-    function loadAdminStats() {
-      // Placeholder: Replace with real Firestore queries
-      document.getElementById("totalUsers").textContent = "Loading...";
-      document.getElementById("totalJobs").textContent = "Loading...";
-      document.getElementById("totalApplications").textContent = "Loading...";
+    // ==================== ADMIN STATS ====================
+    async function loadAdminStats() {
+      const usersSnap = await getCountFromServer(collection(db, "users"));
+      document.getElementById("totalUsers").textContent = usersSnap.data().count;
+
+      const jobsSnap = await getCountFromServer(collection(db, "jobs"));
+      document.getElementById("totalJobs").textContent = jobsSnap.data().count;
+
+      const appSnap = await getCountFromServer(collection(db, "applications"));
+      document.getElementById("totalApplications").textContent = appSnap.data().count;
+
+      // Load recent 5 users
+      const recentUsers = query(collection(db, "users"), orderBy("createdAt", "desc"));
+      const recentUsersSnap = await getDocs(recentUsers);
+      const usersTable = document.getElementById("recentUsersTable");
+      usersTable.innerHTML = "";
+      let count = 0;
+      recentUsersSnap.forEach(doc => {
+        const data = doc.data();
+        if (count < 5) {
+          usersTable.innerHTML += `<tr><td>${data.email}</td><td>${data.role}</td></tr>`;
+          count++;
+        }
+      });
     }
 
-    function loadEmployerDashboard(employerId) {
-      document.getElementById("employerJobCount").textContent = "Loading...";
-      document.getElementById("employerAppCount").textContent = "Loading...";
-      // Add Firestore queries here
+    // ==================== EMPLOYER STATS ====================
+    async function loadEmployerDashboard(employerId) {
+      const jobsQ = query(collection(db, "jobs"), where("employerId", "==", employerId));
+      const jobSnap = await getDocs(jobsQ);
+      document.getElementById("employerJobCount").textContent = jobSnap.size;
+
+      let appCount = 0;
+      const appSnap = await getDocs(collection(db, "applications"));
+      appSnap.forEach(doc => {
+        const app = doc.data();
+        if (app.job && app.job.employerId === employerId) {
+          appCount++;
+        }
+      });
+      document.getElementById("employerAppCount").textContent = appCount;
+
+      // Load employer jobs
+      const table = document.getElementById("employerJobsTable");
+      table.innerHTML = "";
+      jobSnap.forEach(doc => {
+        const data = doc.data();
+        table.innerHTML += `
+      <tr>
+        <td>${data.title || "Untitled"}</td>
+        <td>${data.status || "active"}</td>
+        <td><button>View</button></td>
+      </tr>`;
+      });
     }
 
-    function loadFresherDashboard() {
-      document.getElementById("availableJobCount").textContent = "Loading...";
-      document.getElementById("myApplicationsCount").textContent = "Loading...";
-      // Add Firestore queries here
+    // ==================== FRESHER STATS ====================
+    async function loadFresherDashboard() {
+      const jobsSnap = await getDocs(collection(db, "jobs"));
+      document.getElementById("availableJobCount").textContent = jobsSnap.size;
+
+      const appSnap = await getDocs(collection(db, "applications"));
+      const userId = auth.currentUser.uid;
+      let myApps = 0;
+      appSnap.forEach(doc => {
+        if (doc.data().applicantId === userId) myApps++;
+      });
+      document.getElementById("myApplicationsCount").textContent = myApps;
+
+      const table = document.getElementById("availableJobsTable");
+      table.innerHTML = "";
+      jobsSnap.forEach(doc => {
+        const data = doc.data();
+        table.innerHTML += `
+      <tr>
+        <td>${data.title || "Untitled"}</td>
+        <td>${data.location || "N/A"}</td>
+        <td><button>Apply</button></td>
+      </tr>`;
+      });
     }
 
 

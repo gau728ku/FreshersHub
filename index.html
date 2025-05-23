@@ -1462,7 +1462,8 @@
             else if (role === 'fresher') {
                 document.getElementById('fresherDashboard').style.display = 'block';
                 document.getElementById('fresherMenuBtn').style.display = 'block';
-                document.getElementById("fresherMenuAvatarInitial").textContent = initial;
+                const avatarEl = document.getElementById("fresherMenuAvatarInitial");
+                if (avatarEl) avatarEl.textContent = initial;
 
                 (async () => {
                     const user = auth.currentUser;

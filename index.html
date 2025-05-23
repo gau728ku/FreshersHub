@@ -2,371 +2,2687 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FreshersHub - Login/Signup</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      margin: 0;
-      background: #f4f4f4;
-      color: #333;
-    }
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FreshersHub - Job Portal</title>
 
-    .container {
-      max-width: 400px;
-      margin: 80px auto;
-      background: white;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    }
+    <style>
+        /* ==================== BASE STYLES ==================== */
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to bottom right, rgba(0, 114, 255, 0.6), rgba(0, 198, 255, 0.6)),
+                url('https://images.unsplash.com/photo-1519389950473-47ba0277781c?fit=crop&w=1650&q=80') no-repeat center center;
+            background-size: cover;
+            background-attachment: fixed;
+            color: white;
+        }
 
-    h2 {
-      text-align: center;
-      margin-bottom: 24px;
-    }
+        .container {
+            max-width: 400px;
+            margin: 5% auto;
+            padding: 2rem;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+        }
 
-    input,
-    select,
-    button {
-      display: block;
-      width: 100%;
-      padding: 12px;
-      margin-bottom: 15px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      font-size: 16px;
-    }
+        h2 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
 
-    button {
-      background: #007bff;
-      color: white;
-      border: none;
-      cursor: pointer;
-      transition: background 0.3s ease;
-    }
+        input,
+        select,
+        button {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
 
-    button:hover {
-      background: #0056b3;
-    }
+        button {
+            background-color: #00c6ff;
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
 
-    .toggle-password-btn {
-      position: absolute;
-      right: 20px;
-      top: 40px;
-      cursor: pointer;
-    }
+        button:hover {
+            background-color: #1c78e9;
+        }
 
-    .message {
-      color: red;
-      font-size: 0.9em;
-      text-align: center;
-    }
-  </style>
+        button.danger {
+            background-color: #dc3545;
+        }
+
+        button.danger:hover {
+            background-color: #c82333;
+        }
+
+        button.success {
+            background-color: #28a745;
+        }
+
+        button.success:hover {
+            background-color: #218838;
+        }
+
+        /* ==================== CARD STYLES ==================== */
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(5px);
+        }
+
+        /* ==================== TABLE STYLES ==================== */
+        .table-container {
+            overflow-x: auto;
+            margin: 20px 0;
+            background: white;
+            border-radius: 10px;
+            color: black;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+            position: sticky;
+            top: 0;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        /* ==================== MENU STYLES ==================== */
+        #adminMenuBtn,
+        #fresherMenuBtn,
+        #employerMenuBtn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            font-size: 28px;
+            cursor: pointer;
+            z-index: 1001;
+            display: none;
+            color: white;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            text-align: center;
+            line-height: 40px;
+        }
+
+        .sideMenu {
+            position: fixed;
+            top: 0;
+            left: -250px;
+            width: 250px;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding-top: 60px;
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .sideMenu.open {
+            transform: translateX(250px);
+        }
+
+        .sideMenu a {
+            display: block;
+            color: white;
+            padding: 12px 20px;
+            text-decoration: none;
+            font-size: 18px;
+            border-left: 4px solid transparent;
+        }
+
+        .sideMenu a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-left: 4px solid #00c6ff;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 999;
+            display: none;
+        }
+
+        .overlay.show {
+            display: block;
+        }
+
+        /* ==================== FORM STYLES ==================== */
+        #toggle-text a {
+            color: #00aeff;
+            font-weight: bold;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .dashboard-section {
+            display: none;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* ==================== STATS STYLES ==================== */
+        .stats-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .stats-container.horizontal {
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            width: 200px;
+            text-align: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .stat-card h3 {
+            margin-top: 10px;
+            font-size: 2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover h3 {
+            transform: scale(1.1);
+            color: #00c6ff;
+        }
+
+        /* ==================== PASSWORD TOGGLE ==================== */
+        .password-wrapper {
+            position: relative;
+        }
+
+        .toggle-password-btn {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #00c6ff;
+            user-select: none;
+        }
+
+        /* ==================== SEARCH INPUTS ==================== */
+        .search-input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+            margin-bottom: 15px;
+        }
+
+        /* ==================== QUICK ACTIONS ==================== */
+        .quick-actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .quick-actions input {
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .quick-actions button {
+            margin: 0;
+            flex: 1;
+            min-width: 120px;
+        }
+
+        /* ==================== BULK ACTIONS ==================== */
+        .bulk-actions {
+            margin-top: 10px;
+        }
+
+        .table-checkbox {
+            margin: 0;
+            width: 18px;
+            height: 18px;
+        }
+
+        /* ==================== TABLE COLUMN WIDTHS ==================== */
+        .table-container table {
+            table-layout: fixed;
+            width: 100%;
+        }
+
+        .table-container th:nth-child(1),
+        .table-container td:nth-child(1) {
+            width: 40px;
+            /* Checkbox column */
+            text-align: center;
+        }
+
+        .table-container th:nth-child(2),
+        .table-container td:nth-child(2) {
+            width: 30%;
+            /* Email column */
+        }
+
+        .table-container th:nth-child(3),
+        .table-container td:nth-child(3) {
+            width: 20%;
+            /* Role column */
+        }
+
+        .table-container th:nth-child(4),
+        .table-container td:nth-child(4) {
+            width: 15%;
+            /* Actions column */
+        }
+
+        /* Jobs Table Specific Styling */
+        #jobsTableBody td:nth-child(1) {
+            width: 40px;
+            text-align: center;
+        }
+
+        /* Checkbox */
+        #jobsTableBody td:nth-child(2) {
+            width: 25%;
+        }
+
+        /* Title */
+        #jobsTableBody td:nth-child(3) {
+            width: 20%;
+        }
+
+        /* employer */
+        #jobsTableBody td:nth-child(4) {
+            width: 15%;
+        }
+
+        /* Location */
+        #jobsTableBody td:nth-child(5) {
+            width: 15%;
+        }
+
+        /* Salary */
+        #jobsTableBody td:nth-child(6) {
+            width: 15%;
+        }
+
+        /* Actions */
+
+        /* ==================== TABLE TEXT HANDLING ==================== */
+        .table-container td {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding: 8px 12px;
+        }
+
+        .table-container th {
+            padding: 12px;
+        }
+
+        /* ==================== ANNOUNCEMENT BANNER ==================== */
+        .announcement-banner {
+            background: rgba(255, 255, 255, 0.08);
+            color: #ffffff;
+            font-weight: 500;
+            padding: 10px 20px;
+            border-left: 5px solid #ffc107;
+            font-size: 1rem;
+            overflow: hidden;
+            white-space: nowrap;
+            backdrop-filter: blur(6px);
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+            margin-bottom: 10px;
+            border-radius: 6px;
+        }
+
+        .scrolling-text {
+            display: inline-block;
+            animation: scroll-left 18s linear infinite;
+        }
+
+        @keyframes scroll-left {
+            0% {
+                transform: translateX(100%);
+            }
+
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+
+        /* ==================== JOB STATUS BADGES ==================== */
+        .job-status {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .job-status[data-status="active"] {
+            background-color: #28a74520;
+            color: #28a745;
+        }
+
+        .job-status[data-status="closed"] {
+            background-color: #dc354520;
+            color: #dc3545;
+        }
+
+        /* ==================== EMPLOYER DASHBOARD SPECIFIC ==================== */
+        #employerJobsTable {
+            table-layout: fixed;
+            width: 100%;
+        }
+
+        #employerJobsTable td,
+        #employerJobsTable th {
+            padding: 12px;
+            text-align: left;
+            white-space: normal;
+            overflow-wrap: anywhere;
+        }
+
+        /* Set column widths */
+        #employerJobsTable th:nth-child(1),
+        #employerJobsTable td:nth-child(1) {
+            width: 30%;
+            /* Title */
+        }
+
+        #employerJobsTable th:nth-child(2),
+        #employerJobsTable td:nth-child(2) {
+            width: 10%;
+            /* Applications */
+        }
+
+        #employerJobsTable th:nth-child(3),
+        #employerJobsTable td:nth-child(3) {
+            width: 15%;
+            /* Type */
+        }
+
+        #employerJobsTable th:nth-child(4),
+        #employerJobsTable td:nth-child(4) {
+            width: 15%;
+            /* Posted */
+        }
+
+        #employerJobsTable th:nth-child(5),
+        #employerJobsTable td:nth-child(5) {
+            width: 10%;
+            /* Status */
+        }
+
+        #employerJobsTable th:nth-child(6),
+        #employerJobsTable td:nth-child(6) {
+            width: 20%;
+            /* Actions */
+        }
+
+        .clickable-row {
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .clickable-row:hover {
+            background-color: #1e1e1e;
+        }
+
+        .job-status {
+            padding: 3px 8px;
+            border-radius: 12px;
+            background: #e1f5fe;
+        }
+
+        input,
+        textarea,
+        select {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+            background: #f9f9f9;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .save-btn {
+            background-color: #00bfff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .save-btn:hover {
+            background-color: #0099cc;
+        }
+
+        .danger {
+            background-color: #e74c3c;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .danger:hover {
+            background-color: #c0392b;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            overflow: auto;
+        }
+
+        .modal-content {
+            background: white;
+            color: black;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            border-radius: 12px;
+            padding: 30px;
+            margin: auto;
+            position: relative;
+        }
+
+        /* ==================== FRESHER DASHBOARD SPECIFIC  ==================== */
+
+        /* Add this to your existing styles */
+        #availableJobsTable {
+            table-layout: fixed;
+            width: 100%;
+        }
+
+        #availableJobsTable th,
+        #availableJobsTable td {
+            padding: 12px;
+            text-align: left;
+            white-space: normal;
+            word-wrap: break-word;
+        }
+
+        /* Column width adjustments */
+        #availableJobsTable th:nth-child(1),
+        #availableJobsTable td:nth-child(1) {
+            width: 40%;
+            /* More space for title */
+        }
+
+        #availableJobsTable th:nth-child(2),
+        #availableJobsTable td:nth-child(2) {
+            width: 20%;
+            /* Employer */
+        }
+
+        #availableJobsTable th:nth-child(3),
+        #availableJobsTable td:nth-child(3) {
+            width: 15%;
+            /* Location */
+        }
+
+        #availableJobsTable th:nth-child(4),
+        #availableJobsTable td:nth-child(4) {
+            width: 15%;
+            /* Salary */
+        }
+
+        #availableJobsTable th:nth-child(5),
+        #availableJobsTable td:nth-child(5) {
+            width: 10%;
+            /* Actions */
+        }
+
+        /* Remove the ellipsis for this table */
+        #availableJobsTable td {
+            white-space: normal;
+            overflow: visible;
+            text-overflow: clip;
+        }
+
+
+        /* ==================== RESPONSIVE STYLES ==================== */
+        @media (max-width: 768px) {
+            .stats-container {
+                flex-direction: row;
+                justify-content: flex-start;
+            }
+
+            .stat-card {
+                min-width: 180px;
+            }
+        }
+    </style>
 </head>
 
 <body>
-  <div class="container" id="auth-section">
-    <h2 id="form-title">FreshersHub - Signup</h2>
-    <div id="nameFieldContainer">
-      <input type="text" id="signupName" placeholder="Full Name" required />
+
+    <!-- ==================== AUTHENTICATION SECTION ==================== -->
+    <div class="container" id="auth-section">
+        <h2 id="form-title">FreshersHub - Signup</h2>
+        <input type="email" id="email" placeholder="Email" required />
+        <div class="password-wrapper">
+            <input type="password" id="password" placeholder="Password" required />
+            <span id="togglePasswordBtn" class="toggle-password-btn">👁‍🗨</span>
+        </div>
+        <select id="role">
+            <option value="fresher">Fresher</option>
+            <option value="employer">Employer</option>
+        </select>
+        <button id="actionBtn" onclick="signup()">Signup</button>
+        <p id="toggle-text">Already have an account? <a id="toggleLink">Login here</a></p>
     </div>
-    <input type="email" id="email" placeholder="Email" required />
-    <div class="password-wrapper" style="position:relative;">
-      <input type="password" id="password" placeholder="Password" required />
-      <span id="togglePasswordBtn" class="toggle-password-btn">👁️</span>
+
+    <!-- ==================== ADMIN DASHBOARD ==================== -->
+    <div id="adminDashboard" style="display:none;">
+        <div id="adminMenuBtn" onclick="toggleAdminMenu()">☰</div>
+
+        <div class="sideMenu" id="adminSideMenu">
+            <a href="#" id="adminMenuHome">Dashboard</a>
+            <a href="#" id="adminMenuUsers">Manage Users</a>
+            <a href="#" id="adminMenuJobs">Manage Jobs</a>
+            <a href="#" id="adminMenuSettings">Settings</a>
+            <a href="#" onclick="logout()">Logout</a>
+        </div>
+
+        <div class="overlay" id="adminOverlay" onclick="toggleAdminMenu()"></div>
+
+        <!-- ==================== ADMIN HOME SECTION ==================== -->
+        <div class="dashboard-section" id="adminHomeSection">
+            <h2>Admin Dashboard</h2>
+
+            <!-- Quick Actions Section -->
+            <div class="quick-actions">
+                <input type="email" id="banUserEmail" placeholder="Enter email to ban" required>
+                <button onclick="banUser()" class="danger">Ban User</button>
+                <button onclick="showAnnouncementModal()" class="success">Post Announcement</button>
+                <div id="banUserFeedback" style="display: none; margin-top: 10px;"></div>
+            </div>
+
+            <!-- Stats Section -->
+            <div class="stats-container horizontal">
+                <div class="stat-card">
+                    <p>Total Freshers</p>
+                    <h3 id="totalFreshers">-</h3>
+                </div>
+                <div class="stat-card">
+                    <p>Total Employers</p>
+                    <h3 id="totalEmployers">-</h3>
+                </div>
+                <div class="stat-card">
+                    <p>Total Jobs</p>
+                    <h3 id="totalJobs">-</h3>
+                </div>
+            </div>
+
+            <!-- Announcement Display -->
+            <div class="card">
+                <h3>Current Announcement</h3>
+                <div id="currentAnnouncement"
+                    style="padding: 15px; background: rgba(255,255,255,0.1); border-radius: 8px; max-height: 120px; overflow-y: auto;">
+                    Loading announcement...
+                </div>
+                <div id="announcementActions" style="margin-top: 10px; display: none;">
+                    <button onclick="showAnnouncementModal()" class="success">✏️ Edit</button>
+                    <button onclick="deleteAnnouncement()" class="danger">🗑️ Delete</button>
+                </div>
+            </div>
+
+            <!-- Recent Activity Section -->
+            <div class="card">
+                <h3 style="text-align: center;">Recent Activity</h3>
+                <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;">
+                    <div style="flex: 1; min-width: 300px;">
+                        <h4>Last 5 Users</h4>
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Email</th>
+                                        <th>Role</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recentUsersTable"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div style="flex: 1; min-width: 300px;">
+                        <h4>Last 5 Jobs</h4>
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Title</th>
+                                        <th>Employer</th>
+                                        <th>Location</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recentJobsTable"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- End of adminHomeSection -->
+
+        <!-- ==================== MANAGE USERS SECTION ==================== -->
+        <div class="dashboard-section" id="adminUsersSection">
+            <h2>Manage Users</h2>
+            <button onclick="showAdminSection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
+
+            <!-- Search bar -->
+            <input type="text" class="search-input" data-table-target="usersTableBody"
+                placeholder="Search users by email or role...">
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox" id="selectAllUsers" class="table-checkbox"></th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTableBody"></tbody>
+                </table>
+                <!-- Bulk actions INSIDE table-container -->
+                <div class="bulk-actions">
+                    <button onclick="deleteSelectedUsers()" class="danger">Delete Selected Users</button>
+                </div>
+            </div>
+
+            <!-- Deleted Users Table -->
+            <div class="card" style="margin-top: 20px;">
+                <h3>Deleted Users</h3>
+                <p style="font-size: 0.9rem; color: #ccc;">Click email to delete permanently from Firebase</p>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Email</th>
+                                <th>Deleted On</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="deletedUsersTable"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== MANAGE JOBS SECTION ==================== -->
+        <div class="dashboard-section" id="adminJobsSection">
+            <h2>Manage Job Listings</h2>
+            <button onclick="showAdminSection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
+
+            <!-- Search bar -->
+            <input type="text" class="search-input" data-table-target="jobsTableBody"
+                placeholder="Search jobs by title, employer...">
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox" id="selectAllJobs" class="table-checkbox"></th>
+                            <th>Title</th>
+                            <th>Employer</th>
+                            <th>Location</th>
+                            <th>Salary</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="jobsTableBody"></tbody>
+                </table>
+                <!-- Bulk actions INSIDE table-container -->
+                <div class="bulk-actions">
+                    <button onclick="deleteSelectedJobs()" class="danger">Delete Selected Jobs</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== SETTINGS SECTION ==================== -->
+        <div class="dashboard-section" id="adminSettingsSection">
+            <h2>Admin Settings</h2>
+            <button onclick="showAdminSection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
+
+            <div class="card">
+                <h3>System Configuration</h3>
+
+                <!-- Current Admins table -->
+                <div id="adminSection">
+                    <h3>Current Admins</h3>
+                    <table id="adminTable">
+                        <thead>
+                            <tr>
+                                <th>Email</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminTableBody"></tbody>
+                    </table>
+
+                    <!-- Promote user to admin form -->
+                    <div id="addAdminSection" style="display: none;">
+                        <h3>Promote User to Admin</h3>
+                        <input type="email" id="promoteEmail" placeholder="Enter user email">
+                        <button onclick="promoteToAdmin()">Promote</button>
+                    </div>
+
+                    <!-- Banned users table -->
+                    <div class="card">
+                        <h3>Banned Users</h3>
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Email</th>
+                                        <th>Banned On</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="bannedUsersTable"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <select id="role">
-      <option value="fresher">Fresher</option>
-      <option value="employer">Employer</option>
-    </select>
-    <button id="actionBtn">Signup</button>
-    <p id="toggle-text">Already have an account? <a href="#" id="toggleLink">Login here</a></p>
-    <div class="message" id="authMessage"></div>
-  </div>
 
+    <!-- ==================== EMPLOYER DASHBOARD ==================== -->
+    <div id="employerDashboard" style="display:none;">
+        <div id="announcementBannerEmployer" class="announcement-banner" style="display: none; cursor: pointer;"
+            onclick="showFullAnnouncement()">
+            <div class="scrolling-text" id="announcementTextEmployer"></div>
+        </div>
 
-  <!-- ==================== ADMIN DASHBOARD ==================== -->
-  <div id="adminDashboard" style="display: none;">
-    <h2>Admin Dashboard</h2>
-    <div class="stat-card">Total Users: <span id="totalUsers">-</span></div>
-    <div class="stat-card">Total Jobs: <span id="totalJobs">-</span></div>
-    <div class="stat-card">Total Applications: <span id="totalApplications">-</span></div>
-    <div class="table-container">
-      <h3>Recent Users</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>Email</th>
-            <th>Role</th>
-          </tr>
-        </thead>
-        <tbody id="recentUsersTable"></tbody>
-      </table>
+        <div id="employerMenuBtn" onclick="toggleEmployerMenu()">☰</div>
+
+        <div class="sideMenu" id="employerSideMenu">
+            <a href="#" id="employerMenuHome">Dashboard</a>
+            <a href="#" id="employerMenuPostJob">Post Job</a>
+            <a href="#" id="employerMenuMyJobs">My Jobs</a>
+            <a href="#" onclick="logout()">Logout</a>
+        </div>
+
+        <div class="overlay" id="employerOverlay" onclick="toggleEmployerMenu()"></div>
+
+        <!-- ==================== EMPLOYER HOME SECTION ==================== -->
+        <div class="dashboard-section" id="employerHomeSection">
+            <h2>Employer Dashboard</h2>
+
+            <!-- Quick Stats -->
+            <div class="stats-container">
+                <div class="stat-card" onclick="showEmployerSection('myJobs')">
+                    <p>Active Jobs</p>
+                    <h3 id="employerActiveJobCount">-</h3>
+                </div>
+                <div class="stat-card" onclick="showEmployerSection('myJobs')">
+                    <p>Total Jobs</p>
+                    <h3 id="employerTotalJobCount">-</h3>
+                </div>
+                <div class="stat-card" onclick="loadApplicationsStats()">
+                    <p>Total Applications</p>
+                    <h3 id="employerAppCount">-</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== POST JOB SECTION ==================== -->
+        <div class="dashboard-section" id="employerPostJobSection">
+            <h2>Post New Job</h2>
+            <button onclick="showEmployerSection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
+
+            <div class="card">
+                <form id="postJobForm">
+                    <input type="text" id="jobTitle" placeholder="Job Title" required>
+                    <textarea id="jobDescription" placeholder="Job Description (Responsibilities, Requirements)"
+                        required
+                        style="width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; min-height: 120px;"></textarea>
+                    <input type="text" id="jobLocation" placeholder="Location (e.g., Remote, City)" required>
+                    <input type="text" id="jobSalary" placeholder="Salary Range (e.g., $50k-$70k)" required>
+                    <select id="jobType" required>
+                        <option value="">Select Job Type</option>
+                        <option value="Full-time">Full-time</option>
+                        <option value="Part-time">Part-time</option>
+                        <option value="Contract">Contract</option>
+                        <option value="Internship">Internship</option>
+                    </select>
+                    <button type="submit" class="success">Post Job</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- ==================== MY JOBS SECTION ==================== -->
+        <div class="dashboard-section" id="employerMyJobsSection">
+            <h2>My Job Postings</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <button onclick="showEmployerSection('home')">← Back to Dashboard</button>
+                <input type="text" class="search-input" placeholder="Search my jobs..." id="searchMyJobs">
+            </div>
+
+            <div class="table-container">
+                <table id="employerJobsTable">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Applications</th>
+                            <th>Type</th>
+                            <th>Posted</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="employerJobsTableBody"></tbody>
+                </table>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <!-- ==================== EMPLOYER DASHBOARD ==================== -->
-  <div id="employerDashboard" style="display: none;">
-    <h2>Employer Dashboard</h2>
-    <div class="stat-card">My Jobs: <span id="employerJobCount">-</span></div>
-    <div class="stat-card">Total Applications: <span id="employerAppCount">-</span></div>
-    <div class="table-container">
-      <h3>My Job Listings</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>Title</th>
-            <th>Status</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="employerJobsTable"></tbody>
-      </table>
+    <!-- ==================== FRESHER DASHBOARD ==================== -->
+    <div id="fresherDashboard" style="display:none;">
+        <div id="announcementBannerFresher" class="announcement-banner" style="display: none; cursor: pointer;"
+            onclick="showFullAnnouncement()">
+            <div class="scrolling-text" id="announcementTextFresher"></div>
+        </div>
+
+        <div id="fresherMenuBtn" onclick="toggleFresherMenu()">☰</div>
+
+        <div class="sideMenu" id="fresherSideMenu">
+            <a href="#" id="fresherMenuHome">Dashboard</a>
+            <a href="#" id="fresherMenuJobs">Browse Jobs</a>
+            <a href="#" id="fresherMenuApplications">My Applications</a>
+            <a href="#" id="fresherMenuProfile">Profile</a>
+            <a href="#" onclick="logout()">Logout</a>
+        </div>
+
+        <div class="overlay" id="fresherOverlay" onclick="toggleFresherMenu()"></div>
+
+        <!-- ==================== FRESHER HOME SECTION ==================== -->
+        <div class="dashboard-section" id="fresherHomeSection">
+            <h2>Fresher Dashboard</h2>
+            <div class="card">
+                <p>Welcome to your job search dashboard!</p>
+            </div>
+        </div>
+
+        <!-- ==================== BROWSE JOBS SECTION ==================== -->
+        <div class="dashboard-section" id="fresherJobsSection">
+            <h2>Available Jobs</h2>
+            <button onclick="showFresherSection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
+
+            <div class="table-container">
+                <table id="availableJobsTable">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Employer</th>
+                            <th>Location</th>
+                            <th>Salary</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="availableJobsTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ==================== MY APPLICATIONS SECTION ==================== -->
+        <div class="dashboard-section" id="fresherApplicationsSection">
+            <h2>My Applications</h2>
+            <button onclick="showFresherSection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Job Title</th>
+                            <th>Employer</th>
+                            <th>Status</th>
+                            <th>Applied On</th>
+                        </tr>
+                    </thead>
+                    <tbody id="myApplicationsTable"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ==================== PROFILE SECTION ==================== -->
+        <div class="dashboard-section" id="fresherProfileSection">
+            <h2>My Profile</h2>
+            <button onclick="showFresherSection('home')" style="margin-bottom: 20px;">← Back to Dashboard</button>
+
+            <div class="card">
+                <form id="fresherProfileForm">
+                    <input type="text" id="fullName" placeholder="Full Name" required>
+                    <input type="text" id="education" placeholder="Education" required>
+                    <textarea id="skills" placeholder="Skills (comma separated)" required
+                        style="width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px;"></textarea>
+                    <input type="file" id="resume" accept=".pdf,.doc,.docx">
+                    <button type="submit" class="success">Update Profile</button>
+                </form>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <!-- ==================== FRESHER DASHBOARD ==================== -->
-  <div id="fresherDashboard" style="display: none;">
-    <h2>Fresher Dashboard</h2>
-    <div class="stat-card">Available Jobs: <span id="availableJobCount">-</span></div>
-    <div class="stat-card">My Applications: <span id="myApplicationsCount">-</span></div>
-    <div class="table-container">
-      <h3>Available Jobs</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>Title</th>
-            <th>Location</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="availableJobsTable"></tbody>
-      </table>
+    <!-- ==================== JOB MODAL ==================== -->
+    <div id="jobModal" class="overlay" style="display:none;">
+        <div class="card" style="max-width:600px; margin:100px auto; background:white; color:black;">
+            <h3 id="modalJobTitle">Job Title</h3>
+            <p id="modalJobDescription">Description here...</p>
+            <p><strong>Location:</strong> <span id="modalJobLocation"></span></p>
+            <p><strong>Salary:</strong> <span id="modalJobSalary"></span></p>
+            <p><strong>Type:</strong> <span id="modalJobType"></span></p>
+            <button onclick="closeJobModal()">Close</button>
+        </div>
     </div>
-  </div>
 
+    <!-- ==================== EDIT JOB MODAL ==================== -->
+    <div id="editJobModal" class="modal-overlay" style="display:none;">
+        <div class="modal-content">
+            <div class="card"
+                style="max-width:600px; margin:10% auto; background:white; color:black; padding:30px; border-radius:12px;">
+                <h2 style="text-align: center;">Edit Job</h2>
+                <form id="editJobForm" style="display: flex; flex-direction: column; gap: 15px;">
+                    <input type="hidden" id="editJobId" />
+                    <div>
+                        <label for="editTitle">Title</label>
+                        <input type="text" id="editTitle" required style="width:100%;" />
+                    </div>
+                    <div>
+                        <label for="editDescription">Description</label>
+                        <textarea id="editDescription" required style="width:100%; min-height:80px;"></textarea>
+                    </div>
+                    <div>
+                        <label for="editLocation">Location</label>
+                        <input type="text" id="editLocation" required style="width:100%;" />
+                    </div>
+                    <div>
+                        <label for="editSalary">Salary</label>
+                        <input type="text" id="editSalary" required style="width:100%;" />
+                    </div>
+                    <div>
+                        <label for="editJobType">Type</label>
+                        <select id="editJobType" style="width:100%;">
+                            <option value="Full-time">Full-time</option>
+                            <option value="Part-time">Part-time</option>
+                            <option value="Contract">Contract</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="editStatus">Status</label>
+                        <select id="editStatus" style
+                    <div style="display:flex; justify-content: space-between; margin-top: 20px;">
+                        <button type="submit" class="save-btn">Save Changes</button>
+                        <button type="button" onclick="closeEditJobModal()" class="danger">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
-  <!-- Firebase SDKs -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import {
-      getAuth,
-      createUserWithEmailAndPassword,
-      signInWithEmailAndPassword,
-      onAuthStateChanged,
-    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import {
-      getFirestore,
-      doc,
-      setDoc,
-      getDoc,
-      collection,
-      query,
-      where,
-      getCountFromServer,
-      getDocs,
-      orderBy,
-      onSnapshot
-    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    <!-- ==================== FIREBASE INITIALIZATION ==================== -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import {
+            getAuth,
+            createUserWithEmailAndPassword,
+            signInWithEmailAndPassword,
+            onAuthStateChanged,
+            signOut
+        } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import {
+            getFirestore,
+            setDoc,
+            doc,
+            getDoc,
+            collection,
+            where,
+            getDocs,
+            query,
+            addDoc,
+            deleteDoc,
+            updateDoc,
+            onSnapshot,
+            orderBy
+        } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    // Your Firebase configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyDrrAYywpFdd9iIzSSp2m6XcrGkGUgYY3Y",
-      authDomain: "freshershub-33de8.firebaseapp.com",
-      projectId: "freshershub-33de8",
-      storageBucket: "freshershub-33de8.appspot.com",
-      messagingSenderId: "126389629687",
-      appId: "1:126389629687:web:9b9fb43e488f60ac3159f2"
-    };
-
-
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-
-    const nameField = document.getElementById("nameFieldContainer");
-    const formTitle = document.getElementById("form-title");
-    const toggleText = document.getElementById("toggle-text");
-    const toggleLink = document.getElementById("toggleLink");
-    const actionBtn = document.getElementById("actionBtn");
-    const messageBox = document.getElementById("authMessage");
-
-    let isSignup = true;
-
-    toggleLink.addEventListener("click", (e) => {
-      e.preventDefault();
-      isSignup = !isSignup;
-      if (isSignup) {
-        formTitle.textContent = "FreshersHub - Signup";
-        actionBtn.textContent = "Signup";
-        nameField.style.display = "block";
-        toggleText.innerHTML = `Already have an account? <a href="#" id="toggleLink">Login here</a>`;
-      } else {
-        formTitle.textContent = "FreshersHub - Login";
-        actionBtn.textContent = "Login";
-        nameField.style.display = "none";
-        toggleText.innerHTML = `Don't have an account? <a href="#" id="toggleLink">Signup here</a>`;
-      }
-    });
-
-    actionBtn.addEventListener("click", async () => {
-      const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value.trim();
-      const role = document.getElementById("role").value;
-      const fullName = document.getElementById("signupName").value.trim();
-
-      if (!email || !password || (isSignup && !fullName)) {
-        messageBox.textContent = "Please fill in all required fields.";
-        return;
-      }
-
-      try {
-        if (isSignup) {
-          const userCred = await createUserWithEmailAndPassword(auth, email, password);
-          await setDoc(doc(db, "users", userCred.user.uid), {
-            email,
-            role,
-            fullName,
-            createdAt: Date.now(),
-          });
-          messageBox.textContent = "Signup successful. Redirecting...";
-          // redirect based on role
-        } else {
-          const userCred = await signInWithEmailAndPassword(auth, email, password);
-          const userSnap = await getDoc(doc(db, "users", userCred.user.uid));
-          if (!userSnap.exists()) throw new Error("User profile not found.");
-          const userData = userSnap.data();
-          messageBox.textContent = "Login successful. Redirecting...";
-          // redirect based on role
-        }
-      } catch (error) {
-        messageBox.textContent = error.message;
-      }
-    });
-
-    // Optionally auto-redirect if already logged in
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        const userDoc = await getDoc(doc(db, "users", user.uid));
-        if (!userDoc.exists()) {
-          console.error("User data not found.");
-          return;
+        // 🔁 Utility: fallback to first available key (handles case mismatch)
+        function getField(data, keys = []) {
+            for (let key of keys) {
+                if (data[key] !== undefined && data[key] !== null) {
+                    return data[key];
+                }
+            }
+            return null;
         }
 
-        const data = userDoc.data();
-        const role = data.role;
-
-        document.getElementById("auth-section").style.display = "none";
-
-        // Hide all dashboards first
-        document.getElementById("adminDashboard").style.display = "none";
-        document.getElementById("employerDashboard").style.display = "none";
-        document.getElementById("fresherDashboard").style.display = "none";
-
-        if (role === "admin") {
-          document.getElementById("adminDashboard").style.display = "block";
-          loadAdminStats();
-        } else if (role === "employer") {
-          document.getElementById("employerDashboard").style.display = "block";
-          loadEmployerDashboard(user.uid);
-        } else if (role === "fresher") {
-          document.getElementById("fresherDashboard").style.display = "block";
-          loadFresherDashboard();
+        // 🎨 Utility: capitalize first letter of text
+        function capitalize(text) {
+            if (!text || typeof text !== "string") return "";
+            return text.charAt(0).toUpperCase() + text.slice(1);
         }
-      } else {
-        document.getElementById("auth-section").style.display = "block";
-      }
-    });
 
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDrrAYywpFdd9iIzSSp2m6XcrGkGUgYY3Y",
+            authDomain: "freshershub-33de8.firebaseapp.com",
+            projectId: "freshershub-33de8",
+            storageBucket: "freshershub-33de8.appspot.com",
+            messagingSenderId: "126389629687",
+            appId: "1:126389629687:web:9b9fb43e488f60ac3159f2"
+        };
 
-    // ==================== ADMIN STATS ====================
-    async function loadAdminStats() {
-      const usersSnap = await getCountFromServer(collection(db, "users"));
-      document.getElementById("totalUsers").textContent = usersSnap.data().count;
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
 
-      const jobsSnap = await getCountFromServer(collection(db, "jobs"));
-      document.getElementById("totalJobs").textContent = jobsSnap.data().count;
+        // ==================== GLOBAL VARIABLES ====================
+        let roleChangeUnsubscribe = null;
+        const ORIGINAL_ADMIN_EMAIL = "gauravku7409@gmail.com";
 
-      const appSnap = await getCountFromServer(collection(db, "applications"));
-      document.getElementById("totalApplications").textContent = appSnap.data().count;
-
-      // Load recent 5 users
-      const recentUsers = query(collection(db, "users"), orderBy("createdAt", "desc"));
-      const recentUsersSnap = await getDocs(recentUsers);
-      const usersTable = document.getElementById("recentUsersTable");
-      usersTable.innerHTML = "";
-      let count = 0;
-      recentUsersSnap.forEach(doc => {
-        const data = doc.data();
-        if (count < 5) {
-          usersTable.innerHTML += `<tr><td>${data.email}</td><td>${data.role}</td></tr>`;
-          count++;
+        // ==================== UTILITY FUNCTIONS ====================
+        function normalizeString(str) {
+            return str.toLowerCase().trim();
         }
-      });
-    }
 
-    // ==================== EMPLOYER STATS ====================
-    async function loadEmployerDashboard(employerId) {
-      const jobsQ = query(collection(db, "jobs"), where("employerId", "==", employerId));
-      const jobSnap = await getDocs(jobsQ);
-      document.getElementById("employerJobCount").textContent = jobSnap.size;
-
-      let appCount = 0;
-      const appSnap = await getDocs(collection(db, "applications"));
-      appSnap.forEach(doc => {
-        const app = doc.data();
-        if (app.job && app.job.employerId === employerId) {
-          appCount++;
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
         }
-      });
-      document.getElementById("employerAppCount").textContent = appCount;
 
-      // Load employer jobs
-      const table = document.getElementById("employerJobsTable");
-      table.innerHTML = "";
-      jobSnap.forEach(doc => {
-        const data = doc.data();
-        table.innerHTML += `
-      <tr>
-        <td>${data.title || "Untitled"}</td>
-        <td>${data.status || "active"}</td>
-        <td><button>View</button></td>
-      </tr>`;
-      });
-    }
+        function validatePassword(password) {
+            return password.length >= 8;
+        }
 
-    // ==================== FRESHER STATS ====================
-    async function loadFresherDashboard() {
-      const jobsSnap = await getDocs(collection(db, "jobs"));
-      document.getElementById("availableJobCount").textContent = jobsSnap.size;
+        function animateValue(element, target, duration = 1000) {
+            const start = 0;
+            const increment = target / (duration / 16);
+            let current = start;
+            const el = document.getElementById(element);
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    clearInterval(timer);
+                    current = target;
+                }
+                el.textContent = Math.floor(current);
+            }, 16);
+        }
 
-      const appSnap = await getDocs(collection(db, "applications"));
-      const userId = auth.currentUser.uid;
-      let myApps = 0;
-      appSnap.forEach(doc => {
-        if (doc.data().applicantId === userId) myApps++;
-      });
-      document.getElementById("myApplicationsCount").textContent = myApps;
+        function showToast(message) {
+            const container = document.getElementById("toastContainer");
 
-      const table = document.getElementById("availableJobsTable");
-      table.innerHTML = "";
-      jobsSnap.forEach(doc => {
-        const data = doc.data();
-        table.innerHTML += `
-      <tr>
-        <td>${data.title || "Untitled"}</td>
-        <td>${data.location || "N/A"}</td>
-        <td><button>Apply</button></td>
-      </tr>`;
-      });
-    }
+            const toast = document.createElement("div");
+            toast.textContent = message;
+            toast.style.background = "#323232";
+            toast.style.color = "#fff";
+            toast.style.padding = "10px 20px";
+            toast.style.marginTop = "10px";
+            toast.style.borderRadius = "6px";
+            toast.style.boxShadow = "0 2px 6px rgba(0,0,0,0.3)";
+            toast.style.fontSize = "14px";
+            toast.style.transition = "opacity 0.5s ease";
 
+            container.appendChild(toast);
 
+            // Auto-remove after 2.5 seconds
+            setTimeout(() => {
+                toast.style.opacity = "0";
+                setTimeout(() => container.removeChild(toast), 500);
+            }, 2500);
+        }
 
-  </script>
+        // ==================== AUTHENTICATION FUNCTIONS ====================
+        window.signup = async function () {
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const role = document.getElementById('role').value;
+
+            if (!validateEmail(email)) {
+                alert("Please enter a valid email address");
+                return;
+            }
+
+            if (!validatePassword(password)) {
+                alert("Password must be at least 8 characters long");
+                return;
+            }
+
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+
+                await setDoc(doc(db, "users", user.uid), {
+                    email,
+                    role: normalizeString(role),
+                    createdAt: new Date().toISOString(),
+                    isOriginalAdmin: normalizeString(email) === normalizeString(ORIGINAL_ADMIN_EMAIL)
+                });
+
+                alert("Signup successful!");
+                showDashboard(role);
+            } catch (err) {
+                alert(err.message);
+            }
+        };
+
+        window.login = async function () {
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+
+            if (!validateEmail(email)) {
+                alert("Please enter a valid email address");
+                return;
+            }
+
+            try {
+                if (roleChangeUnsubscribe) {
+                    roleChangeUnsubscribe();
+                }
+
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+                const docRef = doc(db, "users", user.uid);
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    const userData = docSnap.data();
+
+                    if (userData.banned) {
+                        alert("Your account has been banned. Contact support.");
+                        await signOut(auth);
+                        return;
+                    }
+
+                    const initialRole = userData.role;
+                    showDashboard(initialRole);
+                    startUserAnnouncementListener();
+
+                    roleChangeUnsubscribe = onSnapshot(docRef, (snapshot) => {
+                        const data = snapshot.data();
+                        if (data?.banned) {
+                            alert("You have been banned. You are now logged out.");
+                            logout();
+                            return;
+                        }
+
+                        const newRole = data?.role;
+                        if (newRole !== initialRole) {
+                            alert("Your role has changed. You'll be logged out.");
+                            logout();
+                        }
+                    });
+                } else {
+                    alert("User data not found.");
+                }
+            } catch (err) {
+                alert(err.message);
+            }
+        };
+
+        window.logout = function () {
+            if (roleChangeUnsubscribe) {
+                roleChangeUnsubscribe();
+                roleChangeUnsubscribe = null;
+            }
+
+            signOut(auth).then(() => {
+                document.getElementById('auth-section').style.display = 'block';
+                document.getElementById('adminDashboard').style.display = 'none';
+                document.getElementById('employerDashboard').style.display = 'none';
+                document.getElementById('fresherDashboard').style.display = 'none';
+            });
+        };
+
+        // ==================== FORM TOGGLE FUNCTION ====================
+        window.toggleForm = function () {
+            const formTitle = document.getElementById('form-title');
+            const actionBtn = document.getElementById('actionBtn');
+            const toggleText = document.getElementById('toggle-text');
+            const roleSelect = document.getElementById('role');
+
+            if (formTitle.textContent.includes('Signup')) {
+                formTitle.textContent = 'FreshersHub - Login';
+                actionBtn.textContent = 'Login';
+                actionBtn.onclick = login;
+                toggleText.innerHTML = `Don't have an account? <a id="toggleLink">Signup here</a>`;
+                roleSelect.style.display = 'none';
+            } else {
+                formTitle.textContent = 'FreshersHub - Signup';
+                actionBtn.textContent = 'Signup';
+                actionBtn.onclick = signup;
+                toggleText.innerHTML = `Already have an account? <a id="toggleLink">Login here</a>`;
+                roleSelect.style.display = 'block';
+            }
+
+            document.getElementById('toggleLink').addEventListener('click', (e) => {
+                e.preventDefault();
+                toggleForm();
+            });
+        };
+
+        // ==================== DASHBOARD FUNCTIONS ====================
+        window.showDashboard = function (role) {
+            document.getElementById('auth-section').style.display = 'none';
+            document.getElementById('adminDashboard').style.display = 'none';
+            document.getElementById('employerDashboard').style.display = 'none';
+            document.getElementById('fresherDashboard').style.display = 'none';
+
+            document.getElementById('adminMenuBtn').style.display = 'none';
+            document.getElementById('employerMenuBtn').style.display = 'none';
+            document.getElementById('fresherMenuBtn').style.display = 'none';
+
+            role = normalizeString(role);
+
+            if (role === 'admin') {
+                document.getElementById('adminDashboard').style.display = 'block';
+                document.getElementById('adminMenuBtn').style.display = 'block';
+                showAdminSection('home');
+                loadAdminStats();
+                loadRecentActivity();
+            } else if (role === 'employer') {
+                document.getElementById('employerDashboard').style.display = 'block';
+                document.getElementById('employerMenuBtn').style.display = 'block';
+                showEmployerSection('home');
+            } else if (role === 'fresher') {
+                document.getElementById('fresherDashboard').style.display = 'block';
+                document.getElementById('fresherMenuBtn').style.display = 'block';
+                showFresherSection('home');
+            }
+        };
+
+        // ==================== MENU TOGGLE FUNCTIONS ====================
+        window.toggleAdminMenu = function () {
+            document.getElementById('adminSideMenu').classList.toggle('open');
+            document.getElementById('adminOverlay').classList.toggle('show');
+        };
+
+        window.toggleEmployerMenu = function () {
+            document.getElementById('employerSideMenu').classList.toggle('open');
+            document.getElementById('employerOverlay').classList.toggle('show');
+        };
+
+        window.toggleFresherMenu = function () {
+            document.getElementById('fresherSideMenu').classList.toggle('open');
+            document.getElementById('fresherOverlay').classList.toggle('show');
+        };
+
+        // ==================== ADMIN SECTION FUNCTIONS ====================
+        window.showAdminSection = function (section) {
+            document.getElementById('adminHomeSection').style.display = 'none';
+            document.getElementById('adminUsersSection').style.display = 'none';
+            document.getElementById('adminJobsSection').style.display = 'none';
+            document.getElementById('adminSettingsSection').style.display = 'none';
+
+            if (section === 'home') {
+                document.getElementById('adminHomeSection').style.display = 'block';
+                loadAdminStats();
+                loadRecentActivity();
+                loadAnnouncement();
+            } else if (section === 'users') {
+                document.getElementById('adminUsersSection').style.display = 'block';
+                loadAllUsers();
+                loadDeletedUsers();
+            } else if (section === 'jobs') {
+                document.getElementById('adminJobsSection').style.display = 'block';
+                loadAllJobs();
+            } else if (section === 'settings') {
+                document.getElementById('adminSettingsSection').style.display = 'block';
+                loadAdminManagement();
+                loadBannedUsers();
+            }
+        };
+
+        window.loadAllUsers = function () {
+            const table = document.getElementById('usersTableBody');
+            table.innerHTML = '<tr><td colspan="4">Loading users...</td></tr>';
+
+            const q = query(collection(db, "users"));
+
+            let knownUserIds = new Set();
+            let initialLoadComplete = false;
+
+            onSnapshot(q, (snapshot) => {
+                const table = document.getElementById('usersTableBody');
+                table.innerHTML = '';
+
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    if (data.isOriginalAdmin) return;
+
+                    const isNew = !knownUserIds.has(doc.id);
+                    knownUserIds.add(doc.id);
+
+                    // 🧠 Only show toast *after* initial load is done
+                    if (initialLoadComplete && isNew && data.role?.toLowerCase() === 'employer') {
+                        showToast(`🎉 New Employer Joined: ${data.email}`);
+                    }
+
+                    const row = `
+                        <tr>
+                            <td><input type="checkbox" class="user-checkbox" data-id="${doc.id}"></td>
+                            <td>${data.email}</td>
+                            <td>${data.role}</td>
+                            <td>
+                                <button onclick="deleteUser('${doc.id}')" class="danger">Delete</button>
+                            </td>
+                        </tr>`;
+                    table.innerHTML += row;
+                });
+
+                // ✅ Mark initial batch complete
+                initialLoadComplete = true;
+            });
+
+        }, (error) => {
+            console.error("Error loading users in real-time:", error);
+            table.innerHTML = '<tr><td colspan="4">Error loading users</td></tr>';
+        };
+
+        window.loadAllJobs = function () {
+            const table = document.getElementById('jobsTableBody');
+            table.innerHTML = '<tr><td colspan="6">Loading jobs...</td></tr>';
+
+            const q = query(collection(db, "jobs"));
+
+            onSnapshot(q, (snapshot) => {
+                table.innerHTML = '';
+
+                if (snapshot.empty) {
+                    table.innerHTML = '<tr><td colspan="6">No jobs found</td></tr>';
+                    return;
+                }
+
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const row = `
+                        <tr>
+                            <td><input type="checkbox" class="job-checkbox" data-id="${doc.id}"></td>
+                            <td>${capitalize(getField(data, ['title', 'Title']) || 'N/A')}</td>
+                            <td>${getField(data, ['employerEmail', 'employer']) || 'N/A'}</td>
+                            <td>${capitalize(getField(data, ['location', 'Location']) || 'N/A'}</td>
+                            <td>${getField(data, ['salary', 'Salary']) || 'N/A'}</td>
+                            <td>
+                                <button onclick="deleteJob('${doc.id}')" class="danger">Delete</button>
+                            </td>
+                        </tr>`;
+                    table.innerHTML += row;
+                });
+            }, (error) => {
+                console.error("Error loading jobs in real-time:", error);
+                table.innerHTML = '<tr><td colspan="6">Error loading jobs</td></tr>';
+            });
+        };
+
+        // ==================== USER MANAGEMENT FUNCTIONS ====================
+        window.deleteUser = async function (userId) {
+            if (!confirm("Are you sure you want to delete this user?")) return;
+
+            try {
+                const user = auth.currentUser;
+                if (!user) throw new Error("Not authenticated");
+
+                const userDoc = await getDoc(doc(db, "users", user.uid));
+                if (!userDoc.exists() || normalizeString(userDoc.data().role) !== 'admin') {
+                    throw new Error("Admin privileges required");
+                }
+
+                const userRef = doc(db, "users", userId);
+                const userSnap = await getDoc(userRef);
+
+                if (!userSnap.exists()) {
+                    alert("User not found");
+                    return;
+                }
+
+                const userData = userSnap.data();
+
+                await deleteDoc(userRef);
+
+                await setDoc(doc(db, "deleted_users", userId), {
+                    email: userData.email,
+                    role: userData.role,
+                    deletedAt: new Date().toISOString(),
+                    deletedBy: user.email,
+                    originalId: userId
+                });
+
+                alert("User moved to deleted users successfully!");
+                loadAllUsers();
+                loadDeletedUsers();
+            } catch (error) {
+                console.error("Delete error:", error);
+                alert("Error: " + error.message);
+            }
+        };
+
+        window.confirmFullDeletion = async function (docId, email) {
+            if (!confirm(`Have you already deleted ${email} from Firebase Authentication? This will remove the record completely.`)) {
+                return;
+            }
+
+            try {
+                await deleteDoc(doc(db, "deleted_users", docId));
+                alert("Record cleaned up successfully!");
+                loadDeletedUsers();
+            } catch (error) {
+                alert("Error removing record: " + error.message);
+            }
+        };
+
+        window.deleteJob = async function (jobId) {
+            if (!confirm("Are you sure you want to delete this job?")) return;
+
+            try {
+                const user = auth.currentUser;
+                const userDoc = await getDoc(doc(db, "users", user.uid));
+
+                if (!userDoc.exists() || normalizeString(userDoc.data().role) !== 'admin') {
+                    throw new Error("Admin privileges required");
+                }
+
+                await deleteDoc(doc(db, "jobs", jobId));
+                alert("Job deleted successfully");
+                loadAllJobs();
+            } catch (error) {
+                alert("Error deleting job: " + error.message);
+            }
+        };
+
+        // ==================== ADMIN MANAGEMENT FUNCTIONS ====================
+        window.promoteToAdmin = async function () {
+            const email = document.getElementById('promoteEmail').value.trim();
+            const currentUser = auth.currentUser;
+
+            if (!email) {
+                alert("Please enter a valid email");
+                return;
+            }
+
+            try {
+                const currentUserDoc = await getDoc(doc(db, "users", currentUser.uid));
+                if (!currentUserDoc.data().isOriginalAdmin) {
+                    alert("Only original admin can promote users");
+                    return;
+                }
+
+                const usersSnapshot = await getDocs(query(
+                    collection(db, "users"),
+                    where("email", "==", email)
+                ));
+
+                if (usersSnapshot.empty) {
+                    alert("User not found");
+                    return;
+                }
+
+                const userDoc = usersSnapshot.docs[0];
+                const userData = userDoc.data();
+
+                if (normalizeString(userData.role) === 'admin') {
+                    alert("User is already an admin");
+                    return;
+                }
+
+                await updateDoc(userDoc.ref, {
+                    role: "admin"
+                });
+
+                alert("User promoted to admin successfully");
+                document.getElementById('promoteEmail').value = "";
+                loadAdminManagement();
+            } catch (err) {
+                alert("Error promoting user: " + err.message);
+            }
+        };
+
+        window.banUser = async function () {
+            const email = document.getElementById('banUserEmail').value.trim();
+            if (!email) return alert("Please enter an email");
+
+            try {
+                const currentUser = auth.currentUser;
+                if (!currentUser) throw new Error("Not authenticated");
+
+                const currentUserDoc = await getDoc(doc(db, "users", currentUser.uid));
+                if (!currentUserDoc.exists() || normalizeString(currentUserDoc.data().role) !== 'admin') {
+                    throw new Error("Admin privileges required");
+                }
+
+                const userToBanQuery = query(collection(db, "users"), where("email", "==", email));
+                const querySnapshot = await getDocs(userToBanQuery);
+
+                if (querySnapshot.empty) {
+                    alert("User not found");
+                    return;
+                }
+
+                const userDoc = querySnapshot.docs[0];
+                const userData = userDoc.data();
+
+                if (userData.isOriginalAdmin) {
+                    throw new Error("Cannot ban original admin");
+                }
+
+                const updateData = {
+                    banned: true,
+                    bannedAt: new Date().toISOString(),
+                    bannedBy: currentUser.email
+                };
+
+                await setDoc(userDoc.ref, updateData, { merge: true });
+
+                alert(`User ${email} has been banned`);
+                document.getElementById('banUserEmail').value = "";
+                loadBannedUsers();
+            } catch (error) {
+                console.error("Ban error:", error);
+                alert(`Error: ${error.message}`);
+
+                if (error.code === "permission-denied") {
+                    alert("Please verify: 1) You're admin 2) Only updating ban fields");
+                }
+            }
+        };
+
+        function showBanFeedback(message, isError = false) {
+            const feedbackDiv = document.getElementById('banUserFeedback');
+            feedbackDiv.textContent = message;
+            feedbackDiv.style.color = isError ? 'red' : 'green';
+            feedbackDiv.style.display = 'block';
+
+            setTimeout(() => {
+                feedbackDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        // ==================== ANNOUNCEMENT FUNCTIONS ====================
+        window.postAnnouncementV2 = async function (text) {
+            if (!text || text.trim() === "") {
+                alert("Please enter announcement text");
+                return;
+            }
+
+            try {
+                const user = auth.currentUser;
+                if (!user) throw new Error("Not authenticated");
+
+                const userDocRef = doc(db, "users", user.uid);
+                const userDoc = await getDoc(userDocRef);
+                if (!userDoc.exists()) throw new Error("User not found");
+
+                const userData = userDoc.data();
+
+                if (!userData.isOriginalAdmin) {
+                    throw new Error("Only original admin can post announcements");
+                }
+
+                const authorRole = userData.role
+                    ? userData.role.charAt(0).toUpperCase() + userData.role.slice(1)
+                    : "Admin";
+
+                await setDoc(doc(db, "announcements", "current"), {
+                    text: text.trim(),
+                    timestamp: new Date().toISOString(),
+                    author: authorRole,
+                    authorId: user.uid
+                });
+
+                alert("Announcement posted successfully!");
+                loadAnnouncement();
+            } catch (err) {
+                console.error("Announcement error:", err);
+                alert(`Failed to post announcement: ${err.message}`);
+            }
+        };
+
+        window.revokeAdmin = async function (userId) {
+            const currentUser = auth.currentUser;
+
+            if (!confirm("Are you sure you want to revoke admin rights?")) return;
+
+            try {
+                const currentUserDoc = await getDoc(doc(db, "users", currentUser.uid));
+                if (!currentUserDoc.data().isOriginalAdmin) {
+                    alert("Only original admin can revoke admin rights");
+                    return;
+                }
+
+                if (userId === currentUser.uid) {
+                    alert("Cannot revoke your own admin rights");
+                    return;
+                }
+
+                await updateDoc(doc(db, "users", userId), {
+                    role: "fresher"
+                });
+
+                alert("Admin rights revoked successfully");
+                loadAdminManagement();
+            } catch (err) {
+                alert("Error revoking admin rights: " + err.message);
+            }
+        };
+
+        window.loadAdminManagement = async function () {
+            const table = document.getElementById('adminTableBody');
+            table.innerHTML = '<tr><td colspan="2">Loading admins...</td></tr>';
+
+            try {
+                const currentUser = auth.currentUser;
+                const currentUserDoc = await getDoc(doc(db, "users", currentUser.uid));
+                const isOriginalAdmin = currentUserDoc.data().isOriginalAdmin;
+
+                document.getElementById('addAdminSection').style.display =
+                    isOriginalAdmin ? "block" : "none";
+
+                const querySnapshot = await getDocs(query(
+                    collection(db, "users"),
+                    where("role", "==", "admin")
+                ));
+
+                table.innerHTML = '';
+                querySnapshot.forEach(doc => {
+                    const data = doc.data();
+                    const isCurrentUser = doc.id === currentUser.uid;
+                    const isTargetOriginalAdmin = data.isOriginalAdmin;
+
+                    let adminType = "";
+                    if (data.isOriginalAdmin) {
+                        adminType = " (Original Admin)";
+                    } else if (data.role === "admin") {
+                        adminType = " (Promoted Admin)";
+                    }
+
+                    let actionCell = "-";
+                    if (isOriginalAdmin && !isTargetOriginalAdmin && !isCurrentUser) {
+                        actionCell = `<button onclick="revokeAdmin('${doc.id}')" class="danger">Revoke</button>`;
+                    }
+
+                    const row = `
+                        <tr>
+                            <td>${data.email}${adminType}</td>
+                            <td>${actionCell}</td>
+                        </tr>`;
+                    table.innerHTML += row;
+                });
+
+                if (table.innerHTML === '') {
+                    table.innerHTML = '<tr><td colspan="2">No admins found</td></tr>';
+                }
+            } catch (err) {
+                table.innerHTML = '<tr><td colspan="2">Error loading admins</td></tr>';
+            }
+        };
+
+        // ==================== EMPLOYER DASHBOARD FUNCTIONS ====================
+        window.loadEmployerStats = async function () {
+            try {
+                const user = auth.currentUser;
+                if (!user) return;
+
+                const jobsQuery = query(
+                    collection(db, "jobs"),
+                    where("employerId", "==", user.uid),
+                    where("status", "==", "active")
+                );
+                const jobsSnapshot = await getDocs(jobsQuery);
+                document.getElementById('employerActiveJobCount').textContent = jobsSnapshot.size;
+
+                const totalJobsQuery = query(
+                    collection(db, "jobs"),
+                    where("employerId", "==", user.uid)
+                );
+                const totalJobsSnapshot = await getDocs(totalJobsQuery);
+                document.getElementById('employerTotalJobCount').textContent = totalJobsSnapshot.size;
+
+                document.getElementById('employerAppCount').textContent = "0";
+            } catch (error) {
+                console.error("Error loading stats:", error);
+                document.getElementById('employerActiveJobCount').textContent = "Error";
+                document.getElementById('employerTotalJobCount').textContent = "Error";
+                document.getElementById('employerAppCount').textContent = "Error";
+            }
+        };
+
+        window.loadEmployerJobs = async function () {
+            const table = document.getElementById('employerJobsTableBody');
+            table.innerHTML = '<tr><td colspan="6">Loading jobs...</td></tr>';
+
+            try {
+                const user = auth.currentUser;
+                if (!user) throw new Error("User not logged in");
+
+                const q = query(
+                    collection(db, "jobs"),
+                    where("employerId", "==", user.uid),
+                    orderBy("createdAt", "desc")
+                );
+
+                const querySnapshot = await getDocs(q);
+                table.innerHTML = '';
+
+                if (querySnapshot.empty) {
+                    table.innerHTML = '<tr><td colspan="6">No jobs found</td></tr>';
+                    return;
+                }
+
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+
+                    const row = `
+                        <tr class="clickable-row" onclick="viewJobDetails('${doc.id}')">
+                            <td title="${getField(data, ['title', 'Title']) || 'Untitled'}">
+                                ${capitalize(getField(data, ['title', 'Title']) || 'Untitled')}
+                            </td>
+                            <td>${getField(data, ['applications']) || 0}</td>
+                            <td>${capitalize(getField(data, ['jobType', 'JobType']) || 'N/A'}</td>
+                            <td>${data.createdAt ? new Date(getField(data, ['createdAt'])).toLocaleDateString() : 'N/A'}</td>
+                            <td><span class="job-status">${capitalize(getField(data, ['status', 'Status']) || 'active'}</span></td>
+                            <td>
+                                <button onclick="editJob('${doc.id}')">Edit</button>
+                                <button class="danger" onclick="deleteEmployerJob('${doc.id}')">Delete</button>
+                            </td>
+                        </tr>`;
+
+                    table.innerHTML += row;
+                });
+
+            } catch (error) {
+                console.error("[ERROR] loadEmployerJobs failed:", error);
+                table.innerHTML = `<tr><td colspan="6">Error: ${error.message}</td></tr>`;
+            }
+        };
+
+        document.getElementById('searchMyJobs').addEventListener('input', (e) => {
+            const term = normalizeString(e.target.value);
+            const rows = document.querySelectorAll('#employerJobsTableBody tr');
+            rows.forEach(row => {
+                const text = normalizeString(row.textContent);
+                row.style.display = text.includes(term) ? '' : 'none';
+            });
+        });
+
+        document.getElementById("editJobForm").addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            const jobId = document.getElementById("editJobId").value;
+
+            const updatedData = {
+                title: document.getElementById("editTitle").value.trim(),
+                description: document.getElementById("editDescription").value.trim(),
+                location: document.getElementById("editLocation").value.trim(),
+                salary: document.getElementById("editSalary").value.trim(),
+                jobType: document.getElementById("editJobType").value,
+                status: document.getElementById("editStatus").value,
+            };
+
+            try {
+                await updateDoc(doc(db, "jobs", jobId)), updatedData);
+                alert("Job updated successfully.");
+                closeEditJobModal();
+                loadEmployerJobs();
+            } catch (err) {
+                console.error("Update failed:", err);
+                alert("Error updating job: " + err.message);
+            }
+        });
+
+        window.postJob = async function (e) {
+            e.preventDefault();
+
+            try {
+                const user = auth.currentUser;
+                if (!user) throw new Error("No authenticated user");
+
+                const userDoc = await getDoc(doc(db, "users", user.uid));
+                if (!userDoc.exists() || normalizeString(userDoc.data().role) !== 'employer') {
+                    throw new Error("User is not an employer");
+                }
+
+                const jobData = {
+                    title: document.getElementById('jobTitle').value.trim(),
+                    description: document.getElementById('jobDescription').value.trim(),
+                    location: document.getElementById('jobLocation').value.trim(),
+                    salary: document.getElementById('jobSalary').value.trim(),
+                    jobType: document.getElementById('jobType').value,
+                    status: "active",
+                    employerId: user.uid,
+                    employerEmail: user.email,
+                    applications: 0,
+                    createdAt: new Date().toISOString()
+                };
+
+                if (!jobData.title || !jobData.description || !jobData.location || !jobData.salary || !jobData.jobType) {
+                    throw new Error("Please fill all required fields");
+                }
+
+                const docRef = await addDoc(collection(db, "jobs"), jobData);
+
+                const newJob = await getDoc(docRef);
+                if (!newJob.exists()) {
+                    throw new Error("Failed to verify job creation");
+                }
+
+                console.log("Job posted successfully with ID:", docRef.id);
+                alert("Job posted successfully!");
+                document.getElementById('postJobForm').reset();
+                showEmployerSection('myJobs');
+            } catch (error) {
+                console.error("Job posting failed:", error);
+                alert("Job posting failed: " + error.message);
+            }
+        };
+
+        window.deleteEmployerJob = async function (jobId, event) {
+            if (event) event.stopPropagation();
+
+            if (!confirm("Are you sure you want to delete this job?")) return;
+
+            try {
+                await deleteDoc(doc(db, "jobs", jobId));
+                alert("Job deleted successfully");
+                loadEmployerJobs();
+            } catch (err) {
+                console.error("Failed to delete job:", err);
+                alert("Error deleting job: " + err.message);
+            }
+        };
+
+        window.viewJobDetails = async function (jobId) {
+            const modal = document.getElementById("jobModal");
+            const docRef = doc(db, "jobs", jobId);
+            const docSnap = await getDoc(docRef);
+
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+                document.getElementById("modalJobTitle").textContent = capitalize(getField(data, ['title', 'Title']) || 'N/A');
+                document.getElementById("modalJobDescription").textContent = getField(data, ['description', 'Description']) || 'N/A';
+                document.getElementById("modalJobLocation").textContent = capitalize(getField(data, ['location', 'Location']) || 'N/A');
+                document.getElementById("modalJobSalary").textContent = getField(data, ['salary', 'Salary']) || 'N/A';
+                document.getElementById("modalJobType").textContent = capitalize(getField(data, ['jobType', 'JobType']) || 'N/A');
+                document.getElementById("modalJobStatus").textContent = capitalize(getField(data, ['status', 'Status']) || 'N/A');
+
+                modal.style.display = "block";
+            } else {
+                alert("Job not found.");
+            }
+        };
+
+        window.closeJobModal = function () {
+            document.getElementById("jobModal").style.display = "none";
+        };
+
+        window.editJob = async function (jobId) {
+            const docRef = doc(db, "jobs", jobId);
+            const docSnap = await getDoc(docRef);
+            if (!docSnap.exists()) {
+                alert("Job not found.");
+                return;
+            }
+
+            const data = docSnap.data();
+
+            document.getElementById("editTitle").value = getField(data, ['title', 'Title']) || '';
+            document.getElementById("editDescription").value = getField(data, ['description', 'Description']) || '';
+            document.getElementById("editLocation").value = getField(data, ['location', 'Location']) || '';
+            document.getElementById("editSalary").value = getField(data, ['salary', 'Salary']) || '';
+            document.getElementById("editJobType").value = getField(data, ['jobType', 'JobType']) || 'Full-time';
+            document.getElementById("editStatus").value = getField(data, ['status', 'Status']) || 'active';
+
+            document.body.style.overflow = 'hidden';
+            document.getElementById("editJobModal").style.display = "block";
+        };
+
+        window.closeEditJobModal = function () {
+            document.body.style.overflow = 'auto';
+            document.getElementById("editJobModal").style.display = "none";
+        };
+
+        window.showEmployerSection = function (section) {
+            document.getElementById('employerHomeSection').style.display = 'none';
+            document.getElementById('employerPostJobSection').style.display = 'none';
+            document.getElementById('employerMyJobsSection').style.display = 'none';
+
+            if (section === 'home') {
+                document.getElementById('employerHomeSection').style.display = 'block';
+            } else if (section === 'postJob') {
+                document.getElementById('employerPostJobSection').style.display = 'block';
+            } else if (section === 'myJobs') {
+                document.getElementById('employerMyJobsSection').style.display = 'block';
+                loadEmployerJobs();
+            }
+        };
+
+        // ==================== STATS AND ACTIVITY FUNCTIONS ====================
+        async function loadAdminStats() {
+            try {
+                const freshersQuery = query(collection(db, "users"), where("role", "==", "fresher"));
+                const freshersSnapshot = await getDocs(freshersQuery);
+                animateValue("totalFreshers", freshersSnapshot.size);
+
+                const employersQuery = query(collection(db, "users"), where("role", "==", "employer"));
+                const employersSnapshot = await getDocs(employersQuery);
+                animateValue("totalEmployers", employersSnapshot.size);
+
+                const jobsSnapshot = await getDocs(collection(db, "jobs"));
+                animateValue("totalJobs", jobsSnapshot.size);
+            } catch (error) {
+                console.error("Error loading stats:", error);
+            }
+        }
+
+        async function loadRecentActivity() {
+            try {
+                const usersQuery = query(collection(db, "users"), where("role", "in", ["fresher", "employer"]));
+                const usersSnapshot = await getDocs(usersQuery);
+
+                const usersData = [];
+                usersSnapshot.forEach(doc => usersData.push({ id: doc.id, ...doc.data() }));
+
+                usersData.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                const last5Users = usersData.slice(0, 5);
+
+                const usersTable = document.getElementById('recentUsersTable');
+                usersTable.innerHTML = "";
+                last5Users.forEach(user => {
+                    usersTable.innerHTML += `<tr><td>${user.email}</td><td>${user.role}</td></tr>`;
+                });
+
+                const jobsSnapshot = await getDocs(collection(db, "jobs"));
+                const jobsData = [];
+                jobsSnapshot.forEach(doc => jobsData.push({ id: doc.id, ...doc.data() }));
+
+                jobsData.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                const last5Jobs = jobsData.slice(0, 5);
+
+                const jobsTable = document.getElementById('recentJobsTable');
+                jobsTable.innerHTML = "";
+                last5Jobs.forEach(job => {
+                    jobsTable.innerHTML += `
+                        <tr>
+                            <td>${capitalize(getField(job, ['title', 'Title']) || 'N/A'}</td>
+                            <td>${getField(job, ['employerEmail', 'employer', 'Employer']) || 'N/A'}</td>
+                            <td>${capitalize(getField(job, ['location', 'Location']) || 'N/A'}</td>
+                        </tr>`;
+                });
+
+            } catch (error) {
+                console.error("Error loading recent activity:", error);
+            }
+        }
+
+        // ==================== ANNOUNCEMENT FUNCTIONS ====================
+        function loadAnnouncement() {
+            const announcementRef = doc(db, "announcement
+            const announcementDiv = document.getElementById("currentAnnouncement");
+            const actionsDiv = document.getElementById("announcementActions");
+
+            onSnapshot(announcementRef, async (announcementSnap) => {
+                if (announcementSnap.exists()) {
+                    const data = announcementSnap.data();
+                    announcementDiv.innerHTML = `
+                        <p style="margin-bottom: 8px;"><strong>${data.text || "No text"}</strong></p>
+                        <small>Posted by ${data.author || "Admin"} on ${data.timestamp ? new Date(data.timestamp).toLocaleString() : "Unknown date"}</small>
+                    `;
+
+                    const userDoc = await getDoc(doc(db, "users", auth.currentUser.uid));
+                    actionsDiv.style.display = userDoc.exists() && userDoc.data().isOriginalAdmin ? "block" : "none";
+                } else {
+                    announcementDiv.innerHTML = "No active announcements.";
+                    actionsDiv.style.display = "none";
+                }
+            }, (err) => {
+                console.error("Live announcement error:", err);
+                announcementDiv.innerHTML = "Failed to load announcement.";
+                actionsDiv.style.display = "none";
+            });
+        }
+
+        window.showAnnouncementModal = async function () {
+            const user = auth.currentUser;
+            const userDoc = await getDoc(doc(db, "users", user.uid));
+
+            if (!userDoc.data().isOriginalAdmin) {
+                alert("Only original admin can post announcements");
+                return;
+            }
+
+            const text = prompt("Enter announcement text:");
+            if (text) {
+                try {
+                    const userData = userDoc.data();
+                    const authorRole = userData.role.charAt(0).toUpperCase() + userData.role.slice(1);
+
+                    await setDoc(doc(db, "announcements", "current"), {
+                        text: text,
+                        timestamp: new Date().toISOString(),
+                        author: authorRole
+                    });
+
+                    alert("Announcement posted!");
+                } catch (err) {
+                    alert("Error: " + err.message);
+                }
+            }
+        };
+
+        window.deleteAnnouncement = async function () {
+            if (!confirm("Are you sure you want to delete the current announcement?")) return;
+
+            try {
+                await deleteDoc(doc(db, "announcements", "current"));
+                alert("Announcement deleted.");
+                loadAnnouncement();
+            } catch (err) {
+                console.error("Delete error:", err);
+                alert("Failed to delete announcement: " + err.message);
+            }
+        };
+
+        window.showFullAnnouncement = async function () {
+            const snap = await getDoc(doc(db, "announcements", "current"));
+            const data = snap.exists() ? snap.data() : null;
+            const fullText = data?.text || "No announcement.";
+
+            alert("📢 Announcement:\n\n" + fullText);
+        };
+
+        // ==================== BAN MANAGEMENT FUNCTIONS ====================
+        window.unbanUser = async function (userId) {
+            if (!confirm("Are you sure you want to unban this user?")) return;
+
+            try {
+                await updateDoc(doc(db, "users", userId), {
+                    banned: false,
+                    bannedAt: null
+                });
+                alert("User unbanned successfully");
+                loadBannedUsers();
+            } catch (err) {
+                console.error("Error unbanning user:", err);
+                alert("Error unbanning user: " + err.message);
+            }
+        };
+
+        async function loadBannedUsers() {
+            try {
+                const bannedUsersQuery = query(
+                    collection(db, "users"),
+                    where("banned", "==", true)
+                );
+                const bannedUsersSnapshot = await getDocs(bannedUsersQuery);
+
+                const table = document.getElementById("bannedUsersTable");
+                table.innerHTML = "";
+
+                if (bannedUsersSnapshot.empty) {
+                    table.innerHTML = "<tr><td colspan='3'>No banned users found</td></tr>";
+                    return;
+                }
+
+                bannedUsersSnapshot.forEach(doc => {
+                    const userData = doc.data();
+                    table.innerHTML += `
+                        <tr>
+                            <td>${userData.email}</td>
+                            <td>${userData.bannedAt ? new Date(userData.bannedAt).toLocaleString() : 'N/A'}</td>
+                            <td><button onclick="unbanUser('${doc.id}')" class="success">Unban</button></td>
+                        </tr>`;
+                });
+            } catch (err) {
+                console.error("Error loading banned users:", err);
+                document.getElementById("bannedUsersTable").innerHTML =
+                    "<tr><td colspan='3'>Error loading banned users</td></tr>";
+            }
+        }
+
+        // ==================== FRESHER SECTION FUNCTIONS ====================
+        window.showFresherSection = function (section) {
+            document.getElementById('fresherHomeSection').style.display = 'none';
+            document.getElementById('fresherJobsSection').style.display = 'none';
+            document.getElementById('fresherApplicationsSection').style.display = 'none';
+            document.getElementById('fresherProfileSection').style.display = 'none';
+
+            if (section === 'home') {
+                document.getElementById('fresherHomeSection').style.display = 'block';
+            } else if (section === 'jobs') {
+                document.getElementById('fresherJobsSection').style.display = 'block';
+                loadAvailableJobs();
+            } else if (section === 'applications') {
+                document.getElementById('fresherApplicationsSection').style.display = 'block';
+                loadMyApplications();
+            } else if (section === 'profile') {
+                document.getElementById('fresherProfileSection').style.display = 'block';
+                loadFresherProfile();
+            }
+        };
+
+        window.loadAvailableJobs = async function () {
+            const tbody = document.getElementById('availableJobsTableBody');
+            tbody.innerHTML = '<tr><td colspan="5">Loading jobs...</td></tr>';
+
+            try {
+                const q = query(
+                    collection(db, "jobs"),
+                    where("status", "==", "active"),
+                    orderBy("createdAt", "desc")
+                );
+
+                const querySnapshot = await getDocs(q);
+                tbody.innerHTML = '';
+
+                if (querySnapshot.empty) {
+                    tbody.innerHTML = '<tr><td colspan="5">No available jobs found</td></tr>';
+                    return;
+                }
+
+                querySnapshot.forEach(doc => {
+                    const data = doc.data();
+                    const row = `
+                        <tr>
+                            <td>${capitalize(getField(data, ['title', 'Title']) || 'Untitled'}</td>
+                            <td>${getField(data, ['employerEmail', 'employer', 'Employer']) || 'N/A'}</td>
+                            <td>${capitalize(getField(data, ['location', 'Location']) || 'N/A'}</td>
+                            <td>${getField(data, ['salary', 'Salary']) || 'N/A'}</td>
+                            <td><button onclick="viewJobDetails('${doc.id}')">View</button></td>
+                        </tr>`;
+                    tbody.innerHTML += row;
+                });
+            } catch (error) {
+                console.error("Error loading available jobs:", error);
+                tbody.innerHTML = `<tr><td colspan="5">Error loading jobs</td></tr>`;
+            }
+        };
+
+        window.loadMyApplications = function () {
+            document.getElementById('myApplicationsTable').innerHTML = `
+                <tr><td colspan="4">Your applications will appear here</td></tr>`;
+        };
+
+        window.loadFresherProfile = function () {
+            // Would load profile data here
+        };
+
+        // ==================== EVENT LISTENERS ====================
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Toggle between login/signup forms
+            document.getElementById('toggleLink').addEventListener('click', (e) => {
+                e.preventDefault();
+                toggleForm();
+            });
+
+            // Admin menu navigation
+            document.getElementById('adminMenuHome').addEventListener('click', (e) => {
+                e.preventDefault();
+                showAdminSection('home');
+                toggleAdminMenu();
+            });
+
+            document.getElementById('adminMenuUsers').addEventListener('click', (e) => {
+                e.preventDefault();
+                showAdminSection('users');
+                toggleAdminMenu();
+            });
+
+            document.getElementById('adminMenuJobs').addEventListener('click', (e) => {
+                e.preventDefault();
+                showAdminSection('jobs');
+                toggleAdminMenu();
+            });
+
+            document.getElementById('adminMenuSettings').addEventListener('click', (e) => {
+                e.preventDefault();
+                showAdminSection('settings');
+                toggleAdminMenu();
+            });
+
+            // Employer menu navigation
+            document.getElementById('employerMenuHome').addEventListener('click', (e) => {
+                e.preventDefault();
+                showEmployerSection('home');
+                toggleEmployerMenu();
+            });
+
+            document.getElementById('employerMenuPostJob').addEventListener('click', (e) => {
+                e.preventDefault();
+                showEmployerSection('postJob');
+                toggleEmployerMenu();
+            });
+
+            document.getElementById('employerMenuMyJobs').addEventListener('click', (e) => {
+                e.preventDefault();
+                showEmployerSection('myJobs');
+                toggleEmployerMenu();
+            });
+
+            // Fresher menu navigation
+            document.getElementById('fresherMenuHome').addEventListener('click', (e) => {
+                e.preventDefault();
+                showFresherSection('home');
+                toggleFresherMenu();
+            });
+
+            document.getElementById('fresherMenuJobs').addEventListener('click', (e) => {
+                e.preventDefault();
+                showFresherSection('jobs');
+                toggleFresherMenu();
+            });
+
+            document.getElementById('fresherMenuApplications').addEventListener('click', (e) => {
+                e.preventDefault();
+                showFresherSection('applications');
+                toggleFresherMenu();
+            });
+
+            document.getElementById('fresherMenuProfile').addEventListener('click', (e) => {
+                e.preventDefault();
+                showFresherSection('profile');
+                toggleFresherMenu();
+            });
+
+            // Profile Form submission
+            const profileForm = document.getElementById('fresherProfileForm');
+            if (profileForm) {
+                profileForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    alert("Profile updated successfully!");
+                });
+            }
+
+            // Password Toggle
+            const toggleBtn = document.getElementById('togglePasswordBtn');
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', () => {
+                    const passwordInput = document.getElementById('password');
+                    if (passwordInput) {
+                        passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
+                    }
+                });
+            }
+
+            // Search Tables
+            document.addEventListener('input', (e) => {
+                if (e.target?.classList?.contains('search-input')) {
+                    const searchTerm = normalizeString(e.target.value);
+                    const tableId = e.target.getAttribute('data-table-target');
+                    const rows = document.querySelectorAll(`#${tableId} tr`);
+
+                    rows?.forEach(row => {
+                        const text = normalizeString(row.textContent);
+                        row.style.display = text.includes(searchTerm) ? '' : 'none';
+                    });
+                }
+            });
+
+            // Auth state change handler
+            onAuthStateChanged(auth, async (user) => {
+                if (!user) {
+                    document.getElementById('auth-section').style.display = 'block';
+                    return;
+                }
+
+                try {
+                    const userDoc = await getDoc(doc(db, "users", user.uid));
+                    if (userDoc.exists()) {
+                        const userData = userDoc.data();
+
+                        if (userData.banned) {
+                            alert("Your account has been banned.");
+                            await signOut(auth);
+                            return;
+                        }
+
+                        showDashboard(userData.role);
+                        startUserAnnouncementListener();
+
+                        if (normalizeString(userData.role) === 'admin') {
+                            loadAdminStats();
+                            loadRecentActivity();
+                            loadAnnouncement();
+                        } else if (normalizeString(userData.role) === 'employer') {
+                            initEmployerDashboard();
+                        }
+
+                        if (roleChangeUnsubscribe) {
+                            roleChangeUnsubscribe();
+                        }
+
+                        roleChangeUnsubscribe = onSnapshot(userDoc.ref, (snapshot) => {
+                            const newData = snapshot.data();
+                            if (newData?.banned) {
+                                alert("You have been banned. You are now logged out.");
+                                logout();
+                                return;
+                            }
+
+                            const newRole = newData?.role;
+                            if (newRole !== userData.role) {
+                                alert("Your role has changed. Please log in again.");
+                                logout();
+                            }
+                        });
+                    }
+                } catch (error) {
+                    console.error("Error checking user role:", error);
+                    alert("Error loading user data. Please try again.");
+                }
+            });
+        });
+
+        function startUserAnnouncementListener() {
+            const announcementRef = doc(db, "announcements", "current");
+
+            onSnapshot(announcementRef, (docSnap) => {
+                const data = docSnap.data();
+                console.log("Live announcement received:", data);
+
+                const text = data?.text?.trim();
+                const isActive = !!text;
+
+                // Fresher
+                const fresherBanner = document.getElementById("announcementBannerFresher");
+                const fresherText = document.getElementById("announcementTextFresher");
+                if (fresherBanner && fresherText) {
+                    fresherBanner.style.display = isActive ? "block" : "none";
+                    fresherText.textContent = text || "";
+                }
+
+                // Employer
+                const employerBanner = document.getElementById("announcementBannerEmployer");
+                const employerText = document.getElementById("announcementTextEmployer");
+                if (employerBanner && employerText) {
+                    employerBanner.style.display = isActive ? "block" : "none";
+                    employerText.textContent = text || "";
+                }
+            });
+        }
+
+        // ==================== DELETED USERS FUNCTIONS ====================
+        async function loadDeletedUsers() {
+            try {
+                const querySnapshot = await getDocs(collection(db, "deleted_users"));
+                const table = document.getElementById('deletedUsersTable');
+                table.innerHTML = '';
+
+                if (querySnapshot.empty) {
+                    table.innerHTML = '<tr><td colspan="3">No deleted users yet</td></tr>';
+                    return;
+                }
+
+                querySnapshot.forEach(doc => {
+                    const data = doc.data();
+                    const firebaseAuthLink = `https://console.firebase.google.com/u/0/project/${firebaseConfig.projectId}/authentication/users`;
+
+                    table.innerHTML += `
+                        <tr>
+                            <td>
+                                <a href="${firebaseAuthLink}" target="_blank" 
+                                   style="color: #00c6ff; text-decoration: underline;">
+                                    ${data.email}
+                                </a>
+                            </td>
+                            <td>${new Date(data.deletedAt).toLocaleString()}</td>
+                            <td>
+                                <button onclick="confirmFullDeletion('${doc.id}', '${data.email}')" 
+                                        class="danger" style="padding: 5px 10px;">
+                                    Confirm Deletion
+                                </button>
+                            </td>
+                        </tr>`;
+                });
+            } catch (error) {
+                console.error("Error loading deleted users:", error);
+                document.getElementById('deletedUsersTable').innerHTML =
+                    '<tr><td colspan="3">Error loading deleted users</td></tr>';
+            }
+        }
+
+        // ==================== BULK ACTIONS FUNCTIONS ====================
+        window.deleteSelectedUsers = async function () {
+            const checkboxes = document.querySelectorAll('.user-checkbox:checked');
+            if (checkboxes.length === 0) {
+                alert("Please select at least one user to delete");
+                return;
+            }
+
+            if (!confirm(`Are you sure you want to delete ${checkboxes.length} selected users?`)) {
+                return;
+            }
+
+            try {
+                const user = auth.currentUser;
+                if (!user) throw new Error("Not authenticated");
+
+                const userDoc = await getDoc(doc(db, "users", user.uid));
+                if (!userDoc.exists() || normalizeString(userDoc.data().role) !== 'admin') {
+                    throw new Error("Admin privileges required");
+                }
+
+                const deletePromises = [];
+                checkboxes.forEach(checkbox => {
+                    const userId = checkbox.getAttribute('data-id');
+                    deletePromises.push(deleteUser(userId));
+                });
+
+                await Promise.all(deletePromises);
+                alert(`${checkboxes.length} users deleted successfully!`);
+                loadAllUsers();
+            } catch (error) {
+                console.error("Error deleting users:", error);
+                alert("Error deleting users: " + error.message);
+            }
+        };
+
+        window.deleteSelectedJobs = async function () {
+            const checkboxes = document.querySelectorAll('.job-checkbox:checked');
+            if (checkboxes.length === 0) {
+                alert("Please select at least one job to delete");
+                return;
+            }
+
+            if (!confirm(`Are you sure you want to delete ${checkboxes.length} selected jobs?`)) {
+                return;
+            }
+
+            try {
+                const user = auth.currentUser;
+                if (!user) throw new Error("Not authenticated");
+
+                const userDoc = await getDoc(doc(db, "users", user.uid));
+                if (!userDoc.exists() || normalizeString(userDoc.data().role) !== 'admin') {
+                    throw new Error("Admin privileges required");
+                }
+
+                const deletePromises = [];
+                checkboxes.forEach(checkbox => {
+                    const jobId = checkbox.getAttribute('data-id');
+                    deletePromises.push(deleteJob(jobId));
+                });
+
+                await Promise.all(deletePromises);
+                alert(`${checkboxes.length} jobs deleted successfully!`);
+                loadAllJobs();
+            } catch (error) {
+                console.error("Error deleting jobs:", error);
+                alert("Error deleting jobs: " + error.message);
+            }
+        };
+
+        window.initEmployerDashboard = async function () {
+            try {
+                setupEmployerStatsListeners();
+                await loadEmployerJobs();
+
+                document.getElementById('postJobForm')?.addEventListener('submit', postJob);
+
+                const announcementRef = doc(db, "announcements", "current");
+                onSnapshot(announcementRef, (doc) => {
+                    const announcementDiv = document.getElementById('employerAnnouncement');
+                    if (doc.exists()) {
+                        announcementDiv.innerHTML = `
+                            <p><strong>${doc.data().text}</strong></p>
+                            <small>Posted by Admin on ${new Date(doc.data().timestamp).toLocaleString()}</small>
+                        `;
+                    } else {
+                        announcementDiv.innerHTML = "<p>No current announcements</p>";
+                    }
+                });
+
+                document.getElementById('searchMyJobs')?.addEventListener('input', (e) => {
+                    const term = normalizeString(e.target.value);
+                    const table = document.getElementById('employerJobsTable');
+                    const rows = table?.querySelectorAll('tr');
+                    rows?.forEach(row => {
+                        const text = normalizeString(row.textContent);
+                        row.style.display = text.includes(term) ? '' : 'none';
+                    });
+                });
+            } catch (error) {
+                console.error("Error initializing employer dashboard:", error);
+            }
+        };
+
+        function setupEmployerStatsListeners() {
+            const user = auth.currentUser;
+            if (!user) return;
+
+            // Real-time listener for active jobs count
+            const activeJobsQuery = query(
+                collection(db, "jobs"),
+                where("employerId", "==", user.uid),
+                where("status", "==", "active")
+            );
+
+            onSnapshot(activeJobsQuery, (snapshot) => {
+                document.getElementById('employerActiveJobCount').textContent = snapshot.size;
+            });
+
+            // Real-time listener for total jobs count
+            const totalJobsQuery = query(
+                collection(db, "jobs"),
+                where("employerId", "==", user.uid)
+            );
+
+            onSnapshot(totalJobsQuery, (snapshot) => {
+                document.getElementById('employerTotalJobCount').textContent = snapshot.size;
+            });
+
+            document.getElementById('employerAppCount').textContent = "0";
+        }
+
+        window.cleanupOrphanedJobs = async function () {
+            if (!confirm("This will permanently delete all jobs not linked to existing employers. Continue?")) return;
+
+            try {
+                const employersQuery = query(
+                    collection(db, "users"),
+                    where("role", "==", "employer")
+                );
+                const employersSnapshot = await getDocs(employersQuery);
+                const employerIds = employersSnapshot.docs.map(doc => doc.id);
+
+                const jobsSnapshot = await getDocs(collection(db, "jobs"));
+                const deletePromises = [];
+
+                jobsSnapshot.forEach(doc => {
+                    const jobData = doc.data();
+                    if (!employerIds.includes(jobData.employerId)) {
+                        deletePromises.push(deleteDoc(doc.ref));
+                    }
+                });
+
+                if (deletePromises.length > 0) {
+                    await Promise.all(deletePromises);
+                    alert(`Deleted ${deletePromises.length} orphaned jobs.`);
+                } else {
+                    alert("No orphaned jobs found.");
+                }
+            } catch (err) {
+                console.error("Cleanup failed:", err);
+                alert("Error during cleanup: " + err.message);
+            }
+        };
+    </script>
+
+    <!-- Admin Notification Toast -->
+    <div id="adminToast" style=" 
+        display: none; 
+        position: fixed; 
+        bottom: 30px; 
+        right: 30px; 
+        background: #ffc107; 
+        color: black; 
+        padding: 12px 20px; 
+        border-radius: 8px; 
+        font-weight: bold; 
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2); 
+        z-index: 9999; 
+        transition: opacity 0.4s ease; 
+    "></div>
+
+    <!-- 🔔 Toast Container -->
+    <div id="toastContainer" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999;"></div>
 
 </body>
 

@@ -631,7 +631,18 @@
 
     <!-- ==================== ADMIN DASHBOARD ==================== -->
     <div id="adminDashboard" style="display:none;">
-        <div id="adminMenuBtn" onclick="toggleAdminMenu()">☰</div>
+        <div style="position: fixed; top: 20px; left: 20px; display: flex; align-items: center; z-index: 1001;">
+            <div id="Admin" onclick="toggleAdminMenu()"
+                style="font-size: 28px; cursor: pointer; background: rgba(0, 0, 0, 0.5); border-radius: 50%; width: 40px; height: 40px; text-align: center; line-height: 40px; color: white;">
+                ☰
+            </div>
+            <div style="margin-left: 10px;">
+                <div
+                    style="width: 36px; height: 36px; border-radius: 50%; background: limegreen; display: flex; align-items: center; justify-content: center; overflow: hidden; font-weight: bold; font-size: 16px; color: black;">
+                    <span id="AdminMenuAvatarInitial">?</span>
+                </div>
+            </div>
+        </div>
 
         <div class="sideMenu" id="adminSideMenu">
             <div id="adminProfileWidget" style="display: flex; align-items: center; padding: 12px 20px;">
@@ -862,7 +873,18 @@
             <div class="scrolling-text" id="announcementTextEmployer"></div>
         </div>
 
-        <div id="employerMenuBtn" onclick="toggleEmployerMenu()">☰</div>
+        <div style="position: fixed; top: 20px; left: 20px; display: flex; align-items: center; z-index: 1001;">
+            <div id="employer onclick=" toggleemployerMenu()"
+                style="font-size: 28px; cursor: pointer; background: rgba(0, 0, 0, 0.5); border-radius: 50%; width: 40px; height: 40px; text-align: center; line-height: 40px; color: white;">
+                ☰
+            </div>
+            <div style="margin-left: 10px;">
+                <div
+                    style="width: 36px; height: 36px; border-radius: 50%; background: limegreen; display: flex; align-items: center; justify-content: center; overflow: hidden; font-weight: bold; font-size: 16px; color: black;">
+                    <span id="employerMenuAvatarInitial">?</span>
+                </div>
+            </div>
+        </div>
 
         <div class="sideMenu" id="employerSideMenu">
             <div id="employerProfileWidget" style="display: flex; align-items: center; padding: 12px 20px;">
@@ -960,7 +982,19 @@
             <div class="scrolling-text" id="announcementTextFresher"></div>
         </div>
 
-        <div id="fresherMenuBtn" onclick="toggleFresherMenu()">☰</div>
+        <div style="position: fixed; top: 20px; left: 20px; display: flex; align-items: center; z-index: 1001;">
+            <div id="fresherMenuBtn" onclick="toggleFresherMenu()"
+                style="font-size: 28px; cursor: pointer; background: rgba(0, 0, 0, 0.5); border-radius: 50%; width: 40px; height: 40px; text-align: center; line-height: 40px; color: white;">
+                ☰
+            </div>
+            <div style="margin-left: 10px;">
+                <div
+                    style="width: 36px; height: 36px; border-radius: 50%; background: limegreen; display: flex; align-items: center; justify-content: center; overflow: hidden; font-weight: bold; font-size: 16px; color: black;">
+                    <span id="fresherMenuAvatarInitial">?</span>
+                </div>
+            </div>
+        </div>
+
 
         <div class="sideMenu" id="fresherSideMenu">
             <div id="fresherProfileWidget" style="display: flex; align-items: center; padding: 12px 20px;">
@@ -1342,6 +1376,7 @@
             const actionBtn = document.getElementById('actionBtn');
             const toggleText = document.getElementById('toggle-text');
             const roleSelect = document.getElementById('role');
+            const fullNameInput = document.getElementById('fullNameSignup');
 
             if (formTitle.textContent.includes('Signup')) {
                 formTitle.textContent = 'FreshersHub - Login';
@@ -1349,12 +1384,14 @@
                 actionBtn.onclick = login;
                 toggleText.innerHTML = `Don't have an account? <a id="toggleLink">Signup here</a>`;
                 roleSelect.style.display = 'none';
+                fullNameInput.style.display = 'none';
             } else {
                 formTitle.textContent = 'FreshersHub - Signup';
                 actionBtn.textContent = 'Signup';
                 actionBtn.onclick = signup;
                 toggleText.innerHTML = `Already have an account? <a id="toggleLink">Login here</a>`;
                 roleSelect.style.display = 'block';
+                fullNameInput.style.display = 'block';
             }
 
             document.getElementById('toggleLink').addEventListener('click', (e) => {
@@ -1379,6 +1416,7 @@
             if (role === 'admin') {
                 document.getElementById('adminDashboard').style.display = 'block';
                 document.getElementById('adminMenuBtn').style.display = 'block';
+                document.getElementById("AdminMenuAvatarInitial").textContent = initial;
 
                 (async () => {
                     const user = auth.currentUser;
@@ -1402,6 +1440,7 @@
             else if (role === 'employer') {
                 document.getElementById('employerDashboard').style.display = 'block';
                 document.getElementById('employerMenuBtn').style.display = 'block';
+                document.getElementById("employerMenuAvatarInitial").textContent = initial;
 
                 (async () => {
                     const user = auth.currentUser;
@@ -1423,6 +1462,7 @@
             else if (role === 'fresher') {
                 document.getElementById('fresherDashboard').style.display = 'block';
                 document.getElementById('fresherMenuBtn').style.display = 'block';
+                document.getElementById("fresherMenuAvatarInitial").textContent = initial;
 
                 (async () => {
                     const user = auth.currentUser;

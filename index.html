@@ -86,7 +86,114 @@
     <div class="message" id="authMessage"></div>
   </div>
 
-  <!-- Firebase SDK and Firebase App will be loaded in next block -->
+  <!-- Firebase SDKs -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import {
+      getAuth,
+      createUserWithEmailAndPassword,
+      signInWithEmailAndPassword,
+      onAuthStateChanged,
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import {
+      getFirestore,
+      doc,
+      setDoc,
+      getDoc,
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    // Your Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyDrrAYywpFdd9iIzSSp2m6XcrGkGUgYY3Y",
+      authDomain: "freshershub-33de8.firebaseapp.com",
+      projectId: "freshershub-33de8",
+      storageBucket: "freshershub-33de8.appspot.com",
+      messagingSenderId: "126389629687",
+      appId: "1:126389629687:web:9b9fb43e488f60ac3159f2"
+    };
+
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const nameField = document.getElementById("nameFieldContainer");
+    const formTitle = document.getElementById("form-title");
+    const toggleText = document.getElementById("toggle-text");
+    const toggleLink = document.getElementById("toggleLink");
+    const actionBtn = document.getElementById("actionBtn");
+    const messageBox = document.getElementById("authMessage");
+
+    let isSignup = true;
+
+    toggleLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      isSignup = !isSignup;
+      if (isSignup) {
+        formTitle.textContent = "FreshersHub - Signup";
+        actionBtn.textContent = "Signup";
+        nameField.style.display = "block";
+        toggleText.innerHTML = `Already have an account? <a href="#" id="toggleLink">Login here</a>`;
+      } else {
+        formTitle.textContent = "FreshersHub - Login";
+        actionBtn.textContent = "Login";
+        nameField.style.display = "none";
+        toggleText.innerHTML = `Don't have an account? <a href="#" id="toggleLink">Signup here</a>`;
+      }
+    });
+
+    actionBtn.addEventListener("click", async () => {
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const role = document.getElementById("role").value;
+      const fullName = document.getElementById("signupName").value.trim();
+
+      if (!email || !password || (isSignup && !fullName)) {
+        messageBox.textContent = "Please fill in all required fields.";
+        return;
+      }
+
+      try {
+        if (isSignup) {
+          const userCred = await createUserWithEmailAndPassword(auth, email, password);
+          await setDoc(doc(db, "users", userCred.user.uid), {
+            email,
+            role,
+            fullName,
+            createdAt: Date.now(),
+          });
+          messageBox.textContent = "Signup successful. Redirecting...";
+          // redirect based on role
+        } else {
+          const userCred = await signInWithEmailAndPassword(auth, email, password);
+          const userSnap = await getDoc(doc(db, "users", userCred.user.uid));
+          if (!userSnap.exists()) throw new Error("User profile not found.");
+          const userData = userSnap.data();
+          messageBox.textContent = "Login successful. Redirecting...";
+          // redirect based on role
+        }
+      } catch (error) {
+        messageBox.textContent = error.message;
+      }
+    });
+
+    // Optionally auto-redirect if already logged in
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const userSnap = await getDoc(doc(db, "users", user.uid));
+        if (userSnap.exists()) {
+          const role = userSnap.data().role;
+          console.log("Redirect to", role);
+          // Example:
+          // if (role === "fresher") window.location.href = "/fresher-dashboard.html";
+        }
+      }
+    });
+
+
+  </script>
+
 </body>
 
 </html>

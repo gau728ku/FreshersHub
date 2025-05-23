@@ -1408,9 +1408,12 @@
                 document.getElementById('employerDashboard').style.display = 'none';
                 document.getElementById('fresherDashboard').style.display = 'none';
 
-                document.getElementById('adminMenuBtn').style.display = 'none';
-                document.getElementById('employerMenuBtn').style.display = 'none';
-                document.getElementById('fresherMenuBtn').style.display = 'none';
+                const adminBtn = document.getElementById('adminMenuBtn');
+                if (adminBtn) adminBtn.style.display = 'none';
+                const employerBtn = document.getElementById('employerMenuBtn');
+                if (employerBtn) employerBtn.style.display = 'none';
+                const fresherBtn = document.getElementById('fresherMenuBtn');
+                if (fresherBtn) fresherBtn.style.display = 'none';
 
                 role = normalizeString(role);
 

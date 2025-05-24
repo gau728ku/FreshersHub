@@ -1412,9 +1412,6 @@
                 if (role === 'admin') {
                     document.getElementById('adminDashboard').style.display = 'block';
 
-                    const adminMenuBtn = document.getElementById('Admin'); // Correct ID in HTML
-                    if (adminMenuBtn) adminMenuBtn.style.display = 'block';
-
                     (async () => {
                         const user = auth.currentUser;
                         if (user) {
@@ -1441,9 +1438,6 @@
                 else if (role === 'employer') {
                     document.getElementById('employerDashboard').style.display = 'block';
 
-                    const employerMenuBtn = document.getElementById('employer'); // Correct ID in HTML
-                    if (employerMenuBtn) employerMenuBtn.style.display = 'block';
-
                     (async () => {
                         const user = auth.currentUser;
                         if (user) {
@@ -1467,9 +1461,6 @@
 
                 else if (role === 'fresher') {
                     document.getElementById('fresherDashboard').style.display = 'block';
-
-                    const fresherMenuBtn = document.getElementById('fresherMenuBtn');
-                    if (fresherMenuBtn) fresherMenuBtn.style.display = 'block';
 
                     (async () => {
                         const user = auth.currentUser;

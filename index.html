@@ -982,15 +982,7 @@
             <div class="scrolling-text" id="announcementTextFresher"></div>
         </div>
 
-        <div style="position: fixed; top: 20px; left: 20px; display: flex; align-items: center; z-index: 1001;">
-            <div id="fresherMenuBtn" onclick="toggleFresherMenu()"
-                style="font-size: 28px; cursor: pointer; background: rgba(0, 0, 0, 0.5); border-radius: 50%; width: 40px; height: 40px; text-align: center; line-height: 40px; color: white;">
-                ☰
-            </div>
-            <div style="margin-left: 10px;">
 
-            </div>
-        </div>
 
 
         <div class="sideMenu" id="fresherSideMenu">
@@ -1479,12 +1471,17 @@
                         if (user) {
                             const userDoc = await getDoc(doc(db, "users", user.uid));
                             if (userDoc.exists()) {
+
                                 const data = userDoc.data();
                                 const name = data.fullName || "My Profile";
                                 const initial = name.charAt(0).toUpperCase();
 
-                                const nameEl = document.getElementById("fresherProfileFullName");
-                                const initialEl = document.getElementById("fresherProfileInitial");
+                                console.log("Loaded name from Firestore:", name);
+                                console.log("Initial for avatar:", initial);
+                                console.log("Target elements:",
+                                    document.getElementById("fresherProfileFullName"),
+                                    document.getElementById("fresherProfileInitial")
+                                );
 
                                 if (nameEl) nameEl.textContent = capitalize(name);
                                 if (initialEl) initialEl.textContent = initial;

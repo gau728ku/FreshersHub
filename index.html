@@ -1411,7 +1411,9 @@
 
                 if (role === 'admin') {
                     document.getElementById('adminDashboard').style.display = 'block';
-                    document.getElementById('adminMenuBtn').style.display = 'block';
+
+                    const adminMenuBtn = document.getElementById('Admin'); // Correct ID in HTML
+                    if (adminMenuBtn) adminMenuBtn.style.display = 'block';
 
                     (async () => {
                         const user = auth.currentUser;
@@ -1422,8 +1424,8 @@
                                 const name = data.fullName || "My Profile";
                                 const initial = name.charAt(0).toUpperCase();
 
-                                const nameEl = document.getElementById("AdminProfileFullName");
-                                const initialEl = document.getElementById("AdminProfileInitial");
+                                const nameEl = document.getElementById("adminProfileFullName");
+                                const initialEl = document.getElementById("adminProfileInitial");
 
                                 if (nameEl) nameEl.textContent = capitalize(name);
                                 if (initialEl) initialEl.textContent = initial;
@@ -1438,7 +1440,9 @@
 
                 else if (role === 'employer') {
                     document.getElementById('employerDashboard').style.display = 'block';
-                    document.getElementById('employerMenuBtn').style.display = 'block';
+
+                    const employerMenuBtn = document.getElementById('employer'); // Correct ID in HTML
+                    if (employerMenuBtn) employerMenuBtn.style.display = 'block';
 
                     (async () => {
                         const user = auth.currentUser;
@@ -1454,7 +1458,6 @@
 
                                 if (nameEl) nameEl.textContent = capitalize(name);
                                 if (initialEl) initialEl.textContent = initial;
-
                             }
                         }
                     })();
@@ -1463,13 +1466,10 @@
                 }
 
                 else if (role === 'fresher') {
-                    console.log("Checking elements in showDashboard():");
-                    console.log("adminMenuBtn:", document.getElementById('adminMenuBtn'));
-                    console.log("fresherMenuBtn:", document.getElementById('fresherMenuBtn'));
-                    console.log("employerMenuBtn:", document.getElementById('employerMenuBtn'));
-
                     document.getElementById('fresherDashboard').style.display = 'block';
-                    document.getElementById('fresherMenuBtn').style.display = 'block';
+
+                    const fresherMenuBtn = document.getElementById('fresherMenuBtn');
+                    if (fresherMenuBtn) fresherMenuBtn.style.display = 'block';
 
                     (async () => {
                         const user = auth.currentUser;
@@ -1485,13 +1485,13 @@
 
                                 if (nameEl) nameEl.textContent = capitalize(name);
                                 if (initialEl) initialEl.textContent = initial;
-
                             }
                         }
                     })();
 
                     showFresherSection('home');
                 }
+
 
             } catch (err) {
                 console.error("Error checking user role:", err);

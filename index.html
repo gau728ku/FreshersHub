@@ -1476,12 +1476,8 @@
                                 const name = data.fullName || "My Profile";
                                 const initial = name.charAt(0).toUpperCase();
 
-                                console.log("Loaded name from Firestore:", name);
-                                console.log("Initial for avatar:", initial);
-                                console.log("Target elements:",
-                                    document.getElementById("fresherProfileFullName"),
-                                    document.getElementById("fresherProfileInitial")
-                                );
+                                const nameEl = document.getElementById("fresherProfileFullName");
+                                const initialEl = document.getElementById("fresherProfileInitial");
 
                                 if (nameEl) nameEl.textContent = capitalize(name);
                                 if (initialEl) initialEl.textContent = initial;

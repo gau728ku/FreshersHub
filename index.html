@@ -1471,7 +1471,6 @@
                         if (user) {
                             const userDoc = await getDoc(doc(db, "users", user.uid));
                             if (userDoc.exists()) {
-
                                 const data = userDoc.data();
                                 const name = data.fullName || "My Profile";
                                 const initial = name.charAt(0).toUpperCase();
